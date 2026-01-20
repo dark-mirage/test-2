@@ -1,0 +1,21 @@
+.empty {
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.emptyText {
+  font-size: 14px;
+  font-weight: 400;
+  color: #7e7e7e;
+}
+
+.root {
+  padding: 16px;
+  background: #f4f3f1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}

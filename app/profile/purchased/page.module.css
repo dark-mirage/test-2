@@ -1,0 +1,11 @@
+.c1{
+  min-height: 100vh;
+  background: #F4F3F1;
+  padding-bottom: 5rem;
+}
+.c2{
+  background: #ffffff;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  margin-top: 0.5rem;
+}

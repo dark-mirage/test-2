@@ -1,0 +1,125 @@
+.c1{
+  position: fixed;
+  background: #ffffff;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-color: #CDCDCD;
+  padding: 1rem;
+  z-index: 50;
+}
+.c2{
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+}
+.c3{
+  display: flex;
+  align-items: center;
+  background: #F4F3F1;
+  border-radius: 16px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.c4{
+  color: 28.63px;
+  font-weight: 300;
+  line-height: 1.21em;
+  color: #000000;
+}
+.c4:disabled{
+  opacity: 0.3;
+}
+.c4:disabled{
+  cursor: not-allowed;
+}
+.c5{
+  color: 15px;
+  font-weight: 500;
+  line-height: 1.21em;
+  color: #000000;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+.c6{
+  color: 28.63px;
+  font-weight: 300;
+  line-height: 1.21em;
+  color: #000000;
+}
+.c7{
+  flex: 1 1 0%;
+  background: #F4F3F1;
+  border-radius: 16px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  text-align: center;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.c7:hover{
+  background: #E5E5E5;
+}
+.c8{
+  color: 15px;
+  font-weight: 500;
+  line-height: 1.06em;
+  letter-spacing: 0.02em;
+  color: #000000;
+  text-transform: uppercase;
+}
+.c9{
+  flex: 1 1 0%;
+  background: #2D2D2D;
+  border-radius: 16px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  text-align: center;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.c9:hover{
+  background: #1A1A1A;
+}
+.c10{
+  color: 15px;
+  font-weight: 500;
+  line-height: 1.06em;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+@media (min-width: 768px) {
+  .c1{
+    position: relative;
+  }
+  .c1{
+    padding: 1rem;
+  }
+}
+
+
+.tw1{
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+@media (min-width: 768px) {
+  .tw1{
+    border-width: 0px;
+    border-style: solid;
+  }
+}
+
+.tw2{
+  gap: 0.75rem;
+}

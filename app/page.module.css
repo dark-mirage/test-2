@@ -1,0 +1,9 @@
+.container {
+  max-width: 448px;
+  margin: 0 auto;
+  padding-bottom: 96px;
+}
+
+.sectionSpacing {
+  padding-top: 12px;
+}

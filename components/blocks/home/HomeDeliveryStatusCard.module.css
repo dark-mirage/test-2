@@ -1,0 +1,48 @@
+.outer {
+  padding: 0 16px;
+}
+
+.card {
+  background: var(--items-background);
+  border-radius: 18px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  opacity: 0.8;
+}
+
+.text {
+  min-width: 0;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: #111111;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #6e6e6e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

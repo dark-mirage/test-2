@@ -1,0 +1,5 @@
+.page {
+  min-height: var(--tg-viewport-height);
+  background: var(--items-background);
+  padding-bottom: 80px;
+}

@@ -1,0 +1,27 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: #fff;
+  border-bottom: 1px solid #f4f3f1;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+
+.back {
+  color: #7e7e7e;
+  transition: color 150ms ease;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.back:hover {
+  color: #000;
+}

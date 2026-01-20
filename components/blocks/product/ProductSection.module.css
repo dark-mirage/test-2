@@ -1,0 +1,68 @@
+.sectionHorizontal {
+  width: 100%;
+  padding: 12px 0px 0 0;
+}
+
+.sectionGrid {
+  padding: 8px 16px 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0;
+}
+
+.titleHorizontal {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  padding-left: 16px;
+}
+
+.titleGrid {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.allBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #7e7e7e;
+  font-weight: 500;
+  padding-right: 16px;
+}
+
+.allText {
+  font-size: 15px;
+}
+
+.arrow {
+  width: 10px;
+  height: 12px;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  gap: 11px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 12px;
+  row-gap: 20px;
+}

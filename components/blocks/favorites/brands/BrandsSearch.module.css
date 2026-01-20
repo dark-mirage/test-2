@@ -1,0 +1,41 @@
+.c1{
+  width: 100%;
+  background: #F4F3F1;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.c2{
+  display: flex;
+  align-items: center;
+  flex: 1 1 0%;
+}
+.c3{
+  color: #7E7E7E;
+}
+.c4{
+  flex: 1 1 0%;
+  color: 15px;
+  font-weight: 500;
+  line-height: 1.21em;
+  color: #000000;
+}
+
+.tw1{
+  height: 47px;
+}
+
+.tw2{
+  gap: 0.5rem;
+}
+
+.tw3{
+  background: transparent;
+  outline: none;
+}
+.tw3::placeholder{
+  color: #000;
+  opacity: 0.4;
+}

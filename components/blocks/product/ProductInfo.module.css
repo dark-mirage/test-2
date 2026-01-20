@@ -1,0 +1,69 @@
+.c1{
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.c2{
+  color: 20px;
+  font-weight: 700;
+  line-height: 1.57em;
+  letter-spacing: -0.01em;
+  color: #000000;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.c3{
+  color: 15px;
+  font-weight: 500;
+  line-height: 1.21em;
+  color: #7B7B7B;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.c3:hover{
+  color: #000000;
+}
+.c4{
+  color: 15px;
+  font-weight: 500;
+  line-height: 1.21em;
+  color: #7B7B7B;
+}
+.c5{
+  padding-left: 8px;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  overflow-x: auto;
+}
+.c6{
+  display: flex;
+}
+.c7{
+  object-fit: cover;
+}
+
+.tw1{
+  gap: 0.5rem;
+}
+
+.thumbButton{
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: opacity 150ms ease, box-shadow 150ms ease;
+}
+
+.thumbActive{
+  box-shadow: 0 0 0 2px #2D2D2D;
+}
+
+.thumbInactive{
+  opacity: 0.6;
+}
+
+.thumbInactive:hover{
+  opacity: 0.8;
+}

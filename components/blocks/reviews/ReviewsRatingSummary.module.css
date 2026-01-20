@@ -1,0 +1,96 @@
+.root {
+  padding: 16px;
+  background: #fff;
+  border-bottom: 1px solid #f4f3f1;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.avgRow {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.avg {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  line-height: 1;
+}
+
+.starLg {
+  width: 20px;
+  height: 20px;
+  fill: #facc15;
+  color: #facc15;
+}
+
+.total {
+  font-size: 12px;
+  font-weight: 400;
+  color: #7e7e7e;
+}
+
+.stats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.smallStars {
+  display: flex;
+  gap: 2px;
+}
+
+.starSm {
+  width: 8px;
+  height: 8px;
+  fill: #000;
+  color: #000;
+}
+
+.bar {
+  flex: 1;
+  background: #f4f3f1;
+  border-radius: 999px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.barFill {
+  background: #000;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 150ms ease;
+}
+
+.images {
+  display: flex;
+  gap: 4px;
+}
+
+.image {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+}
