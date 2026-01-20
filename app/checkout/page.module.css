@@ -3,14 +3,16 @@
   margin-left: auto;
   margin-right: auto;
   background: #f4f3f1;
-  min-height: 100vh;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  min-height: var(--tg-viewport-stable-height, 100vh);
 }
 .c2 {
   max-width: 28rem;
   margin-left: auto;
   margin-right: auto;
   background: #f4f3f1;
-  min-height: 100vh;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  min-height: var(--tg-viewport-stable-height, 100vh);
 }
 .c3 {
   padding-top: 1rem;

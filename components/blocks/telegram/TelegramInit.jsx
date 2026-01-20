@@ -2,23 +2,6 @@
 
 import { useEffect } from "react";
 
-function setCssVarPx(name, value) {
-  if (typeof document === "undefined") return;
-
-  const safeValue =
-    typeof value === "number" && Number.isFinite(value) ? value : 0;
-
-  document.documentElement.style.setProperty(
-    name,
-    `${Math.max(0, safeValue)}px`,
-  );
-}
-
-function setCssVar(name, value) {
-  if (typeof document === "undefined") return;
-  document.documentElement.style.setProperty(name, value);
-}
-
 function compareSemver(a, b) {
   const pa = String(a)
     .split(".")
@@ -78,34 +61,6 @@ function applyThemeColors(tg) {
   }
 }
 
-function syncViewportVars(tg) {
-  const vh =
-    tg.viewportHeight ||
-    (typeof window !== "undefined" ? window.innerHeight : 0);
-
-  const stable = tg.viewportStableHeight || vh;
-
-  setCssVarPx("--tg-viewport-height", vh);
-  setCssVarPx("--tg-viewport-stable-height", stable);
-  setCssVar("--tg-is-expanded", tg.isExpanded ? "1" : "0");
-
-  const safe = tg.safeAreaInset;
-  if (safe) {
-    setCssVarPx("--tg-safe-area-top", safe.top);
-    setCssVarPx("--tg-safe-area-bottom", safe.bottom);
-    setCssVarPx("--tg-safe-area-left", safe.left);
-    setCssVarPx("--tg-safe-area-right", safe.right);
-  }
-
-  const contentSafe = tg.contentSafeAreaInset;
-  if (contentSafe) {
-    setCssVarPx("--tg-content-safe-area-top", contentSafe.top);
-    setCssVarPx("--tg-content-safe-area-bottom", contentSafe.bottom);
-    setCssVarPx("--tg-content-safe-area-left", contentSafe.left);
-    setCssVarPx("--tg-content-safe-area-right", contentSafe.right);
-  }
-}
-
 function requestFullscreenBestEffort(tg) {
   // Fullscreen is supported only in newer versions
   const minSupported = "7.0";
@@ -148,34 +103,26 @@ export default function TelegramInit() {
       }
 
       applyThemeColors(tg);
-      syncViewportVars(tg);
-
-      const onViewport = () => {
-        requestAnimationFrame(() => syncViewportVars(tg));
-      };
 
       const onTheme = () => {
         applyThemeColors(tg);
       };
 
-      tg.onEvent("viewportChanged", onViewport);
+      // Viewport CSS vars are handled in a separate component (TelegramViewportManager)
+      // to avoid unstable `100vh` layout issues in Telegram.
       tg.onEvent("themeChanged", onTheme);
-      window.addEventListener("resize", onViewport, { passive: true });
 
       window.setTimeout(() => {
         try {
           tg.expand();
           requestFullscreenBestEffort(tg);
-          onViewport();
         } catch {
           // ignore
         }
       }, 50);
 
       return () => {
-        tg.offEvent("viewportChanged", onViewport);
         tg.offEvent("themeChanged", onTheme);
-        window.removeEventListener("resize", onViewport);
       };
     };
 

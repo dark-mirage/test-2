@@ -3,7 +3,8 @@
   margin-left: auto;
   margin-right: auto;
   background: #ffffff;
-  min-height: 100vh;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  min-height: var(--tg-viewport-stable-height, 100vh);
 }
 .c2 {
   background: #f4f3f1;
@@ -75,7 +76,8 @@
   margin-left: auto;
   margin-right: auto;
   background: #ffffff;
-  min-height: 100vh;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  min-height: var(--tg-viewport-stable-height, 100vh);
 }
 .c17 {
   width: 100%;
@@ -283,7 +285,8 @@
   margin-left: auto;
   margin-right: auto;
   background: #ffffff;
-  min-height: 100vh;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  min-height: var(--tg-viewport-stable-height, 100vh);
 }
 .c62 {
   padding-left: 1rem;
@@ -342,7 +345,8 @@
   margin-left: auto;
   margin-right: auto;
   background: #ffffff;
-  min-height: 100vh;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  min-height: var(--tg-viewport-stable-height, 100vh);
 }
 .c75 {
   padding-left: 1rem;
@@ -453,7 +457,8 @@
 }
 
 .tw10 {
-  height: 100vh;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  height: var(--tg-viewport-stable-height, 100vh);
 }
 
 .tw11 {

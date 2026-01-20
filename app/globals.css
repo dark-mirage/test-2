@@ -90,7 +90,8 @@ body {
 }
 
 body {
-  min-height: var(--tg-viewport-height);
+  /* Use Telegram stable viewport height instead of 100vh to avoid jumps/overlaps */
+  min-height: var(--tg-viewport-stable-height, 100vh);
   margin: 0;
   background: var(--background);
   color: var(--foreground);
@@ -103,7 +104,8 @@ button {
 
 /* Telegram viewport helper */
 .tg-viewport {
-  min-height: var(--tg-viewport-height);
+  /* Stable height prevents content from sliding under Telegram header */
+  min-height: var(--tg-viewport-stable-height, 100vh);
   padding-top: max(var(--ios-safe-top), var(--tg-safe-area-top));
   padding-bottom: max(var(--ios-safe-bottom), var(--tg-safe-area-bottom));
   padding-left: max(var(--ios-safe-left), var(--tg-safe-area-left));

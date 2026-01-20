@@ -2,14 +2,16 @@
   max-width: 448px;
   margin: 0 auto;
   background: #ffffff;
-  min-height: 100vh;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  min-height: var(--tg-viewport-stable-height, 100vh);
 }
 
 .error {
   max-width: 448px;
   margin: 0 auto;
   background: #ffffff;
-  min-height: 100vh;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  min-height: var(--tg-viewport-stable-height, 100vh);
   display: flex;
   align-items: center;
   justify-content: center;
