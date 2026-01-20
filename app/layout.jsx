@@ -1,17 +1,14 @@
 import "./globals.css";
 import Script from "next/script";
-import type { ReactNode } from "react";
 
-import WebViewErrorAlert from "@/components/blocks/telegram/WebViewErrorAlert";
 import TelegramInit from "@/components/blocks/telegram/TelegramInit";
+import WebViewErrorAlert from "@/components/blocks/telegram/WebViewErrorAlert";
 
-import TelegramHeaderManager from "./TelegramHeaderManager";
-
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }) {
   return (
     <html lang="ru" suppressHydrationWarning>
       <head>
-        {/* Telegram WebApp SDK - загружается до интерактивности для корректной инициализации */}
+        {/* Telegram WebApp SDK: loaded early for correct initialization */}
         <Script
           src="https://telegram.org/js/telegram-web-app.js"
           strategy="beforeInteractive"
@@ -19,7 +16,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body suppressHydrationWarning>
         <TelegramInit />
-        <TelegramHeaderManager />
         {children}
         <WebViewErrorAlert />
       </body>
