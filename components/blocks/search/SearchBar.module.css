@@ -1,9 +1,5 @@
 .outer {
   padding: 11px 16px 8px 16px;
-  position: sticky;
-  top: max(var(--ios-safe-top), var(--tg-safe-area-top));
-  z-index: 50;
-  background: var(--app-background);
 }
 
 .inner {
