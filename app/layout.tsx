@@ -1,10 +1,13 @@
 import "./globals.css";
 import Script from "next/script";
+import type { ReactNode } from "react";
 
 import WebViewErrorAlert from "@/components/blocks/telegram/WebViewErrorAlert";
 import TelegramInit from "@/components/blocks/telegram/TelegramInit";
 
-export default function RootLayout({ children }) {
+import TelegramHeaderManager from "./TelegramHeaderManager";
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru" suppressHydrationWarning>
       <head>
@@ -16,6 +19,7 @@ export default function RootLayout({ children }) {
       </head>
       <body suppressHydrationWarning>
         <TelegramInit />
+        <TelegramHeaderManager />
         {children}
         <WebViewErrorAlert />
       </body>
