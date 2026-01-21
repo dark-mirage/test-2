@@ -390,7 +390,16 @@ export default function SearchPage() {
                 </div>
 
                 {filteredProducts.length === 0 ? (
-                  <div className={styles.empty} />
+                  <div
+                    className={styles.empty}
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <div className={styles.emptyTitle}>Ничего не найдено</div>
+                    <div className={styles.emptySubtitle}>
+                      Но можно поискать что-то другое
+                    </div>
+                  </div>
                 ) : (
                   <ProductSection
                     title=""
