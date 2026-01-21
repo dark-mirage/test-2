@@ -1,5 +1,15 @@
 .page {
-  background: #a8a8a8;
+  background: linear-gradient(
+    to bottom,
+    #a8a8a8 0px,
+    #a8a8a8 400px,
+    #ffffff 200px,
+    #ffffff 100%
+  );
+
+  min-height: var(--tg-viewport-stable-height, 100vh);
+  display: flex;
+  flex-direction: column;
   padding-bottom: calc(120px + var(--tg-safe-area-bottom, 0px));
 }
 
@@ -7,6 +17,7 @@
   background: #a8a8a8;
   padding-top: 7px;
   margin-bottom: 18px;
+  flex: 0 0 auto;
 }
 
 .title {
@@ -82,6 +93,15 @@
 .arrow {
   width: 16px;
   height: 16px;
+}
+
+.main {
+  width: 100%;
+  background: #ffffff;
+  padding-top: 18px;
+  border-radius: 22px 22px 0 0;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .tableSection {

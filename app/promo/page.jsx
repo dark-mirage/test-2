@@ -1,9 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import Container from "@/components/layout/Layout";
 import PointsHistory from "@/components/blocks/promo/promo-points";
 import PromoInfoModal from "@/components/blocks/promo/PromoInfoModal";
 import { cn } from "@/lib/format/cn";
@@ -47,41 +45,44 @@ export default function PromoPage() {
           </button>
         </div>
       </section>
+      <div className={styles.main}>
+        <section className={styles.tableSection}>
+          <article className={styles.tableCard}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={styles.th}>Уровень</th>
+                  <th className={styles.th}>Заказов</th>
+                  <th className={styles.th}>Оплата</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className={styles.td}>Стартовый</td>
+                  <td className={`${styles.td} ${styles.muted}`}>0-3</td>
+                  <td className={`${styles.td} ${styles.muted}`}>до 10%</td>
+                </tr>
+                <tr>
+                  <td className={styles.td}>Продвинутый</td>
+                  <td className={`${styles.td} ${styles.muted}`}>3-6</td>
+                  <td className={`${styles.td} ${styles.muted}`}>до 15%</td>
+                </tr>
+                <tr>
+                  <td className={styles.td}>Премиум</td>
+                  <td className={`${styles.td} ${styles.muted}`}>от 6</td>
+                  <td className={`${styles.td} ${styles.muted}`}>до 20%</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+        </section>
 
-      <section className={styles.tableSection}>
-        <article className={styles.tableCard}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th className={styles.th}>Уровень</th>
-                <th className={styles.th}>Заказов</th>
-                <th className={styles.th}>Оплата</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className={styles.td}>Стартовый</td>
-                <td className={`${styles.td} ${styles.muted}`}>0-3</td>
-                <td className={`${styles.td} ${styles.muted}`}>до 10%</td>
-              </tr>
-              <tr>
-                <td className={styles.td}>Продвинутый</td>
-                <td className={`${styles.td} ${styles.muted}`}>3-6</td>
-                <td className={`${styles.td} ${styles.muted}`}>до 15%</td>
-              </tr>
-              <tr>
-                <td className={styles.td}>Премиум</td>
-                <td className={`${styles.td} ${styles.muted}`}>от 6</td>
-                <td className={`${styles.td} ${styles.muted}`}>до 20%</td>
-              </tr>
-            </tbody>
-          </table>
-        </article>
-      </section>
-
-      <PointsHistory />
-      <PromoInfoModal open={isInfoOpen} onClose={() => setIsInfoOpen(false)} />
-
+        <PointsHistory />
+        <PromoInfoModal
+          open={isInfoOpen}
+          onClose={() => setIsInfoOpen(false)}
+        />
+      </div>
       <Footer />
     </main>
   );
