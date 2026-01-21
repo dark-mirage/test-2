@@ -3,39 +3,36 @@
   left: 0;
   right: 0;
   bottom: 0;
+
   background: #ffffff;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+  /* Telegram safe area pastki qismi bo'lsa, bosilib qolmasin */
+  padding-bottom: var(--tg-safe-area-bottom, 0px);
 }
 
 .inner {
   display: flex;
-  justify-content: center;
-  padding: 8px 0;
-}
-
-.btn {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 4px 0;
-  background: transparent;
-  border: 0;
+  justify-content: space-between;
+  padding: 10px 20px 30px 20px;
 }
 
-.spacer40 {
-  margin-right: 40px;
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: none;
+
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
-.spacer44 {
-  margin-right: 44px;
-}
-.spacer45 {
-  margin-right: 45px;
-}
-.spacer47 {
-  margin-right: 47px;
-}
-.spacer48 {
-  margin-right: 48px;
+
+.iconWrap {
+  position: relative;
+  display: inline-flex;
 }
 
 .icon {
@@ -48,11 +45,6 @@
 
 .iconActive {
   filter: brightness(0);
-}
-
-.badgeWrap {
-  position: relative;
-  display: inline-flex;
 }
 
 .badge {

@@ -1,36 +1,36 @@
-.c2{
+.c2 {
   /* Avoid unstable 100vh in Telegram WebApp */
   min-height: var(--tg-viewport-stable-height, 100vh);
   background: #ffffff;
   padding-bottom: 5rem;
 }
-.c3{
+.c3 {
   padding-left: 1rem;
   padding-right: 1rem;
   margin-bottom: 1rem;
 }
-.c4{
+.c4 {
   padding-left: 1rem;
   padding-right: 1rem;
   margin-bottom: 1rem;
 }
-.c5{
+.c5 {
   padding-left: 1rem;
   padding-right: 1rem;
   margin-bottom: 1rem;
 }
-.c6{
+.c6 {
   padding-left: 1rem;
   padding-right: 1rem;
   margin-bottom: 1rem;
 }
-.c7{
+.c7 {
   padding-left: 1rem;
   padding-right: 1rem;
   margin-bottom: 1rem;
 }
 
-.tw1{
+.tw1 {
   width: 1.5rem;
   height: 1.5rem;
 }

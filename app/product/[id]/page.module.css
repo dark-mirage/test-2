@@ -1,15 +1,14 @@
-.c1{
+.c1 {
   /* Avoid unstable 100vh in Telegram WebApp */
   min-height: var(--tg-viewport-stable-height, 100vh);
   background: #ffffff;
 }
 @media (min-width: 768px) {
-  .c1{
+  .c1 {
     padding-bottom: 5rem;
   }
 }
 
-
-.tw1{
-  padding-bottom: 8.0rem;
+.tw1 {
+  padding-bottom: 8rem;
 }
