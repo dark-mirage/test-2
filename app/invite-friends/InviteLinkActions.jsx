@@ -1,24 +1,78 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Check } from "lucide-react";
 
 import styles from "./page.module.css";
 
 export default function InviteLinkActions({ url }) {
   const [copied, setCopied] = useState(false);
+  const [hint, setHint] = useState("");
+  const inputRef = useRef(null);
 
   const shareText = useMemo(() => `Присоединяйся к LOYALTY: ${url}`, [url]);
 
-  const doCopy = useCallback(async () => {
+  const copyText = useCallback(async (text) => {
+    // Modern clipboard API (may be blocked in Telegram/iOS).
     try {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1200);
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
     } catch {
-      // Ignore – clipboard may be blocked in some environments.
+      // fallback below
     }
-  }, [url]);
+
+    // Fallback for iOS/Telegram: execCommand('copy') with a temporary textarea.
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      textarea.style.top = "0";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+
+      textarea.focus();
+      textarea.select();
+      textarea.setSelectionRange(0, text.length);
+
+      const ok = document.execCommand("copy");
+      document.body.removeChild(textarea);
+      return ok;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const doCopy = useCallback(async () => {
+    const ok = await copyText(url);
+
+    if (ok) {
+      setCopied(true);
+      setHint("Ссылка скопирована");
+      window.setTimeout(() => {
+        setCopied(false);
+        setHint("");
+      }, 1200);
+      return;
+    }
+
+    // If copy failed, focus/select the input so user can long-press to copy.
+    setHint("Не удалось скопировать — зажмите ссылку и скопируйте вручную");
+    inputRef.current?.focus?.();
+    inputRef.current?.select?.();
+
+    const tg = window.Telegram?.WebApp;
+    if (tg?.showPopup) {
+      try {
+        tg.showPopup({ message: "Не удалось скопировать. Зажмите ссылку и скопируйте вручную." });
+      } catch {
+        // ignore
+      }
+    }
+  }, [copyText, url]);
 
   const onShare = useCallback(async () => {
     // Prefer native share where available; fallback to copy.
@@ -35,13 +89,15 @@ export default function InviteLinkActions({ url }) {
     const tg = window.Telegram?.WebApp;
     if (tg?.openTelegramLink) {
       try {
-        tg.openTelegramLink(url);
+        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
+        tg.openTelegramLink(shareUrl);
         return;
       } catch {
         // ignore
       }
     }
 
+    // Last fallback: copy link.
     await doCopy();
   }, [doCopy, shareText, url]);
 
@@ -54,6 +110,8 @@ export default function InviteLinkActions({ url }) {
           value={url}
           readOnly
           className={styles.linkInput}
+          ref={inputRef}
+          onClick={(e) => e.currentTarget.select()}
         />
 
         <button
@@ -61,7 +119,6 @@ export default function InviteLinkActions({ url }) {
           className={`${styles.copyButton} ${copied ? styles.copyButtonCopied : ""}`}
           aria-label={copied ? "Скопировано" : "Скопировать ссылку"}
           onClick={doCopy}
-          disabled={copied}
         >
           {copied ? (
             <Check className={styles.copyIcon} aria-hidden="true" />
@@ -85,7 +142,7 @@ export default function InviteLinkActions({ url }) {
       </button>
 
       <div className={styles.hint} aria-live="polite">
-        {copied ? "Ссылка скопирована" : ""}
+        {hint}
       </div>
     </div>
   );

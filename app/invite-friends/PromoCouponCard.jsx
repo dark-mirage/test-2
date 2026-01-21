@@ -12,15 +12,56 @@ export default function PromoCouponCard({
 }) {
   const [copied, setCopied] = useState(false);
 
-  const doCopy = useCallback(async () => {
+  const copyText = useCallback(async (text) => {
     try {
-      await navigator.clipboard.writeText(copyValue);
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch {
+      // fallback below
+    }
+
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      textarea.style.top = "0";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+
+      textarea.focus();
+      textarea.select();
+      textarea.setSelectionRange(0, text.length);
+
+      const ok = document.execCommand("copy");
+      document.body.removeChild(textarea);
+      return ok;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const doCopy = useCallback(async () => {
+    const ok = await copyText(copyValue);
+
+    if (ok) {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1200);
-    } catch {
-      // Ignore – clipboard may be blocked in some environments.
+      return;
     }
-  }, [copyValue]);
+
+    const tg = window.Telegram?.WebApp;
+    if (tg?.showPopup) {
+      try {
+        tg.showPopup({ message: "Не удалось скопировать промокод. Попробуйте выделить и скопировать вручную." });
+      } catch {
+        // ignore
+      }
+    }
+  }, [copyText, copyValue]);
 
   return (
     <section className={styles.promoCard} aria-label="Промокод">

@@ -143,6 +143,7 @@
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  touch-action: manipulation;
   transition:
     transform 120ms ease,
     filter 120ms ease;
@@ -205,6 +206,7 @@
   display: grid;
   place-items: center;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .copyButton:disabled {
@@ -239,6 +241,7 @@
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  touch-action: manipulation;
   transition:
     transform 120ms ease,
     filter 120ms ease;
