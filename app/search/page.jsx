@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ListFilter, Search, SlidersHorizontal, X, Trash2 } from "lucide-react";
+import { ListFilter, Search, SlidersHorizontal, Trash2 } from "lucide-react";
 
 import Footer from "@/components/layout/Footer";
 import Container from "@/components/layout/Layout";
 import ProductSection from "@/components/blocks/product/ProductSection";
+import SearchBar from "@/components/blocks/search/SearchBar";
 import { cn } from "@/lib/format/cn";
 
 import styles from "./page.module.css";
@@ -203,8 +204,6 @@ export default function SearchPage() {
     );
   };
 
-  const onClear = () => setQuery("");
-
   const onToggleFavorite = (id) => {
     setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, isFavorite: !p.isFavorite } : p)),
@@ -224,88 +223,66 @@ export default function SearchPage() {
   return (
     <main className={cn("tg-viewport", styles.page)}>
       <Container className={styles.container}>
-        <div className={styles.searchWrap}>
-          <div className={styles.searchBar}>
-            <Search
-              size={20}
-              className={styles.searchIcon}
-              aria-hidden="true"
-            />
+        <SearchBar
+          inputRef={inputRef}
+          autoFocus
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => {
+            if (blurCloseTimerRef.current) {
+              window.clearTimeout(blurCloseTimerRef.current);
+              blurCloseTimerRef.current = null;
+            }
+            setIsFocused(true);
+          }}
+          onBlur={() => {
+            // Delay closing so clicks on suggestions work.
+            blurCloseTimerRef.current = window.setTimeout(() => {
+              setIsFocused(false);
+              blurCloseTimerRef.current = null;
+            }, 150);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              commitSearch(query);
+            }
+          }}
+          inputMode="search"
+          enterKeyHint="search"
+        />
 
-            <input
-              ref={inputRef}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => {
-                if (blurCloseTimerRef.current) {
-                  window.clearTimeout(blurCloseTimerRef.current);
-                  blurCloseTimerRef.current = null;
-                }
-                setIsFocused(true);
-              }}
-              onBlur={() => {
-                // Delay closing so clicks on suggestions work.
-                blurCloseTimerRef.current = window.setTimeout(() => {
-                  setIsFocused(false);
-                  blurCloseTimerRef.current = null;
-                }, 150);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  commitSearch(query);
-                }
-              }}
-              placeholder="Поиск"
-              className={styles.searchInput}
-              inputMode="search"
-              enterKeyHint="search"
-            />
-
-            {query ? (
-              <button
-                type="button"
-                className={styles.clearBtn}
-                onClick={onClear}
-                aria-label="Очистить"
-              >
-                <X size={16} aria-hidden="true" />
-              </button>
-            ) : null}
-          </div>
-
-          {showSuggestions ? (
-            <div className={styles.suggestWrap}>
-              <div
-                className={styles.suggestList}
-                role="listbox"
-                aria-label="Подсказки"
-              >
-                {suggestions.map((label) => (
-                  <button
-                    key={label}
-                    type="button"
-                    className={styles.suggestItem}
-                    onMouseDown={(e) => {
-                      // Prevent input blur before click.
-                      e.preventDefault();
-                    }}
-                    onClick={() => commitSearch(label)}
-                    role="option"
-                    aria-selected="false"
-                  >
-                    <Search
-                      size={18}
-                      className={styles.suggestItemIcon}
-                      aria-hidden="true"
-                    />
-                    {renderSuggestionLabel(label)}
-                  </button>
-                ))}
-              </div>
+        {showSuggestions ? (
+          <div className={styles.suggestWrap}>
+            <div
+              className={styles.suggestList}
+              role="listbox"
+              aria-label="Подсказки"
+            >
+              {suggestions.map((label) => (
+                <button
+                  key={label}
+                  type="button"
+                  className={styles.suggestItem}
+                  onMouseDown={(e) => {
+                    // Prevent input blur before click.
+                    e.preventDefault();
+                  }}
+                  onClick={() => commitSearch(label)}
+                  role="option"
+                  aria-selected="false"
+                >
+                  <Search
+                    size={18}
+                    className={styles.suggestItemIcon}
+                    aria-hidden="true"
+                  />
+                  {renderSuggestionLabel(label)}
+                </button>
+              ))}
             </div>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
 
         {!query ? (
           <section className={styles.recent} aria-label="Вы искали">

@@ -12,6 +12,12 @@ export default function SearchBar({
   defaultValue,
   onChange,
   onFocus,
+  onBlur,
+  onKeyDown,
+  inputMode,
+  enterKeyHint,
+  inputRef,
+  className,
 }) {
   const router = useRouter();
 
@@ -21,10 +27,11 @@ export default function SearchBar({
   };
 
   return (
-    <div className={styles.outer}>
+    <div className={className ? `${styles.outer} ${className}` : styles.outer}>
       <div className={styles.inner}>
         <Search size={21} color="#111111" aria-hidden="true" />
         <input
+          ref={inputRef}
           type="text"
           placeholder="Поиск"
           className={styles.input}
@@ -34,6 +41,10 @@ export default function SearchBar({
           defaultValue={defaultValue}
           onChange={onChange}
           onFocus={handleFocus}
+          onBlur={onBlur}
+          onKeyDown={onKeyDown}
+          inputMode={inputMode}
+          enterKeyHint={enterKeyHint}
         />
       </div>
     </div>
