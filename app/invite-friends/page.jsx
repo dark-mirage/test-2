@@ -6,6 +6,7 @@ import { cn } from "@/lib/format/cn";
 import Container from "@/components/layout/Layout";
 import Header from "@/components/layout/Header";
 import InviteLinkActions from "./InviteLinkActions";
+import PromoCouponCard from "./PromoCouponCard";
 import styles from "./page.module.css";
 
 const jsonLd = {
@@ -143,6 +144,13 @@ export default function InviteFriends() {
             промокод на скидку 10%.
           </p>
         </section>
+
+        <PromoCouponCard
+          percent={10}
+          until="До 08.09.2025"
+          description="Скидка 10% на любой заказ, но не более 20 000 ₽"
+          copyValue="LOYALTY10"
+        />
 
         <section
           className={styles.section}
