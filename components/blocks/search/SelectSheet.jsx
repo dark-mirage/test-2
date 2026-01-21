@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import BottomSheet from "@/components/ui/BottomSheet";
 
 import styles from "./SelectSheet.module.css";
@@ -51,7 +51,6 @@ export default function SelectSheet({
 
   return (
     <SelectSheetStateful
-      key={open ? "open" : "closed"}
       open={open}
       onClose={onClose}
       title={title}
@@ -84,6 +83,22 @@ function SelectSheetStateful({
 }) {
   const [draft, setDraft] = useState(initialValue);
   const [search, setSearch] = useState("");
+  const prevOpenRef = useRef(open);
+
+  useEffect(() => {
+    const wasOpen = prevOpenRef.current;
+    let frame = 0;
+    if (open && !wasOpen) {
+      frame = requestAnimationFrame(() => {
+        setDraft(initialValue);
+        setSearch("");
+      });
+    }
+    prevOpenRef.current = open;
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [initialValue, open]);
 
   const labelByValue = useMemo(() => {
     const map = new Map();

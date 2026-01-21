@@ -17,7 +17,7 @@ export default function BottomSheet({
   maxHeightOffset = 24,
 }) {
   const [mounted, setMounted] = useState(open);
-  const [active, setActive] = useState(open);
+  const [active, setActive] = useState(false);
   const titleId = useId();
   const closeBtnRef = useRef(null);
 

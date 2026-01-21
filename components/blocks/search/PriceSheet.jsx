@@ -1,13 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import BottomSheet from "@/components/ui/BottomSheet";
 
 import styles from "./PriceSheet.module.css";
 
+const MAX_DIGITS = 9;
+
 function toDigits(value) {
-  return String(value || "").replace(/[^0-9]/g, "");
+  const digits = String(value || "").replace(/[^0-9]/g, "");
+  return digits.slice(0, MAX_DIGITS);
 }
 
 function digitsToNumber(value) {
@@ -21,10 +24,10 @@ function formatNumber(value) {
   return n.toLocaleString("ru-RU");
 }
 
-function formatRublesFromDigits(digits) {
+function formatNumberFromDigits(digits) {
   const n = Number(digits);
   if (!digits || !Number.isFinite(n)) return "";
-  return `${formatNumber(n)} ₽`;
+  return formatNumber(n);
 }
 
 export default function PriceSheet({
@@ -49,7 +52,6 @@ export default function PriceSheet({
 
   return (
     <PriceSheetInner
-      key={open ? "open" : "closed"}
       open={open}
       onClose={onClose}
       title={title}
@@ -72,6 +74,26 @@ function PriceSheetInner({
 }) {
   const [minDigits, setMinDigits] = useState(initial.minDigits);
   const [maxDigits, setMaxDigits] = useState(initial.maxDigits);
+  const [minFocused, setMinFocused] = useState(false);
+  const [maxFocused, setMaxFocused] = useState(false);
+  const prevOpenRef = useRef(open);
+
+  useEffect(() => {
+    const wasOpen = prevOpenRef.current;
+    let frame = 0;
+    if (open && !wasOpen) {
+      frame = requestAnimationFrame(() => {
+        setMinDigits(initial.minDigits);
+        setMaxDigits(initial.maxDigits);
+        setMinFocused(false);
+        setMaxFocused(false);
+      });
+    }
+    prevOpenRef.current = open;
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [initial.maxDigits, initial.minDigits, open]);
 
   const draftMin = useMemo(() => digitsToNumber(minDigits), [minDigits]);
   const draftMax = useMemo(() => digitsToNumber(maxDigits), [maxDigits]);
@@ -150,13 +172,17 @@ function PriceSheetInner({
             <div className={styles.fieldRow}>
               <input
                 className={styles.input}
-                value={formatRublesFromDigits(minDigits)}
+                value={minFocused ? minDigits : formatNumberFromDigits(minDigits)}
                 onChange={(e) => setMinDigits(toDigits(e.target.value))}
+                onFocus={() => setMinFocused(true)}
+                onBlur={() => setMinFocused(false)}
                 inputMode="numeric"
                 enterKeyHint="done"
                 aria-label={minLabel}
-                maxLength={9}
               />
+              <span className={styles.ruble} aria-hidden="true">
+                ₽
+              </span>
               {minDigits ? (
                 <button
                   type="button"
@@ -175,13 +201,17 @@ function PriceSheetInner({
             <div className={styles.fieldRow}>
               <input
                 className={styles.input}
-                value={formatRublesFromDigits(maxDigits)}
+                value={maxFocused ? maxDigits : formatNumberFromDigits(maxDigits)}
                 onChange={(e) => setMaxDigits(toDigits(e.target.value))}
+                onFocus={() => setMaxFocused(true)}
+                onBlur={() => setMaxFocused(false)}
                 inputMode="numeric"
                 enterKeyHint="done"
-                maxLength={9}
                 aria-label={maxLabel}
               />
+              <span className={styles.ruble} aria-hidden="true">
+                ₽
+              </span>
               {maxDigits ? (
                 <button
                   type="button"

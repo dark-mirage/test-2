@@ -33,6 +33,7 @@
 
 .input {
   width: 100%;
+  flex: 1 1 auto;
   border: 0;
   outline: none;
   background: transparent;
@@ -40,6 +41,14 @@
   font-weight: 700;
   color: rgba(17, 17, 17, 0.92);
   padding: 0;
+}
+
+.ruble {
+  flex: 0 0 auto;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(17, 17, 17, 0.55);
+  line-height: 1;
 }
 
 .clearBtn {
