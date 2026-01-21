@@ -1,12 +1,10 @@
 .page {
-  background: var(--background);
-  min-height: var(--tg-viewport-stable-height, 100vh);
   padding-bottom: calc(120px + var(--tg-safe-area-bottom, 0px));
 }
 
 .hero {
   background: #a8a8a8;
-  padding-top: 30px;
+  padding-top: 15px;
   margin-bottom: 18px;
 }
 
