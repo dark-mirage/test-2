@@ -205,6 +205,15 @@
   white-space: nowrap;
 }
 
+.filterChipActive {
+  background: #2d2d2d;
+  color: #ffffff;
+}
+
+.filterChipActive .chev {
+  opacity: 0.9;
+}
+
 .filterChip:active {
   transform: scale(0.99);
 }
