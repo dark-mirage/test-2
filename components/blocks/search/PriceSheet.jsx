@@ -172,7 +172,9 @@ function PriceSheetInner({
             <div className={styles.fieldRow}>
               <input
                 className={styles.input}
-                value={minFocused ? minDigits : formatNumberFromDigits(minDigits)}
+                value={
+                  minFocused ? minDigits : formatNumberFromDigits(minDigits)
+                }
                 onChange={(e) => setMinDigits(toDigits(e.target.value))}
                 onFocus={() => setMinFocused(true)}
                 onBlur={() => setMinFocused(false)}
@@ -201,7 +203,9 @@ function PriceSheetInner({
             <div className={styles.fieldRow}>
               <input
                 className={styles.input}
-                value={maxFocused ? maxDigits : formatNumberFromDigits(maxDigits)}
+                value={
+                  maxFocused ? maxDigits : formatNumberFromDigits(maxDigits)
+                }
                 onChange={(e) => setMaxDigits(toDigits(e.target.value))}
                 onFocus={() => setMaxFocused(true)}
                 onBlur={() => setMaxFocused(false)}
