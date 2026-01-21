@@ -224,12 +224,6 @@ export default function SearchPage() {
   return (
     <main className={cn("tg-viewport", styles.page)}>
       <Container className={styles.container}>
-        <header className={styles.topBar}>
-          <div className={styles.title}>
-            <span>Поиск</span>
-          </div>
-        </header>
-
         <div className={styles.searchWrap}>
           <div className={styles.searchBar}>
             <Search
