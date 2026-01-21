@@ -125,6 +125,7 @@
 }
 
 .promoDescription {
+  max-width: 250px;
   margin: 10px 0 0;
   font-size: 14px;
   line-height: 1.35;

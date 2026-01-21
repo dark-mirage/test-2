@@ -4,7 +4,12 @@ import { useCallback, useState } from "react";
 
 import styles from "./page.module.css";
 
-export default function PromoCouponCard({ percent, until, description, copyValue }) {
+export default function PromoCouponCard({
+  percent,
+  until,
+  description,
+  copyValue,
+}) {
   const [copied, setCopied] = useState(false);
 
   const doCopy = useCallback(async () => {
