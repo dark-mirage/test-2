@@ -3,8 +3,10 @@ import { useState } from "react";
 
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Container from "@/components/layout/Layout";
 import PointsHistory from "@/components/blocks/promo/promo-points";
 import PromoInfoModal from "@/components/blocks/promo/PromoInfoModal";
+import { cn } from "@/lib/format/cn";
 
 import styles from "./page.module.css";
 
@@ -13,10 +15,10 @@ export default function PromoPage() {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   return (
-    <>
-      <Header title="Баллы" bgColor="#A8A8A8" titleColor="white" />
-      <main className={styles.page}>
+    <main className={cn("tg-viewport", styles.page)}>
+      <Container className={styles.container}>
         <section className={styles.hero}>
+          <h3 className={styles.title}>Баллы</h3>
           <div className={styles.heroInner}>
             <div className={styles.summaryRow}>
               <div className={styles.summaryItem}>
@@ -83,8 +85,9 @@ export default function PromoPage() {
           open={isInfoOpen}
           onClose={() => setIsInfoOpen(false)}
         />
-      </main>
+      </Container>
+
       <Footer />
-    </>
+    </main>
   );
 }
