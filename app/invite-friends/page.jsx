@@ -5,6 +5,7 @@ import { invitedUsers, stats } from "./mock";
 import { cn } from "@/lib/format/cn";
 import Container from "@/components/layout/Layout";
 import Header from "@/components/layout/Header";
+import InviteLinkActions from "./InviteLinkActions";
 import styles from "./page.module.css";
 
 const jsonLd = {
@@ -49,9 +50,11 @@ const jsonLd = {
 };
 
 export default function InviteFriends() {
+  const inviteUrl = "https://t.me/loyaltymarketbot?start=707635394";
+
   return (
     <main
-      className={cn(styles.c1, styles.tw1)}
+      className={cn("tg-viewport", styles.page)}
       itemScope
       itemType="https://schema.org/WebPage"
     >
@@ -60,199 +63,160 @@ export default function InviteFriends() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Header title="Зовите друзей"></Header>
+      <Header title="Зовите друзей" />
 
-      {/* Иконки приглашений: 3 слева, 3 справа, 1 по центру */}
-      <div className={cn(styles.c2, styles.tw2)}>
-        {/* Левый столбец: первые три слева */}
-        <img
-          src="/icons/invite-friends/1-avatar.svg"
-          alt=""
-          className={cn(styles.c3, styles.tw3)}
-        />
-        <img
-          src="/icons/invite-friends/2-avatar.svg"
-          alt=""
-          className={cn(styles.c4, styles.tw4)}
-        />
-        <img
-          src="/icons/invite-friends/3-avatar.svg"
-          alt=""
-          className={cn(styles.c5, styles.tw5)}
-        />
+      <Container className={styles.container}>
+        <section className={styles.hero} aria-label="Invite friends">
+          <div className={styles.illustration} aria-hidden="true">
+            <div className={styles.bubbles}>
+              <Image
+                src="/icons/invite-friends/1-avatar.svg"
+                alt=""
+                width={51}
+                height={51}
+                className={cn(styles.bubble, styles.b1)}
+                priority
+              />
+              <Image
+                src="/icons/invite-friends/2-avatar.svg"
+                alt=""
+                width={50}
+                height={50}
+                className={cn(styles.bubble, styles.b2)}
+                priority
+              />
+              <Image
+                src="/icons/invite-friends/3-avatar.svg"
+                alt=""
+                width={54}
+                height={53}
+                className={cn(styles.bubble, styles.b3)}
+                priority
+              />
 
-        {/* Правый столбец: 4-5-6 справа */}
-        <img
-          src="/icons/invite-friends/4-avatar.svg"
-          alt=""
-          className={cn(styles.c6, styles.tw6)}
-        />
-        <img
-          src="/icons/invite-friends/5-avatar.svg"
-          alt=""
-          className={cn(styles.c7, styles.tw7)}
-        />
-        <img
-          src="/icons/invite-friends/6-avatar.svg"
-          alt=""
-          className={cn(styles.c8, styles.tw8)}
-        />
+              <Image
+                src="/icons/invite-friends/4-avatar.svg"
+                alt=""
+                width={50}
+                height={50}
+                className={cn(styles.bubble, styles.b4)}
+                priority
+              />
+              <Image
+                src="/icons/invite-friends/5-avatar.svg"
+                alt=""
+                width={55}
+                height={55}
+                className={cn(styles.bubble, styles.b5)}
+                priority
+              />
+              <Image
+                src="/icons/invite-friends/6-avatar.svg"
+                alt=""
+                width={50}
+                height={50}
+                className={cn(styles.bubble, styles.b6)}
+                priority
+              />
 
-        {/* Центр: 7 */}
-        <img
-          src="/icons/invite-friends/7-avatar.svg"
-          alt=""
-          className={cn(styles.c9, styles.tw9, styles.leftHalf)}
-        />
-      </div>
+              <div className={styles.centerBubble}>
+                <Image
+                  src="/icons/invite-friends/7-avatar.svg"
+                  alt=""
+                  width={100}
+                  height={100}
+                  className={styles.centerAvatar}
+                  priority
+                />
+              </div>
+            </div>
+          </div>
 
-      <Container>
-        <section>
-          <h1 className={cn(styles.c10, styles.tw10)} itemProp="name">
-            Зовите друзей и <br />
+          <h1 className={styles.title} itemProp="name">
+            Зовите друзей и
+            <br />
             получайте скидку
           </h1>
 
-          <p className={cn(styles.c11, styles.tw11)} itemProp="description">
+          <p className={styles.subtitle} itemProp="description">
             Пригласите в приложение 3 друзей по своей ссылке и мы подарим вам
             промокод на скидку 10%.
           </p>
         </section>
 
         <section
+          className={styles.section}
           aria-labelledby="invite-link"
           itemScope
           itemType="https://schema.org/Offer"
         >
-          <h3
-            id="invite-link"
-            className={cn(styles.c12, styles.tw12)}
-            itemProp="name"
-          >
+          <h2 id="invite-link" className={styles.sectionTitle} itemProp="name">
             Ваша ссылка для приглашений
-          </h3>
+          </h2>
 
           <meta itemProp="price" content="0" />
           <meta itemProp="priceCurrency" content="RUB" />
 
-          <div className={cn(styles.c13, styles.tw13)}>
-            <div className={styles.c14}>
-              <input
-                type="text"
-                aria-label="Ссылка для приглашения"
-                value="https://t.me/loyaltymarketbot?start=707635394"
-                readOnly
-                className={cn(styles.c15, styles.tw14)}
-              />
+          <InviteLinkActions url={inviteUrl} />
+        </section>
 
-              <button
-                type="button"
-                className={cn(styles.c16, styles.tw15, styles.topHalf)}
-              >
-                <img src="/icons/invite-friends/copy.svg" alt="copy-icon" />
-              </button>
-            </div>
-
-            <button
-              type="button"
-              aria-label="Поделиться ссылкой"
-              className={cn(styles.c17, styles.tw16)}
-            >
-              Поделиться
-            </button>
+        <section className={styles.statsCard} aria-label="Статистика">
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>Перешло по ссылке</span>
+            <strong className={styles.statValue}>{stats.visited}</strong>
+          </div>
+          <div className={styles.divider} />
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>Запустило приложение</span>
+            <strong className={styles.statValue}>{stats.started}</strong>
+          </div>
+          <div className={styles.divider} />
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>Получено промокодов</span>
+            <strong className={styles.statValue}>{stats.promocodes}</strong>
           </div>
         </section>
 
-        <section
-          aria-labelledby="stats"
-          className={cn(styles.c18, styles.tw17)}
-        >
-          <h3 id="stats" className={styles.srOnly}>
-            Статистика
-          </h3>
-
-          <div className={styles.spaceY1_5}>
-            <div
-              className={cn(styles.c19, styles.tw18)}
-              itemProp="interactionStatistic"
-            >
-              <span>Перешли по ссылке</span>
-              <strong>{stats.visited}</strong>
-            </div>
-
-            <div
-              className={cn(styles.c20, styles.tw19)}
-              itemProp="interactionStatistic"
-            >
-              <span>Запустили приложение</span>
-              <strong>{stats.started}</strong>
-            </div>
-
-            <div
-              className={cn(styles.c21, styles.tw20)}
-              itemProp="interactionStatistic"
-            >
-              <span>Получено промокодов</span>
-              <strong>{stats.promocodes}</strong>
-            </div>
-          </div>
-        </section>
-
-        <section aria-labelledby="invite-history" className={styles.c22}>
-          <h3 id="invite-history" className={cn(styles.c23, styles.tw21)}>
+        <section className={styles.history} aria-labelledby="invite-history">
+          <h2 id="invite-history" className={styles.historyTitle}>
             История приглашений
-          </h3>
+          </h2>
 
-          <div className={cn(styles.c24, styles.tw22)}>
-            {invitedUsers.map((user) => (
-              <article
-                key={user.id}
-                className={cn(styles.c25, styles.tw23)}
-                itemScope
-                itemType="https://schema.org/Person"
-              >
-                <Image
-                  src={user.avatar}
-                  alt={`Аватар пользователя ${user.name}`}
-                  className={cn(styles.c26, styles.tw24)}
-                  width={44}
-                  height={44}
-                  itemProp="image"
-                />
+          <ul className={styles.historyList}>
+            {invitedUsers.map((user) => {
+              const isExisting = user.status === "Уже пользуется";
 
-                <div className={cn(styles.c27)}>
-                  <div className={styles.c28}>
-                    <div className={styles.c29} itemProp="name">
-                      {user.name}
+              return (
+                <li key={user.id} className={styles.historyItem}>
+                  <Image
+                    src={user.avatar}
+                    alt={`Аватар пользователя ${user.name}`}
+                    width={44}
+                    height={44}
+                    className={styles.userAvatar}
+                  />
+
+                  <div className={styles.userBody}>
+                    <div className={styles.userMain}>
+                      <div className={styles.userName}>{user.name}</div>
+                      <div className={styles.userDate}>{user.date}</div>
                     </div>
 
-                    <div className={cn(styles.c30, styles.tw25)}>
-                      {user.date}
+                    <div className={styles.userStatus}>
+                      <span className={styles.statusIcon} aria-hidden="true">
+                        {isExisting ? <Minus size={20} /> : <Check size={18} />}
+                      </span>
+                      <span className={styles.statusText}>{user.status}</span>
                     </div>
                   </div>
-
-                  <div className={cn(styles.c31, styles.tw26)}>
-                    <span
-                      aria-hidden="true"
-                      className={cn(styles.c32, styles.tw27)}
-                    >
-                      {user.status === "Уже пользуется" ? (
-                        <Minus size={20} />
-                      ) : (
-                        <Check size={18} />
-                      )}
-                    </span>
-
-                    <span className={styles.statusText}>{user.status}</span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+                </li>
+              );
+            })}
+          </ul>
         </section>
-
-        <Footer />
       </Container>
+
+      <Footer />
     </main>
   );
 }

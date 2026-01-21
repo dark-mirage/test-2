@@ -110,10 +110,26 @@ button {
 .tg-viewport {
   /* Stable height prevents content from sliding under Telegram header */
   min-height: var(--tg-viewport-stable-height, 100vh);
-  padding-top: max(var(--ios-safe-top), var(--tg-safe-area-top));
-  padding-bottom: max(var(--ios-safe-bottom), var(--tg-safe-area-bottom));
-  padding-left: max(var(--ios-safe-left), var(--tg-safe-area-left));
-  padding-right: max(var(--ios-safe-right), var(--tg-safe-area-right));
+  padding-top: max(
+    var(--ios-safe-top),
+    var(--tg-content-safe-area-top),
+    var(--tg-safe-area-top)
+  );
+  padding-bottom: max(
+    var(--ios-safe-bottom),
+    var(--tg-content-safe-area-bottom),
+    var(--tg-safe-area-bottom)
+  );
+  padding-left: max(
+    var(--ios-safe-left),
+    var(--tg-content-safe-area-left),
+    var(--tg-safe-area-left)
+  );
+  padding-right: max(
+    var(--ios-safe-right),
+    var(--tg-content-safe-area-right),
+    var(--tg-safe-area-right)
+  );
 }
 
 /* Background wrapper used across pages */
