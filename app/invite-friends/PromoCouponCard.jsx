@@ -56,7 +56,10 @@ export default function PromoCouponCard({
     const tg = window.Telegram?.WebApp;
     if (tg?.showPopup) {
       try {
-        tg.showPopup({ message: "Не удалось скопировать промокод. Попробуйте выделить и скопировать вручную." });
+        tg.showPopup({
+          message:
+            "Не удалось скопировать промокод. Попробуйте выделить и скопировать вручную.",
+        });
       } catch {
         // ignore
       }

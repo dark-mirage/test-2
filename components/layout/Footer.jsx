@@ -84,6 +84,7 @@ const tabs = [
 
 function getActiveTab(pathname) {
   if (pathname === "/") return "home";
+  if (pathname.startsWith("/search")) return "home";
   if (pathname.startsWith("/poizon")) return "poizon";
   if (pathname.startsWith("/catalog")) return "catalog";
   if (pathname.startsWith("/favorites")) return "heart";

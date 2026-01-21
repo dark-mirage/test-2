@@ -1,0 +1,163 @@
+.page {
+  background: var(--background);
+  min-height: var(--tg-viewport-stable-height, 100vh);
+  padding-bottom: calc(120px + var(--tg-safe-area-bottom, 0px));
+}
+
+.container {
+  padding-top: 10px;
+}
+
+.closeBtn {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(17, 17, 17, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.closeBtn:active {
+  transform: scale(0.98);
+  filter: brightness(0.98);
+}
+
+.title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0 15px;
+}
+
+.title span {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.topBarRight {
+  justify-self: end;
+}
+
+.searchWrap {
+  padding: 6px 0 14px;
+}
+
+.searchBar {
+  height: 40px;
+  border-radius: 14px;
+  background: #f4f3f1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+}
+
+.searchIcon {
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.searchInput {
+  flex: 1;
+  height: 40px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  color: #111111;
+}
+
+.searchInput::placeholder {
+  color: rgba(17, 17, 17, 0.55);
+  font-weight: 400;
+}
+
+.clearBtn {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(17, 17, 17, 0.7);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.clearBtn:active {
+  transform: scale(0.98);
+}
+
+.recent {
+  padding-top: 4px;
+}
+
+.recentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 10px;
+}
+
+.recentTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.trashBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 0;
+  background: transparent;
+  color: rgba(17, 17, 17, 0.35);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.trashBtn:active {
+  transform: scale(0.98);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+  color: rgba(17, 17, 17, 0.85);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.chip:active {
+  transform: scale(0.99);
+  filter: brightness(0.98);
+}
+
+.results {
+  min-height: 40vh;
+}
+
+.empty {
+  height: 50vh;
+}

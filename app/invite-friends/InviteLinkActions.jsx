@@ -67,7 +67,10 @@ export default function InviteLinkActions({ url }) {
     const tg = window.Telegram?.WebApp;
     if (tg?.showPopup) {
       try {
-        tg.showPopup({ message: "Не удалось скопировать. Зажмите ссылку и скопируйте вручную." });
+        tg.showPopup({
+          message:
+            "Не удалось скопировать. Зажмите ссылку и скопируйте вручную.",
+        });
       } catch {
         // ignore
       }

@@ -113,7 +113,7 @@ export default function Home() {
       style={{ minHeight: "var(--tg-viewport-height)" }}
     >
       <div className={styles.container}>
-        <SearchBar />
+        <SearchBar navigateOnFocusTo="/search" readOnly />
         <CategoryTabs />
         <FriendsSection />
 
