@@ -1,4 +1,5 @@
 .page {
+  background: #a8a8a8;
   padding-bottom: calc(120px + var(--tg-safe-area-bottom, 0px));
 }
 
