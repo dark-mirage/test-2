@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Button from "@/components/ui/Button";
 import styles from "./PromoInfoModal.module.css";
 
 /**
@@ -10,6 +9,8 @@ import styles from "./PromoInfoModal.module.css";
  */
 export default function PromoInfoModal({ open, onClose }) {
   const [visible, setVisible] = useState(open);
+  const titleId = useId();
+  const closeBtnRef = useRef(null);
 
   useEffect(() => {
     if (open) {
@@ -20,71 +21,104 @@ export default function PromoInfoModal({ open, onClose }) {
     return () => clearTimeout(timer);
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") onClose?.();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    closeBtnRef.current?.focus?.();
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open, onClose]);
+
   if (!visible) return null;
 
   return createPortal(
-    <div className={styles.root}>
-      {/* Затемнение */}
+    <div
+      className={styles.root}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+    >
       <div
         className={`${styles.backdrop} ${open ? styles.backdropOpen : styles.backdropClosed}`}
         onClick={onClose}
       />
 
-      {/* Листание снизу */}
       <div
         className={`${styles.sheetWrap} ${open ? styles.sheetOpen : styles.sheetClosed}`}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className={styles.sheet}>
-          {/* Граббер и закрытие */}
-          <div className={styles.grabber} />
-          <button
-            type="button"
-            aria-label="Закрыть"
-            onClick={onClose}
-            className={styles.closeBtn}
-          >
-            <span className={styles.closeIcon}>✕</span>
-          </button>
+          <div className={styles.grabber} aria-hidden="true" />
 
-          <h3 className={styles.title}>Баллы</h3>
+          <header className={styles.header}>
+            <h2 id={titleId} className={styles.title}>
+              Баллы
+            </h2>
 
-          <div className={styles.content}>
-            <section className={styles.section}>
-              <p className={styles.sectionHeader}>КАК ПОЛУЧИТЬ?</p>
-              <p className={styles.muted}>
+            <button
+              ref={closeBtnRef}
+              type="button"
+              aria-label="Закрыть"
+              onClick={onClose}
+              className={styles.closeBtn}
+            >
+              <span className={styles.closeIcon} aria-hidden="true">
+                ×
+              </span>
+            </button>
+          </header>
+
+          <div className={styles.body}>
+            <section className={styles.block}>
+              <h3 className={styles.blockTitle}>Как получить?</h3>
+              <p className={styles.text}>
                 За каждый завершённый заказ начисляется 200 баллов.
               </p>
             </section>
 
-            <section className={styles.section}>
-              <p className={styles.sectionHeader}>КАК ПОТРАТИТЬ?</p>
-              <p className={styles.muted}>
+            <section className={styles.block}>
+              <h3 className={styles.blockTitle}>Как потратить?</h3>
+              <p className={styles.text}>
                 Баллами можно оплачивать часть заказа: до 10% на стартовом
                 уровне, до 15% на продвинутом и до 20% на премиум.
               </p>
             </section>
 
-            <section className={styles.section}>
-              <p className={styles.sectionHeaderBig}>подарочные баллы</p>
-              <div className={styles.section}>
-                <p className={styles.sectionHeader}>КАК ПОЛУЧИТЬ?</p>
-                <p className={styles.muted}>
-                  Подарочные баллы начисляются при активации подарочной карты,
-                  полученной от другого пользователя.
-                </p>
-              </div>
-              <div className={styles.section}>
-                <p className={styles.sectionHeader}>КАК ПОТРАТИТЬ?</p>
-                <p className={styles.muted}>
-                  Подарочными баллами можно оплачивать до 100% стоимости заказа.
-                  При их наличии они списываются первыми, пока не израсходуются
-                  полностью.
-                </p>
-              </div>
+            <h3 className={styles.subTitle}>Подарочные баллы</h3>
+
+            <section className={styles.block}>
+              <h3 className={styles.blockTitle}>Как получить?</h3>
+              <p className={styles.text}>
+                Подарочные баллы начисляются при активации подарочной карты,
+                полученной от другого пользователя.
+              </p>
             </section>
-            <Button onClick={onClose} className={styles.button}>
-              Закрыть
-            </Button>
+
+            <section className={styles.block}>
+              <h3 className={styles.blockTitle}>Как потратить?</h3>
+              <p className={styles.text}>
+                Подарочными баллами можно оплачивать до 100% стоимости заказа.
+                При их наличии они всегда списываются первыми, пока не
+                израсходуются полностью.
+              </p>
+            </section>
+          </div>
+
+          <div className={styles.footer}>
+            <button type="button" onClick={onClose} className={styles.okButton}>
+              Понятно
+            </button>
           </div>
         </div>
       </div>
