@@ -84,6 +84,14 @@
   font-weight: 600;
 }
 
+.installment {
+  font-size: 11px;
+  line-height: 1.2;
+  margin-bottom: 6px;
+  color: rgba(17, 17, 17, 0.65);
+  font-weight: 600;
+}
+
 .name {
   font-size: 12px;
   font-weight: 400;
