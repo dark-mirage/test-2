@@ -64,9 +64,8 @@ export default function InviteFriends() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Header title="Зовите друзей" />
-
       <Container className={styles.container}>
+        <Header title="Зовите друзей" />
         <section className={styles.hero} aria-label="Invite friends">
           <div className={styles.illustration} aria-hidden="true">
             <div className={styles.bubbles}>
