@@ -5,6 +5,9 @@ import { createPortal } from "react-dom";
 
 import styles from "./BottomSheet.module.css";
 
+const ANIMATION_MS = 240;
+const UNMOUNT_DELAY_MS = ANIMATION_MS + 30;
+
 export default function BottomSheet({
   open,
   onClose,
@@ -13,22 +16,38 @@ export default function BottomSheet({
   footer,
   maxHeightOffset = 24,
 }) {
-  const [visible, setVisible] = useState(open);
+  const [mounted, setMounted] = useState(open);
+  const [active, setActive] = useState(open);
   const titleId = useId();
   const closeBtnRef = useRef(null);
 
   useEffect(() => {
+    let frame1 = 0;
+    let frame2 = 0;
+    let timer;
+
     if (open) {
-      const frame = requestAnimationFrame(() => setVisible(true));
-      return () => cancelAnimationFrame(frame);
+      // Mount first (closed), then flip to active next frame so CSS transition runs.
+      frame1 = requestAnimationFrame(() => {
+        setMounted(true);
+        setActive(false);
+        frame2 = requestAnimationFrame(() => setActive(true));
+      });
+    } else {
+      // Start exit animation, then unmount after transition.
+      frame1 = requestAnimationFrame(() => setActive(false));
+      timer = setTimeout(() => setMounted(false), UNMOUNT_DELAY_MS);
     }
 
-    const timer = setTimeout(() => setVisible(false), 250);
-    return () => clearTimeout(timer);
+    return () => {
+      if (frame1) cancelAnimationFrame(frame1);
+      if (frame2) cancelAnimationFrame(frame2);
+      if (timer) clearTimeout(timer);
+    };
   }, [open]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!mounted) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -38,15 +57,15 @@ export default function BottomSheet({
     };
 
     window.addEventListener("keydown", onKeyDown);
-    closeBtnRef.current?.focus?.();
+    if (open) closeBtnRef.current?.focus?.();
 
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, onClose]);
+  }, [mounted, onClose, open]);
 
-  if (!visible) return null;
+  if (!mounted) return null;
 
   const sheet = (
     <div
@@ -56,12 +75,12 @@ export default function BottomSheet({
       aria-labelledby={title ? titleId : undefined}
     >
       <div
-        className={`${styles.backdrop} ${open ? styles.backdropOpen : styles.backdropClosed}`}
+        className={`${styles.backdrop} ${active ? styles.backdropOpen : styles.backdropClosed}`}
         onClick={onClose}
       />
 
       <div
-        className={`${styles.sheetWrap} ${open ? styles.sheetOpen : styles.sheetClosed}`}
+        className={`${styles.sheetWrap} ${active ? styles.sheetOpen : styles.sheetClosed}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div

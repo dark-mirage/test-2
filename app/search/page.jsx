@@ -8,6 +8,7 @@ import Container from "@/components/layout/Layout";
 import ProductSection from "@/components/blocks/product/ProductSection";
 import SearchBar from "@/components/blocks/search/SearchBar";
 import SelectSheet from "@/components/blocks/search/SelectSheet";
+import PriceSheet from "@/components/blocks/search/PriceSheet";
 import { cn } from "@/lib/format/cn";
 
 import styles from "./page.module.css";
@@ -28,7 +29,7 @@ export default function SearchPage() {
   const [category, setCategory] = useState(null);
   const [types, setTypes] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [priceRange, setPriceRange] = useState(null);
+  const [priceRange, setPriceRange] = useState({ min: null, max: null });
 
   const [products, setProducts] = useState(() => [
     {
@@ -243,21 +244,29 @@ export default function SearchPage() {
     return values.map((v) => ({ value: v, label: v }));
   }, [products]);
 
-  const priceOptions = useMemo(
-    () => [
-      { value: null, label: "Любая" },
-      { value: "0-2000", label: "До 2 000 ₽" },
-      { value: "2000-5000", label: "2 000 – 5 000 ₽" },
-      { value: "5000-10000", label: "5 000 – 10 000 ₽" },
-      { value: "10000+", label: "От 10 000 ₽" },
-    ],
-    [],
-  );
+  const priceBounds = useMemo(() => {
+    let min = null;
+    let max = null;
+    for (const p of products) {
+      const price = priceToNumber(p.price);
+      if (!price) continue;
+      if (min == null || price < min) min = price;
+      if (max == null || price > max) max = price;
+    }
+    return { min, max };
+  }, [products]);
+
+  const formatNum = (n) => (n == null ? "" : Number(n).toLocaleString("ru-RU"));
 
   const priceLabel = useMemo(() => {
-    const opt = priceOptions.find((x) => x.value === priceRange);
-    return opt?.label || "Цена";
-  }, [priceOptions, priceRange]);
+    const min = priceRange?.min ?? null;
+    const max = priceRange?.max ?? null;
+    if (min == null && max == null) return "Цена";
+    if (min != null && max != null)
+      return `${formatNum(min)}–${formatNum(max)} ₽`;
+    if (min != null) return `От ${formatNum(min)} ₽`;
+    return `До ${formatNum(max)} ₽`;
+  }, [priceRange?.max, priceRange?.min]);
 
   const brandChipLabel = useMemo(() => {
     if (!brands?.length) return "Бренд";
@@ -332,14 +341,12 @@ export default function SearchPage() {
       if (types?.length && !types.includes(p.type)) return false;
       if (brands?.length && !brands.includes(p.brand)) return false;
 
-      if (priceRange) {
+      const min = priceRange?.min ?? null;
+      const max = priceRange?.max ?? null;
+      if (min != null || max != null) {
         const price = priceToNumber(p.price);
-        if (priceRange === "0-2000" && price > 2000) return false;
-        if (priceRange === "2000-5000" && (price < 2000 || price > 5000))
-          return false;
-        if (priceRange === "5000-10000" && (price < 5000 || price > 10000))
-          return false;
-        if (priceRange === "10000+" && price < 10000) return false;
+        if (min != null && price < min) return false;
+        if (max != null && price > max) return false;
       }
 
       return true;
@@ -358,7 +365,16 @@ export default function SearchPage() {
     }
 
     return filtered;
-  }, [brands, category, priceRange, products, query, sort, types]);
+  }, [
+    brands,
+    category,
+    priceRange?.max,
+    priceRange?.min,
+    products,
+    query,
+    sort,
+    types,
+  ]);
 
   return (
     <main className={cn("tg-viewport", styles.page)}>
@@ -518,7 +534,9 @@ export default function SearchPage() {
                       type="button"
                       className={cn(
                         styles.filterChip,
-                        priceRange ? styles.filterChipActive : null,
+                        priceRange?.min != null || priceRange?.max != null
+                          ? styles.filterChipActive
+                          : null,
                       )}
                       onClick={() => setPriceOpen(true)}
                     >
@@ -603,12 +621,13 @@ export default function SearchPage() {
           onApply={(v) => setBrands(Array.isArray(v) ? v : [])}
         />
 
-        <SelectSheet
+        <PriceSheet
           open={priceOpen}
           onClose={() => setPriceOpen(false)}
           title="Цена"
-          options={priceOptions}
           value={priceRange}
+          minPlaceholder={priceBounds.min}
+          maxPlaceholder={priceBounds.max}
           onApply={(v) => setPriceRange(v)}
         />
       </Container>
