@@ -6,7 +6,7 @@ import BottomSheet from "@/components/ui/BottomSheet";
 
 import styles from "./PriceSheet.module.css";
 
-const MAX_DIGITS = 9;
+const MAX_DIGITS = 6;
 
 function toDigits(value) {
   const digits = String(value || "").replace(/[^0-9]/g, "");
@@ -28,6 +28,38 @@ function formatNumberFromDigits(digits) {
   const n = Number(digits);
   if (!digits || !Number.isFinite(n)) return "";
   return formatNumber(n);
+}
+
+function buildCurrencyValue(digits) {
+  if (!digits) return "";
+  return `${formatNumberFromDigits(digits)} ₽`;
+}
+
+function countDigitsBeforeCaret(text, caretPos) {
+  return text.slice(0, caretPos).replace(/\D/g, "").length;
+}
+
+/**
+ * digitsBeforeCaret => formatlangan string ichida caret qayerda turishi kerakligini topadi
+ * suffix ham hisobga olinadi (₽).
+ */
+function findCaretPosByDigitIndex(formattedText, digitsBeforeCaret) {
+  let pos = 0;
+  let seenDigits = 0;
+
+  while (pos < formattedText.length && seenDigits < digitsBeforeCaret) {
+    if (/\d/.test(formattedText[pos])) seenDigits++;
+    pos++;
+  }
+
+  // Agar suffix bor bo‘lsa, caret suffix ichiga kirib ketmasin
+  // Masalan: "12 000 ₽" -> caret "₽"dan oldin to‘xtasin
+  const rubIndex = formattedText.indexOf("₽");
+  if (rubIndex !== -1 && pos > rubIndex - 1) {
+    pos = rubIndex - 1;
+  }
+
+  return pos;
 }
 
 export default function PriceSheet({
@@ -74,21 +106,23 @@ function PriceSheetInner({
 }) {
   const [minDigits, setMinDigits] = useState(initial.minDigits);
   const [maxDigits, setMaxDigits] = useState(initial.maxDigits);
-  const [minFocused, setMinFocused] = useState(false);
-  const [maxFocused, setMaxFocused] = useState(false);
+
   const prevOpenRef = useRef(open);
+
+  const minRef = useRef(null);
+  const maxRef = useRef(null);
 
   useEffect(() => {
     const wasOpen = prevOpenRef.current;
     let frame = 0;
+
     if (open && !wasOpen) {
       frame = requestAnimationFrame(() => {
         setMinDigits(initial.minDigits);
         setMaxDigits(initial.maxDigits);
-        setMinFocused(false);
-        setMaxFocused(false);
       });
     }
+
     prevOpenRef.current = open;
     return () => {
       if (frame) cancelAnimationFrame(frame);
@@ -135,6 +169,62 @@ function PriceSheetInner({
     return p;
   }, [maxPlaceholder]);
 
+  const handleMinChange = (e) => {
+    const input = e.target;
+    const raw = input.value;
+
+    const caretPos = input.selectionStart ?? raw.length;
+    const digitsBeforeCaret = countDigitsBeforeCaret(raw, caretPos);
+
+    const nextDigits = toDigits(raw);
+    setMinDigits(nextDigits);
+
+    requestAnimationFrame(() => {
+      const el = minRef.current;
+      if (!el) return;
+
+      const nextFormatted = buildCurrencyValue(nextDigits);
+      const nextCaretPos = findCaretPosByDigitIndex(
+        nextFormatted,
+        digitsBeforeCaret,
+      );
+
+      try {
+        el.setSelectionRange(nextCaretPos, nextCaretPos);
+      } catch {
+        // ba’zi mobil browserlarda setSelectionRange fail bo‘lishi mumkin
+      }
+    });
+  };
+
+  const handleMaxChange = (e) => {
+    const input = e.target;
+    const raw = input.value;
+
+    const caretPos = input.selectionStart ?? raw.length;
+    const digitsBeforeCaret = countDigitsBeforeCaret(raw, caretPos);
+
+    const nextDigits = toDigits(raw);
+    setMaxDigits(nextDigits);
+
+    requestAnimationFrame(() => {
+      const el = maxRef.current;
+      if (!el) return;
+
+      const nextFormatted = buildCurrencyValue(nextDigits);
+      const nextCaretPos = findCaretPosByDigitIndex(
+        nextFormatted,
+        digitsBeforeCaret,
+      );
+
+      try {
+        el.setSelectionRange(nextCaretPos, nextCaretPos);
+      } catch {
+        // ignore
+      }
+    });
+  };
+
   return (
     <BottomSheet
       open={open}
@@ -167,66 +257,58 @@ function PriceSheetInner({
     >
       <div className={styles.wrap}>
         <div className={styles.row}>
+          {/* MIN */}
           <div className={styles.field}>
             <div className={styles.fieldLabel}>{minLabel}</div>
             <div className={styles.fieldRow}>
               <input
+                ref={minRef}
                 className={styles.input}
-                value={
-                  minFocused ? minDigits : formatNumberFromDigits(minDigits)
-                }
-                onChange={(e) => setMinDigits(toDigits(e.target.value))}
-                onFocus={() => setMinFocused(true)}
-                onBlur={() => setMinFocused(false)}
+                value={buildCurrencyValue(minDigits)}
+                onChange={handleMinChange}
                 inputMode="numeric"
                 enterKeyHint="done"
                 aria-label={minLabel}
               />
-              <span className={styles.ruble} aria-hidden="true">
-                ₽
-              </span>
-              {minDigits ? (
-                <button
-                  type="button"
-                  className={styles.clearBtn}
-                  aria-label="Очистить"
-                  onClick={() => setMinDigits("")}
-                >
-                  ×
-                </button>
-              ) : null}
             </div>
+
+            {minDigits ? (
+              <button
+                type="button"
+                className={styles.clearBtn}
+                aria-label="Очистить"
+                onClick={() => setMinDigits("")}
+              >
+                ×
+              </button>
+            ) : null}
           </div>
 
+          {/* MAX */}
           <div className={styles.field}>
             <div className={styles.fieldLabel}>{maxLabel}</div>
             <div className={styles.fieldRow}>
               <input
+                ref={maxRef}
                 className={styles.input}
-                value={
-                  maxFocused ? maxDigits : formatNumberFromDigits(maxDigits)
-                }
-                onChange={(e) => setMaxDigits(toDigits(e.target.value))}
-                onFocus={() => setMaxFocused(true)}
-                onBlur={() => setMaxFocused(false)}
+                value={buildCurrencyValue(maxDigits)}
+                onChange={handleMaxChange}
                 inputMode="numeric"
                 enterKeyHint="done"
                 aria-label={maxLabel}
               />
-              <span className={styles.ruble} aria-hidden="true">
-                ₽
-              </span>
-              {maxDigits ? (
-                <button
-                  type="button"
-                  className={styles.clearBtn}
-                  aria-label="Очистить"
-                  onClick={() => setMaxDigits("")}
-                >
-                  ×
-                </button>
-              ) : null}
             </div>
+
+            {maxDigits ? (
+              <button
+                type="button"
+                className={styles.clearBtn}
+                aria-label="Очистить"
+                onClick={() => setMaxDigits("")}
+              >
+                ×
+              </button>
+            ) : null}
           </div>
         </div>
       </div>

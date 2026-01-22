@@ -9,13 +9,16 @@
 }
 
 .field {
-  border-radius: 16px;
-  background: #f4f3f1;
-  padding: 10px 12px;
-  min-height: 56px;
+  position: relative;
+  border-radius: 18px;
+  background: #ffffff;
+  padding: 10px 12px 12px;
+  min-height: 62px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
 }
 
 .fieldLabel {
@@ -37,10 +40,11 @@
   border: 0;
   outline: none;
   background: transparent;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   color: rgba(17, 17, 17, 0.92);
   padding: 0;
+  padding-right: 26px;
 }
 
 .ruble {
@@ -52,13 +56,19 @@
 }
 
 .clearBtn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
   border: 0;
-  background: none;
-  color: #00000066;
+  background: transparent;
+  color: rgba(17, 17, 17, 0.55);
   display: grid;
   place-items: center;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
 }
 
 .clearBtn:active {

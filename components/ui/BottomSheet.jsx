@@ -86,7 +86,7 @@ export default function BottomSheet({
         <div
           className={styles.sheet}
           style={{
-            maxHeight: `calc(var(--tg-viewport-stable-height, 100vh) - ${maxHeightOffset}px)`,
+            maxHeight: `min(85vh, calc(var(--tg-viewport-stable-height, 100vh) - ${maxHeightOffset}px))`,
           }}
         >
           <div className={styles.grabber} aria-hidden="true" />
