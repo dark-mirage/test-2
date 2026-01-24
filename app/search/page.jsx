@@ -9,6 +9,7 @@ import ProductSection from "@/components/blocks/product/ProductSection";
 import SearchBar from "@/components/blocks/search/SearchBar";
 import SelectSheet from "@/components/blocks/search/SelectSheet";
 import PriceSheet from "@/components/blocks/search/PriceSheet";
+import FiltersSheet from "@/components/blocks/search/FiltersSheet";
 import { cn } from "@/lib/format/cn";
 
 import styles from "./page.module.css";
@@ -20,16 +21,25 @@ export default function SearchPage() {
   const blurCloseTimerRef = useRef(null);
 
   const [sortOpen, setSortOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [typeOpen, setTypeOpen] = useState(false);
   const [brandOpen, setBrandOpen] = useState(false);
   const [priceOpen, setPriceOpen] = useState(false);
+
+  const reopenFiltersAfterPickerRef = useRef(false);
 
   const [sort, setSort] = useState("popular");
   const [category, setCategory] = useState(null);
   const [types, setTypes] = useState([]);
   const [brands, setBrands] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: null, max: null });
+
+  const [delivery, setDelivery] = useState({
+    inStock: false,
+    fromChina: false,
+  });
+  const [original, setOriginal] = useState(false);
 
   const [products, setProducts] = useState(() => [
     {
@@ -376,6 +386,30 @@ export default function SearchPage() {
     types,
   ]);
 
+  const closeTypeSheet = () => {
+    setTypeOpen(false);
+    if (reopenFiltersAfterPickerRef.current) {
+      reopenFiltersAfterPickerRef.current = false;
+      setFiltersOpen(true);
+    }
+  };
+
+  const closeBrandSheet = () => {
+    setBrandOpen(false);
+    if (reopenFiltersAfterPickerRef.current) {
+      reopenFiltersAfterPickerRef.current = false;
+      setFiltersOpen(true);
+    }
+  };
+
+  const filterCategories = useMemo(() => {
+    const set = new Set(["Одежда", "Обувь", "Аксессуары"]);
+    for (const opt of categoryOptions) {
+      if (opt?.value) set.add(opt.value);
+    }
+    return Array.from(set).slice(0, 3);
+  }, [categoryOptions]);
+
   return (
     <main className={cn("tg-viewport", styles.page)}>
       <Container className={styles.container}>
@@ -486,7 +520,7 @@ export default function SearchPage() {
                       type="button"
                       className={styles.iconChip}
                       aria-label="Фильтры"
-                      onClick={() => setCategoryOpen(true)}
+                      onClick={() => setFiltersOpen(true)}
                     >
                       <SlidersHorizontal size={18} aria-hidden="true" />
                     </button>
@@ -598,7 +632,7 @@ export default function SearchPage() {
 
         <SelectSheet
           open={typeOpen}
-          onClose={() => setTypeOpen(false)}
+          onClose={closeTypeSheet}
           title="Тип"
           options={typeOptions}
           multiple
@@ -610,7 +644,7 @@ export default function SearchPage() {
 
         <SelectSheet
           open={brandOpen}
-          onClose={() => setBrandOpen(false)}
+          onClose={closeBrandSheet}
           title="Бренд"
           options={brandOptions}
           multiple
@@ -629,6 +663,39 @@ export default function SearchPage() {
           minPlaceholder={priceBounds.min}
           maxPlaceholder={priceBounds.max}
           onApply={(v) => setPriceRange(v)}
+        />
+
+        <FiltersSheet
+          open={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
+          categories={filterCategories}
+          value={{
+            category,
+            types,
+            brands,
+            priceRange,
+            delivery,
+            original,
+          }}
+          priceBounds={priceBounds}
+          onApply={(next) => {
+            setCategory(next.category ?? null);
+            setTypes(Array.isArray(next.types) ? next.types : []);
+            setBrands(Array.isArray(next.brands) ? next.brands : []);
+            setPriceRange(next.priceRange ?? { min: null, max: null });
+            setDelivery(next.delivery ?? { inStock: false, fromChina: false });
+            setOriginal(Boolean(next.original));
+          }}
+          onOpenTypePicker={() => {
+            reopenFiltersAfterPickerRef.current = true;
+            setFiltersOpen(false);
+            setTypeOpen(true);
+          }}
+          onOpenBrandPicker={() => {
+            reopenFiltersAfterPickerRef.current = true;
+            setFiltersOpen(false);
+            setBrandOpen(true);
+          }}
         />
       </Container>
     </main>

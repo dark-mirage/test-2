@@ -12,9 +12,12 @@ export default function BottomSheet({
   open,
   onClose,
   title,
+  ariaLabel,
+  header,
   children,
   footer,
   maxHeightOffset = 24,
+  initialFocusRef,
 }) {
   const [mounted, setMounted] = useState(open);
   const [active, setActive] = useState(false);
@@ -57,13 +60,16 @@ export default function BottomSheet({
     };
 
     window.addEventListener("keydown", onKeyDown);
-    if (open) closeBtnRef.current?.focus?.();
+    if (open) {
+      const el = initialFocusRef?.current || closeBtnRef.current;
+      el?.focus?.();
+    }
 
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [mounted, onClose, open]);
+  }, [initialFocusRef, mounted, onClose, open]);
 
   if (!mounted) return null;
 
@@ -72,7 +78,8 @@ export default function BottomSheet({
       className={styles.root}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={title ? titleId : undefined}
+      aria-labelledby={title && !ariaLabel ? titleId : undefined}
+      aria-label={!title && ariaLabel ? ariaLabel : undefined}
     >
       <div
         className={`${styles.backdrop} ${active ? styles.backdropOpen : styles.backdropClosed}`}
@@ -91,27 +98,31 @@ export default function BottomSheet({
         >
           <div className={styles.grabber} aria-hidden="true" />
 
-          <header className={styles.header}>
-            {title ? (
-              <h2 id={titleId} className={styles.title}>
-                {title}
-              </h2>
-            ) : (
-              <div />
-            )}
+          {header ? (
+            header
+          ) : (
+            <header className={styles.header}>
+              {title ? (
+                <h2 id={titleId} className={styles.title}>
+                  {title}
+                </h2>
+              ) : (
+                <div />
+              )}
 
-            <button
-              ref={closeBtnRef}
-              type="button"
-              aria-label="Закрыть"
-              onClick={onClose}
-              className={styles.closeBtn}
-            >
-              <span className={styles.closeIcon} aria-hidden="true">
-                ×
-              </span>
-            </button>
-          </header>
+              <button
+                ref={closeBtnRef}
+                type="button"
+                aria-label="Закрыть"
+                onClick={onClose}
+                className={styles.closeBtn}
+              >
+                <span className={styles.closeIcon} aria-hidden="true">
+                  ×
+                </span>
+              </button>
+            </header>
+          )}
 
           <div className={styles.body}>{children}</div>
 

@@ -1,0 +1,384 @@
+.header {
+  padding: 18px 16px 8px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.closePill {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(17, 17, 17, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.closePill:active {
+  transform: scale(0.98);
+  filter: brightness(0.98);
+}
+
+.title {
+  justify-self: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(17, 17, 17, 0.95);
+}
+
+.headerRight {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 0;
+  background: #f4f3f1;
+  color: rgba(17, 17, 17, 0.75);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.iconBtn:active {
+  transform: scale(0.98);
+  filter: brightness(0.98);
+}
+
+.body {
+  padding: 0 16px 6px;
+}
+
+.selectedChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0 14px;
+}
+
+.selectedChip {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 0;
+  background: #2d2d2d;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  max-width: 100%;
+}
+
+.selectedChipLabel,
+.segmentLabel {
+  vertical-align: middle;
+  padding-bottom: 3px;
+}
+
+.selectedChipX {
+  font-size: 16px;
+  line-height: 1;
+  vertical-align: middle;
+  opacity: 0.8;
+}
+
+.section {
+  padding: 8px 0 12px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111111;
+  margin-bottom: 10px;
+}
+
+.segmented {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.segment,
+.segmentActive {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 0;
+  background: #f4f3f1;
+  color: rgba(17, 17, 17, 0.85);
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.segmentActive {
+  background: #2d2d2d;
+  color: #ffffff;
+}
+
+.segmentX {
+  opacity: 0.9;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.field {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 18px;
+  border: 0;
+  background: #f4f3f1;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.field:active {
+  transform: scale(0.99);
+}
+
+.fieldValue {
+  color: #7e7e7e;
+  font-size: 16px;
+  font-weight: 400;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fieldClear {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: rgba(17, 17, 17, 0.5);
+}
+
+.priceWrap {
+  padding: 0px 0 0;
+}
+
+.priceRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.priceField {
+  position: relative;
+  border-radius: 18px;
+  background: #ffffff;
+  padding: 10px 12px 12px;
+  min-height: 62px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+  background: #f4f3f1;
+}
+
+.priceLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(17, 17, 17, 0.45);
+  margin-bottom: 2px;
+}
+
+.priceFieldRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.priceInput {
+  width: 100%;
+  flex: 1 1 auto;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.92);
+  padding: 0;
+  padding-right: 26px;
+}
+
+.priceClearBtn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: 0;
+  background: transparent;
+  color: rgba(17, 17, 17, 0.55);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+}
+
+.priceClearBtn:active {
+  transform: scale(0.98);
+  filter: brightness(0.98);
+}
+
+.chipRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.toggleChip,
+.toggleChipActive {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 0;
+  background: #f4f3f1;
+  color: rgba(17, 17, 17, 0.85);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.toggleChipActive {
+  background: #2d2d2d;
+  color: #ffffff;
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 0 0;
+}
+
+.switchLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.switchTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.95);
+}
+
+.infoIcon {
+  color: rgba(17, 17, 17, 0.35);
+}
+
+.switch {
+  position: relative;
+  width: 46px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.switch input {
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  position: absolute;
+}
+
+.switchTrack {
+  width: 46px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.14);
+  position: relative;
+  transition: background 180ms ease;
+}
+
+.switchTrack::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  transition: transform 180ms ease;
+}
+
+.switch input:checked + .switchTrack {
+  background: #2d2d2d;
+}
+
+.switch input:checked + .switchTrack::after {
+  transform: translateX(18px);
+}
+
+.footerRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.cancelBtn {
+  height: 52px;
+  border-radius: 16px;
+  border: 0;
+  background: #f4f3f1;
+  color: rgba(17, 17, 17, 0.85);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.applyBtn {
+  height: 52px;
+  border-radius: 16px;
+  border: 0;
+  background: #2d2d2d;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.cancelBtn:active,
+.applyBtn:active {
+  transform: scale(0.99);
+}
