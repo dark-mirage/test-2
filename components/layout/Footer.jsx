@@ -96,6 +96,35 @@ function getActiveTab(pathname) {
 export default function Footer() {
   const pathname = usePathname();
   const [cartCount, setCartCount] = useState(0);
+  const rootRef = React.useRef(null);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+
+    const applyHeightVar = () => {
+      const h = el.offsetHeight || 0;
+      document.documentElement.style.setProperty(
+        "--lm-footer-height",
+        `${h}px`,
+      );
+    };
+
+    applyHeightVar();
+
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(() => applyHeightVar());
+      ro.observe(el);
+      window.addEventListener("resize", applyHeightVar);
+      return () => {
+        ro.disconnect();
+        window.removeEventListener("resize", applyHeightVar);
+      };
+    }
+
+    window.addEventListener("resize", applyHeightVar);
+    return () => window.removeEventListener("resize", applyHeightVar);
+  }, []);
 
   useEffect(() => {
     const refresh = () => setCartCount(getCartTotalQuantityFromStorage());
@@ -116,7 +145,7 @@ export default function Footer() {
   const badgeText = cartCount > 99 ? "99+" : String(cartCount);
 
   return (
-    <nav className={styles.root} aria-label="Bottom navigation">
+    <nav ref={rootRef} className={styles.root} aria-label="Bottom navigation">
       <div className={styles.inner}>
         {tabs.map((tab) => {
           const isActive = tab.key === activeTab;

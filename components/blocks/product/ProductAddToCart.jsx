@@ -1,78 +1,66 @@
-'use client'
-import React, { useState } from 'react'
-import styles from './ProductAddToCart.module.css';
-import cx from 'clsx';
+"use client";
+import React from "react";
+import styles from "./ProductAddToCart.module.css";
+import cx from "clsx";
 
 export default function ProductAddToCart({
   onAddToCart,
   onBuyNow,
   quantity = 1,
-  onQuantityChange
+  onQuantityChange,
 }) {
-  const [currentQuantity, setCurrentQuantity] = useState(quantity)
+  // Keep API stable; default quantity is 1 for now.
+  React.useEffect(() => {
+    onQuantityChange?.(quantity);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleDecrease = () => {
-    if (currentQuantity > 1) {
-      const newQuantity = currentQuantity - 1
-      setCurrentQuantity(newQuantity)
-      onQuantityChange?.(newQuantity)
-    }
-  }
+  const dec = () => {
+    if (!onQuantityChange) return;
+    onQuantityChange(Math.max(1, Number(quantity || 1) - 1));
+  };
 
-  const handleIncrease = () => {
-    const newQuantity = currentQuantity + 1
-    setCurrentQuantity(newQuantity)
-    onQuantityChange?.(newQuantity)
-  }
+  const inc = () => {
+    if (!onQuantityChange) return;
+    onQuantityChange(Number(quantity || 1) + 1);
+  };
 
   return (
     <div className={cx(styles.c1, styles.tw1)}>
-      <div className={cx(styles.c2, styles.tw2)}>
-        {/* Счетчик количества */}
-        <div className={styles.c3}>
-          <button
-            onClick={handleDecrease}
-            disabled={currentQuantity <= 1}
-            className={styles.c4}
-            style={{ fontFamily: 'Inter' }}
-          >
-            −
-          </button>
-          <span className={styles.c5} style={{ fontFamily: 'Inter' }}>
-            {currentQuantity}
-          </span>
-          <button
-            onClick={handleIncrease}
-            className={styles.c6}
-            style={{ fontFamily: 'Inter' }}
-          >
-            +
-          </button>
-        </div>
-
-        {/* Кнопка добавления в корзину */}
+      <div className={styles.row}>
         <button
-          onClick={onAddToCart}
-          className={styles.c7}
+          onClick={onBuyNow ?? onAddToCart}
+          className={styles.primary}
+          type="button"
         >
-          <span className={styles.c8} style={{ fontFamily: 'Inter' }}>
-            В корзину
-          </span>
+          {onBuyNow ? "Купить сейчас" : "В корзину"}
         </button>
 
-        {/* Кнопка купить сейчас */}
-        {onBuyNow && (
-          <button
-            onClick={onBuyNow}
-            className={styles.c9}
-          >
-            <span className={styles.c10} style={{ fontFamily: 'Inter' }}>
-              Купить сейчас
+        {onQuantityChange ? (
+          <div className={styles.stepper} role="group" aria-label="Количество">
+            <button
+              type="button"
+              className={styles.stepBtn}
+              onClick={dec}
+              disabled={Number(quantity || 1) <= 1}
+              aria-label="Уменьшить количество"
+            >
+              −
+            </button>
+            <span className={styles.qty} aria-live="polite">
+              {Number(quantity || 1)}
             </span>
-          </button>
-        )}
+            <button
+              type="button"
+              className={styles.stepBtn}
+              onClick={inc}
+              aria-label="Увеличить количество"
+            >
+              +
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
-  )
+  );
 }
-

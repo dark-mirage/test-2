@@ -1,201 +1,222 @@
-'use client'
-import React, { useMemo } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import styles from './ProductReviews.module.css';
-import cx from 'clsx';
+"use client";
+import React, { useMemo } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import styles from "./ProductReviews.module.css";
+import cx from "clsx";
 
 export default function ProductReviews({
   brandName,
-  reviews,
-  ratingDistribution,
-  onViewAll
+  reviews = [],
+  ratingDistribution = {},
+  productImages = [],
+  onViewAll,
 }) {
   // Расчет общего рейтинга и количества отзывов
   const { averageRating, totalReviews } = useMemo(() => {
-    const { 5: r5 = 0, 4: r4 = 0, 3: r3 = 0, 2: r2 = 0, 1: r1 = 0 } = ratingDistribution
-    const total = r5 + r4 + r3 + r2 + r1
-    const sum = r5 * 5 + r4 * 4 + r3 * 3 + r2 * 2 + r1 * 1
-    const average = total > 0 ? sum / total : 0
+    const {
+      5: r5 = 0,
+      4: r4 = 0,
+      3: r3 = 0,
+      2: r2 = 0,
+      1: r1 = 0,
+    } = ratingDistribution;
+    const total = r5 + r4 + r3 + r2 + r1;
+    const sum = r5 * 5 + r4 * 4 + r3 * 3 + r2 * 2 + r1 * 1;
+    const average = total > 0 ? sum / total : 0;
     return {
       averageRating: Math.round(average * 10) / 10,
-      totalReviews: total
-    }
-  }, [ratingDistribution])
+      totalReviews: total,
+    };
+  }, [ratingDistribution]);
 
   // Рендер звезд
-  const renderStars = (rating) => {
+  const renderStars = (rating, size = 12) => {
     return (
-      <div className={cx(styles.c1, styles.tw1)}>
+      <div className={styles.stars} aria-label={`Рейтинг ${rating} из 5`}>
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={cx(styles.c2, styles.tw2)}
+            className={styles.star}
             viewBox="0 0 14 14"
-            fill={star <= rating ? '#2D2D2D' : 'none'}
+            fill={star <= rating ? "#2D2D2D" : "none"}
             stroke="#2D2D2D"
             strokeWidth={star <= rating ? 0 : 1}
+            style={{ width: size, height: size }}
           >
             <path d="M7 0L8.5 5H14L9.5 8L11 13L7 10L3 13L4.5 8L0 5H5.5L7 0Z" />
           </svg>
         ))}
       </div>
-    )
-  }
+    );
+  };
 
   // Рендер гистограммы рейтинга (вертикальная стопка горизонтальных баров)
   const renderRatingBars = () => {
-    const { 5: r5 = 0, 4: r4 = 0, 3: r3 = 0, 2: r2 = 0, 1: r1 = 0 } = ratingDistribution
-    const maxCount = Math.max(r5, r4, r3, r2, r1)
-    
+    const {
+      5: r5 = 0,
+      4: r4 = 0,
+      3: r3 = 0,
+      2: r2 = 0,
+      1: r1 = 0,
+    } = ratingDistribution;
+    const maxCount = Math.max(r5, r4, r3, r2, r1);
+
     const bars = [
       { stars: 5, count: r5 },
       { stars: 4, count: r4 },
       { stars: 3, count: r3 },
       { stars: 2, count: r2 },
       { stars: 1, count: r1 },
-    ]
+    ];
 
     return (
-      <div className={cx(styles.c3, styles.tw3)} style={{ width: '45px', height: '48.61px' }}>
-        {bars.map((bar, index) => {
-          const width = maxCount > 0 ? (bar.count / maxCount) * 100 : 0
-          
+      <div className={styles.bars} aria-label="Распределение рейтингов">
+        {bars.map((bar) => {
+          const width = maxCount > 0 ? (bar.count / maxCount) * 100 : 0;
+
           return (
-            <div key={index} className={styles.c4} style={{ height: '8.61px', width: '100%' }}>
-              {/* Полоса заполнения */}
-              <div
-                className={cx(styles.c5, styles.tw4)}
-                style={{
-                  width: `${width}%`,
-                  height: '100%',
-                  backgroundColor: '#2D2D2D',
-                  zIndex: 1,
-                }}
-              />
-              {/* Фон полосы (серый) */}
-              <div
-                className={cx(styles.c6, styles.tw5)}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  backgroundColor: '#E5E5E5',
-                  zIndex: 0,
-                }}
-              />
+            <div key={bar.stars} className={styles.barRow}>
+              <div className={styles.barStars} aria-hidden="true">
+                {renderStars(bar.stars, 10)}
+              </div>
+              <div className={styles.barTrack} aria-hidden="true">
+                <div
+                  className={styles.barFill}
+                  style={{ width: `${width}%` }}
+                />
+              </div>
             </div>
-          )
+          );
         })}
       </div>
-    )
-  }
+    );
+  };
+
+  const reviewsHref = brandName
+    ? `/reviews/${String(brandName).toLowerCase()}`
+    : "/reviews";
+  const previewImages = Array.isArray(productImages)
+    ? productImages.slice(0, 2)
+    : [];
 
   return (
-    <div className={styles.c7}>
-      <div className={styles.c8}>
-        {/* Заголовок */}
-        <div className={styles.c9}>
-          <h2 className={styles.c10} style={{ fontFamily: 'Inter' }}>
-            Отзывы на {brandName}
-          </h2>
-          <Link href={`/reviews/${brandName.toLowerCase()}`} onClick={onViewAll}>
-            <Image
-              src="/icons/global/Wrap.svg"
-              alt="Все отзывы"
-              width={5.29}
-              height={9.25}
-              className={cx(styles.c11, styles.tw6)}
-            />
+    <section className={styles.outer}>
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Отзывы на {brandName}</h2>
+          <Link
+            href={reviewsHref}
+            onClick={onViewAll}
+            className={styles.chevron}
+            aria-label="Все отзывы"
+          >
+            <Image src="/icons/global/Wrap.svg" alt="" width={7} height={11} />
           </Link>
         </div>
 
-        {/* Общий рейтинг и гистограмма */}
-        <div className={cx(styles.c12, styles.tw7)}>
-          {/* Левый блок - Рейтинг */}
-          <div className={styles.c13}>
-            <div className={cx(styles.c14, styles.tw8)}>
-              <span className={styles.c15} style={{ fontFamily: 'Inter' }}>
-                {averageRating}
-              </span>
+        <div className={styles.summary}>
+          <div className={styles.ratingBlock}>
+            <div className={styles.ratingRow}>
+              <span className={styles.ratingValue}>{averageRating}</span>
               <svg
-                className={cx(styles.c16, styles.tw9)}
+                className={styles.ratingStar}
                 viewBox="0 0 14 14"
                 fill="#2D2D2D"
+                aria-hidden="true"
               >
                 <path d="M7 0L8.5 5H14L9.5 8L11 13L7 10L3 13L4.5 8L0 5H5.5L7 0Z" />
               </svg>
             </div>
-            <span className={styles.c17} style={{ fontFamily: 'Inter' }}>
-              {totalReviews} {totalReviews === 1 ? 'отзыв' : totalReviews < 5 ? 'отзыва' : 'отзывов'}
+            <span className={styles.ratingCount}>
+              {totalReviews}{" "}
+              {totalReviews === 1
+                ? "отзыв"
+                : totalReviews < 5
+                  ? "отзыва"
+                  : "отзывов"}
             </span>
           </div>
 
-          {/* Гистограмма рейтинга */}
-          <div style={{ width: '45px' }}>
-            {renderRatingBars()}
-          </div>
+          <div className={styles.barsBlock}>{renderRatingBars()}</div>
+
+          {previewImages.length > 0 ? (
+            <div className={styles.previewImages} aria-hidden="true">
+              {previewImages.map((src, idx) => (
+                <span
+                  key={`${src}-${idx}`}
+                  className={cx(
+                    styles.previewImgWrap,
+                    idx === 1 && styles.previewImgSecond,
+                  )}
+                >
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    className={styles.previewImg}
+                    sizes="56px"
+                  />
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
 
-        {/* Превью отзывов - горизонтальный скролл */}
-        <div className={cx(styles.c18, "scrollbar-hide")}>
-          <div className={cx(styles.c19, styles.tw10)}>
-            {reviews.map((review) => (
-              <div
-                key={review.id}
-                className={styles.c20}
-                style={{ width: '209px' }}
-              >
-                {/* Аватар, имя, дата, рейтинг */}
-                <div className={cx(styles.c21, styles.tw11)}>
-                  <div className={cx(styles.c22, styles.tw12)}>
-                    <Image
-                      src={review.avatar}
-                      alt={review.userName}
-                      width={32}
-                      height={32}
-                      className={styles.c23}
-                    />
-                  </div>
-                  <div className={cx(styles.c24, styles.tw13)}>
-                    {renderStars(review.rating)}
-                    {review.productName && (
-                      <p className={styles.c25} style={{ fontFamily: 'Inter' }}>
-                        {review.productName}
-                      </p>
-                    )}
-                    <div className={cx(styles.c26, styles.tw14)}>
-                      <span className={styles.c27} style={{ fontFamily: 'Inter' }}>
-                        {review.userName}
+        <div className={styles.divider} aria-hidden="true" />
+
+        <div className={cx(styles.scroller, "scrollbar-hide")}>
+          <div className={styles.reviewsRow}>
+            {Array.isArray(reviews) && reviews.length > 0
+              ? reviews.map((review) => (
+                  <article key={review.id} className={styles.reviewCard}>
+                    <div className={styles.reviewHeader}>
+                      <span className={styles.avatar} aria-hidden="true">
+                        <Image
+                          src={review.avatar}
+                          alt=""
+                          fill
+                          className={styles.avatarImg}
+                          sizes="32px"
+                        />
                       </span>
-                      <div className={cx(styles.c28, styles.tw15)} />
-                      <span className={styles.c29} style={{ fontFamily: 'Inter' }}>
-                        {review.date}
-                      </span>
+
+                      <div className={styles.reviewMeta}>
+                        <div className={styles.reviewTopLine}>
+                          {renderStars(review.rating, 12)}
+                          {review.productName ? (
+                            <span className={styles.productName}>
+                              {review.productName}
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <div className={styles.reviewSubLine}>
+                          <span className={styles.metaText}>
+                            {review.userName}
+                          </span>
+                          <span className={styles.metaDot} aria-hidden="true" />
+                          <span className={styles.metaText}>{review.date}</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* Текст отзыва */}
-                <div className={cx(styles.c30, styles.spaceY10)}>
-                  {/* Достоинства */}
-                  <div>
-                    <p className={styles.c31} style={{ fontFamily: 'Inter', letterSpacing: '-0.01em' }}>
-                      <span className={styles.c32}>Достоинства:</span> {review.pros}
-                    </p>
-                  </div>
-
-                  {/* Недостатки */}
-                  <div>
-                    <p className={styles.c33} style={{ fontFamily: 'Inter', letterSpacing: '-0.01em' }}>
-                      <span className={styles.c34}>Недостатки:</span> {review.cons}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+                    <div className={styles.reviewBody}>
+                      <p className={styles.reviewText}>
+                        <span className={styles.reviewLabel}>Достоинства:</span>{" "}
+                        {review.pros}
+                      </p>
+                      <p className={styles.reviewText}>
+                        <span className={styles.reviewLabel}>Недостатки:</span>{" "}
+                        {review.cons}
+                      </p>
+                    </div>
+                  </article>
+                ))
+              : null}
           </div>
         </div>
       </div>
-    </div>
-  )
+    </section>
+  );
 }

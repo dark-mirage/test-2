@@ -10,7 +10,12 @@ export default function ProductSection({
   onToggleFavorite = (_id) => {},
   layout = "grid",
   hideFavoriteButton = false,
+  headerVariant = "title",
+  tabs = ["Для вас", "Похожие"],
+  activeTab,
+  onTabChange,
 }) {
+  const currentTab = activeTab ?? title ?? tabs?.[0] ?? "";
   if (layout === "horizontal") {
     return (
       <section className={styles.sectionHorizontal}>
@@ -44,7 +49,25 @@ export default function ProductSection({
 
   return (
     <section className={styles.sectionGrid}>
-      {title ? (
+      {headerVariant === "tabs" && Array.isArray(tabs) && tabs.length ? (
+        <div className={styles.tabsHeader} role="tablist" aria-label="Раздел">
+          {tabs.map((tab) => {
+            const isActive = tab === currentTab;
+            return (
+              <button
+                key={tab}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={cn(styles.chip, isActive && styles.chipActive)}
+                onClick={() => onTabChange?.(tab)}
+              >
+                {tab}
+              </button>
+            );
+          })}
+        </div>
+      ) : title ? (
         <div className={styles.header}>
           <h2 className={styles.titleGrid}>{title}</h2>
         </div>

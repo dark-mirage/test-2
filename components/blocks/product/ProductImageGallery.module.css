@@ -1,76 +1,148 @@
-.c1{
+.c1 {
   width: 100%;
+  padding-top: 36px;
 }
-.c2{
+.c2 {
   position: relative;
   width: 100%;
-  background: #F4F3F1;
+  background: #ffffff;
   overflow: hidden;
-  cursor: grab;
   user-select: none;
+  height: clamp(320px, 55vh, 420px);
 }
-.c2:active{
-  cursor: grabbing;
-}
-.c3{
+.c3 {
   display: flex;
   transition-duration: 300ms;
-  transition-timing-function: cubic-bezier(0,0,0.2,1);
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  height: 100%;
 }
-.c4{
+.c4 {
   position: relative;
   flex-shrink: 0;
+  height: 100%;
 }
-.c5{
-  object-fit: cover;
-}
-.c6{
-  position: absolute;
+.c5 {
+  object-fit: contain;
   background: #ffffff;
-  padding: 10px;
 }
-.c7{
+.c6 {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+}
+.c7 {
   display: flex;
   align-items: center;
+  padding: 10px 19px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 0px 49.4px 0px rgba(0, 0, 0, 0.11);
 }
-.c8{
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(14.9px);
-  border-radius: 10px;
+.c8 {
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 0px 49.4px 0px rgba(0,0,0,0.11);
+  cursor: pointer;
 }
-.c10{
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(14.9px);
-  border-radius: 10px;
+.c10 {
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 0px 49.4px 0px rgba(0,0,0,0.11);
+  cursor: pointer;
 }
 
-.tw1{
-  gap: 21px;
+.tw1 {
+  gap: 10px;
 }
 
-.tw2{
-  width: 41px;
-  height: 41px;
+.tw2 {
+  width: 36px;
+  height: 36px;
 }
 
-.tw3{
+.tw3 {
   width: 22px;
   height: 20px;
 }
 
-.tw4{
-  width: 41px;
-  height: 41px;
+.tw4 {
+  width: 36px;
+  height: 36px;
 }
 
-.transitionTransform{
+.transitionTransform {
   transition-property: transform;
+}
+
+.dotsWrap {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0 2px;
+}
+
+.dot,
+.dotActive {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+}
+
+.dot {
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.dotActive {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.stripRoot {
+  padding: 6px 0 2px;
+}
+
+.stripRow {
+  display: flex;
+  gap: 12px;
+  padding: 8px 16px;
+  overflow-x: auto;
+}
+
+.stripItem {
+  position: relative;
+  flex: 0 0 auto;
+  width: 82px;
+  height: 82px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.stripItemActive {
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.stripItemInactive {
+  opacity: 0.95;
+}
+
+.stripItemInactive:hover {
+  opacity: 1;
+}
+
+.stripImage {
+  object-fit: contain;
 }

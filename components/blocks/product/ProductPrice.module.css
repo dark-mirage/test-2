@@ -1,106 +1,105 @@
-.c1{
+.c1 {
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-bottom: 8px;
 }
-.c2{
-  background: #F4F3F1;
+
+.c2 {
+  background: #f4f3f1;
   border-radius: 16px;
   padding: 1rem;
 }
-.c3{
+
+.c3 {
   margin-bottom: 0.75rem;
 }
-.c4{
-  color: 28.998px;
-  font-weight: 600;
-  line-height: 1.06em;
-  letter-spacing: -0.04em;
+
+.c4 {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   color: #000000;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
+  margin: 0;
 }
-.c5{
+
+.c5 {
   display: flex;
   align-items: center;
+  gap: 8px;
 }
-.c6{
-  color: 12px;
+
+.c6 {
+  margin: 6px 0 0;
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.36em;
-  color: #7B7B7B;
-  text-transform: uppercase;
+  color: #dd8825;
 }
-.c7{
-  border-radius: 9999px;
-  overflow: hidden;
+
+.c5 span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #fff;
+  color: #dd8825;
+  border: 1px solid #dd8825;
+  font-size: 9px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
 }
-.c8{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.c9{
+
+.splitRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 0.75rem;
-  border-top-width: 1px;
-  border-top-style: solid;
-  border-color: #CDCDCD;
+  padding-top: 12px;
+  border-top: 1px solid #cdcdcd;
 }
-.c10{
+
+.splitLeft {
   display: flex;
   align-items: center;
-  margin-bottom: 0.25rem;
+  gap: 12px;
 }
-.c11{
-  color: 15px;
-  font-weight: 600;
-  line-height: 1.06em;
-  letter-spacing: 0.01em;
-  color: #000000;
-  text-transform: uppercase;
+
+.splitIcon {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
 }
-.c12{
-  color: 14.444px;
-  font-weight: 600;
-  line-height: 1.06em;
-  letter-spacing: 0.01em;
-  color: #000000;
-  text-transform: uppercase;
+
+.splitText {
+  display: grid;
+  gap: 2px;
 }
-.c13{
-  color: 12px;
+
+.splitTopText {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #111111;
+}
+
+.splitSub {
+  margin: 0;
+  font-size: 13px;
   font-weight: 400;
-  line-height: 1.21em;
-  color: #7E7E7E;
+  line-height: 1.1;
+  color: #8f8f8f;
 }
-.c14{
+
+.splitAction {
+  width: 34px;
+  height: 34px;
   border-radius: 9999px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #B6B6B6;
-  display: flex;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: transparent;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-
-.tw1{
-  gap: 0.5rem;
-}
-
-.tw2{
-  width: 13.45px;
-  height: 13.45px;
-}
-
-.tw3{
-  gap: 0.5rem;
-}
-
-.tw4{
-  width: 23.38px;
-  height: 23.38px;
 }

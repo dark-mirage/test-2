@@ -1,9 +1,9 @@
-'use client'
-import React from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import styles from './ProductInfo.module.css';
-import cx from 'clsx';
+"use client";
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import styles from "./ProductInfo.module.css";
+import cx from "clsx";
 
 export default function ProductInfo({
   productName,
@@ -11,44 +11,48 @@ export default function ProductInfo({
   brandLink,
   images = [],
   currentImageIndex = 0,
-  onImageChange
+  onImageChange,
+  theme = "light",
+  showThumbnails = true,
 }) {
+  const isDark = theme === "dark";
+
   return (
-    <div className={styles.c1}>
-      {/* Название товара */}
-      <h1 className={styles.c2} style={{ fontFamily: 'Inter' }}>
-        {productName}
-      </h1>
-      
+    <div className={cx(styles.c1, isDark && styles.dark)}>
       {/* Бренд */}
       {brandLink ? (
-        <Link 
+        <Link
           href={brandLink}
-          className={styles.c3}
-          style={{ fontFamily: 'Inter' }}
+          className={cx(styles.c2, isDark && styles.brandDark)}
         >
           {brand}
         </Link>
       ) : (
-        <p className={styles.c4} style={{ fontFamily: 'Inter' }}>
-          {brand}
-        </p>
+        <h1 className={cx(styles.c2, isDark && styles.brandDark)}>{brand}</h1>
       )}
 
-      {images.length > 1 && (
+      {/* Название товара */}
+      {productName ? (
+        <p className={cx(styles.c4, isDark && styles.nameDark)}>
+          {productName}
+        </p>
+      ) : null}
+
+      {showThumbnails && images.length > 1 && (
         <div className={cx(styles.c5, "scrollbar-hide")}>
           <div className={cx(styles.c6, styles.tw1)}>
             {images.map((image, index) => (
               <button
                 key={index}
+                type="button"
                 onClick={() => onImageChange?.(index)}
                 className={cx(
                   styles.thumbButton,
                   index === currentImageIndex
                     ? styles.thumbActive
-                    : styles.thumbInactive
+                    : styles.thumbInactive,
                 )}
-                style={{ width: '80px', height: '80px' }}
+                style={{ width: "80px", height: "80px" }}
               >
                 <Image
                   src={image}
@@ -62,5 +66,5 @@ export default function ProductInfo({
         </div>
       )}
     </div>
-  )
+  );
 }

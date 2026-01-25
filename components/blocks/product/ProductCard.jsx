@@ -1,5 +1,7 @@
 "use client";
 import { cn } from "@/lib/format/cn";
+import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 import styles from "./ProductCard.module.css";
 import cx from "clsx";
@@ -11,6 +13,11 @@ export default function ProductCard({
   hideFavoriteButton = false,
 }) {
   const isCompact = variant === "compact";
+  const router = useRouter();
+  const openProduct = useCallback(() => {
+    if (!product?.id) return;
+    router.push(`/product/${product.id}`);
+  }, [product?.id, router]);
 
   const installmentText = (() => {
     if (!product) return "";
@@ -31,6 +38,15 @@ export default function ProductCard({
   return (
     <div
       className={cn(styles.root, isCompact ? styles.compact : styles.normal)}
+      onClick={openProduct}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openProduct();
+        }
+      }}
     >
       <div
         className={cn(
@@ -52,7 +68,10 @@ export default function ProductCard({
         </div>
         {!hideFavoriteButton ? (
           <button
-            onClick={() => onToggleFavorite(product.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(product.id);
+            }}
             type="button"
             className={styles.favoriteBtn}
             aria-pressed={product.isFavorite}
@@ -69,7 +88,10 @@ export default function ProductCard({
           </button>
         ) : (
           <button
-            onClick={() => onToggleFavorite(product.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(product.id);
+            }}
             type="button"
             className={styles.favoriteBtn}
             aria-label="Добавить в избранное"

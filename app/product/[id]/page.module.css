@@ -10,5 +10,184 @@
 }
 
 .tw1 {
-  padding-bottom: 8rem;
+  padding-bottom: calc(7.25rem + var(--lm-footer-height, 0px));
+}
+
+.hero {
+  background: transparent;
+  padding-bottom: 0;
+}
+
+.breadcrumbs {
+  padding: 12px 0px 0 0;
+}
+
+.breadcrumbRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  padding: 0 16px 2px 16px;
+}
+
+.breadcrumbChip {
+  appearance: none;
+  border: 0;
+  outline: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  background: #f4f3f1;
+  border-radius: 9999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.1;
+  color: #111111;
+}
+
+.breadcrumbChipActive {
+  font-weight: 600;
+  background: #ebe9e5;
+}
+
+.breadcrumbChip:active {
+  transform: translateY(0.5px);
+}
+
+.breadcrumbChip:focus-visible {
+  box-shadow: 0 0 0 2px rgba(45, 45, 45, 0.25);
+}
+
+.breadcrumbChipText {
+  display: inline-block;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breadcrumbArrow {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.75);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.cardsOuter {
+  padding: 22px 0;
+}
+
+.cardsRow {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.cardItem {
+  flex: 0 0 auto;
+  width: 112px;
+}
+
+.about {
+  padding: 14px 16px 0;
+}
+
+.aboutTitle {
+  margin: 0 0 10px;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #111111;
+}
+
+.aboutGrid {
+  display: grid;
+  background: transparent;
+}
+
+.aboutRow {
+  display: grid;
+  .copiedHint {
+    min-width: 76px;
+    font-size: 12px;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.55);
+  }
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.16);
+}
+
+.aboutRow:last-child {
+  border-bottom: 0;
+}
+
+.aboutKey {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(17, 17, 17, 0.45);
+}
+
+.aboutVal {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111111;
+  min-width: 0;
+}
+
+.aboutValRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.copyBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  border: 1px solid rgba(17, 17, 17, 0.18);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(17, 17, 17, 0.8);
+}
+
+.copyBtn:active {
+  transform: translateY(0.5px);
+}
+
+.copyBtn:focus-visible {
+  box-shadow: 0 0 0 2px rgba(45, 45, 45, 0.25);
+}
+
+.supportBtn {
+  width: 100%;
+  margin-top: 16px;
+  background: #f4f3f1;
+  border: 0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.supportBtn:active {
+  transform: translateY(0.5px);
 }
