@@ -31,21 +31,13 @@ export default function ProductReviews({
   }, [ratingDistribution]);
 
   // Рендер звезд
-  const renderStars = (rating, size = 12) => {
+  const renderStars = (rating, size = 12, showEmpty = true) => {
+    const safeRating = Math.max(0, Math.min(5, Number(rating) || 0));
+    const starsToRender = showEmpty ? 5 : safeRating;
     return (
-      <div className={styles.stars} aria-label={`Рейтинг ${rating} из 5`}>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <svg
-            key={star}
-            className={styles.star}
-            viewBox="0 0 14 14"
-            fill={star <= rating ? "#2D2D2D" : "none"}
-            stroke="#2D2D2D"
-            strokeWidth={star <= rating ? 0 : 1}
-            style={{ width: size, height: size }}
-          >
-            <path d="M7 0L8.5 5H14L9.5 8L11 13L7 10L3 13L4.5 8L0 5H5.5L7 0Z" />
-          </svg>
+      <div className={styles.stars} aria-label={`Рейтинг ${safeRating} из 5`}>
+        {Array.from({ length: starsToRender }, (_, i) => i + 1).map((star) => (
+          <img key={star} src="/icons/product/Star.svg" alt="star" />
         ))}
       </div>
     );
@@ -78,7 +70,7 @@ export default function ProductReviews({
           return (
             <div key={bar.stars} className={styles.barRow}>
               <div className={styles.barStars} aria-hidden="true">
-                {renderStars(bar.stars, 10)}
+                {renderStars(bar.stars, 10, false)}
               </div>
               <div className={styles.barTrack} aria-hidden="true">
                 <div
@@ -119,14 +111,11 @@ export default function ProductReviews({
           <div className={styles.ratingBlock}>
             <div className={styles.ratingRow}>
               <span className={styles.ratingValue}>{averageRating}</span>
-              <svg
-                className={styles.ratingStar}
-                viewBox="0 0 14 14"
-                fill="#2D2D2D"
-                aria-hidden="true"
-              >
-                <path d="M7 0L8.5 5H14L9.5 8L11 13L7 10L3 13L4.5 8L0 5H5.5L7 0Z" />
-              </svg>
+              <img
+                src="/icons/product/Star.svg"
+                alt="star"
+                style={{ width: "14px", height: "14px" }}
+              />
             </div>
             <span className={styles.ratingCount}>
               {totalReviews}{" "}

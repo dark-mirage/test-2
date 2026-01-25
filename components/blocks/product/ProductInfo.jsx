@@ -59,6 +59,7 @@ export default function ProductInfo({
                   alt={`Миниатюра ${index + 1}`}
                   fill
                   className={styles.c7}
+                  sizes="80px"
                 />
               </button>
             ))}

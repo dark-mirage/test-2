@@ -35,7 +35,7 @@ export default function ProductPrice({ price, splitPayment, deliveryInfo }) {
           <div className={styles.splitRow}>
             <div className={styles.splitLeft}>
               <span className={styles.splitIcon} aria-hidden="true">
-                <Image src="/icons/global/split.svg" alt="" fill />
+                <Image src="/icons/global/split.svg" alt="" fill sizes="34px" />
               </span>
               <div className={styles.splitText}>
                 <div className={styles.splitTop}>

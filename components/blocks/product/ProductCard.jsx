@@ -1,6 +1,5 @@
 "use client";
 import { cn } from "@/lib/format/cn";
-import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import styles from "./ProductCard.module.css";
@@ -14,10 +13,10 @@ export default function ProductCard({
 }) {
   const isCompact = variant === "compact";
   const router = useRouter();
-  const openProduct = useCallback(() => {
+  const openProduct = () => {
     if (!product?.id) return;
     router.push(`/product/${product.id}`);
-  }, [product?.id, router]);
+  };
 
   const installmentText = (() => {
     if (!product) return "";

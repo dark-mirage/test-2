@@ -63,6 +63,7 @@ export default function ProductImageGallery({
                 fill
                 className={styles.stripImage}
                 priority={index === safeImageIndex}
+                sizes="82px"
               />
             </button>
           ))}

@@ -39,12 +39,12 @@
 .summary {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
+  gap: 3px;
 }
 
 .ratingBlock {
   flex: 0 0 auto;
-  min-width: 86px;
+  min-width: 64px;
 }
 
 .ratingRow {
@@ -54,21 +54,21 @@
 }
 
 .ratingValue {
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 800;
   line-height: 1.05;
   color: #2d2d2d;
 }
 
 .ratingStar {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 .ratingCount {
   display: inline-block;
   margin-top: 2px;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   line-height: 1.1;
   color: rgba(17, 17, 17, 0.45);
@@ -77,23 +77,29 @@
 .barsBlock {
   flex: 1 1 auto;
   min-width: 0;
-  padding-top: 2px;
+  padding-top: 0;
 }
 
 .bars {
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .barRow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 3px;
 }
 
 .barStars {
   flex: 0 0 auto;
   width: 58px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.barStars .stars {
+  justify-content: flex-end;
 }
 
 .stars {
@@ -102,22 +108,22 @@
 }
 
 .star {
-  width: 12px;
-  height: 12px;
+  width: 13px;
+  height: 13px;
   display: block;
 }
 
 .barTrack {
   flex: 1;
-  height: 4px;
-  background: rgba(17, 17, 17, 0.18);
+  height: 6px;
+  background: rgba(17, 17, 17, 0.14);
   border-radius: 999px;
   overflow: hidden;
 }
 
 .barFill {
   height: 100%;
-  background: rgba(17, 17, 17, 0.82);
+  background: rgba(17, 17, 17, 0.86);
   border-radius: 999px;
 }
 

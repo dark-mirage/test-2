@@ -1,6 +1,8 @@
 "use client";
 import ProductCard from "./ProductCard";
 
+import { useState } from "react";
+
 import { cn } from "@/lib/format/cn";
 import styles from "./ProductSection.module.css";
 
@@ -15,7 +17,17 @@ export default function ProductSection({
   activeTab,
   onTabChange,
 }) {
-  const currentTab = activeTab ?? title ?? tabs?.[0] ?? "";
+  const isControlled = activeTab !== undefined;
+  const defaultTab = (() => {
+    if (activeTab !== undefined) return activeTab;
+    if (Array.isArray(tabs) && tabs.length > 0) {
+      if (typeof title === "string" && tabs.includes(title)) return title;
+      return tabs[0];
+    }
+    return typeof title === "string" ? title : "";
+  })();
+  const [internalTab, setInternalTab] = useState(defaultTab);
+  const currentTab = isControlled ? activeTab : internalTab;
   if (layout === "horizontal") {
     return (
       <section className={styles.sectionHorizontal}>
@@ -60,7 +72,10 @@ export default function ProductSection({
                 role="tab"
                 aria-selected={isActive}
                 className={cn(styles.chip, isActive && styles.chipActive)}
-                onClick={() => onTabChange?.(tab)}
+                onClick={() => {
+                  if (!isControlled) setInternalTab(tab);
+                  onTabChange?.(tab);
+                }}
               >
                 {tab}
               </button>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import Container from "@/components/layout/Layout";
 import ProductImageGallery from "@/components/blocks/product/ProductImageGallery";
@@ -18,7 +18,11 @@ import cx from "clsx";
 
 export default function ProductPage() {
   const params = useParams();
+  const router = useRouter();
   const productId = Array.isArray(params?.id) ? params.id[0] : params?.id;
+
+  const CART_STORAGE_KEY = "loyaltymarket_cart_v1";
+  const CART_UPDATED_EVENT = "loyaltymarket_cart_updated";
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -128,11 +132,51 @@ export default function ProductPage() {
   };
 
   const handleBuyNow = () => {
-    console.log("Купить сейчас:", {
-      productId,
-      size: selectedSize,
-      quantity,
-    });
+    const numericId = Number(productId);
+    const id = Number.isFinite(numericId) ? numericId : Date.now();
+
+    const rawPrice = "127 899 ₽";
+    const digits = String(rawPrice).replace(/[^0-9]/g, "");
+    const priceRub = digits ? Number(digits) : 0;
+
+    const nextItem = {
+      id,
+      name: "Кофта Supreme",
+      shippingText: "Доставка из Китая до РФ 0₽",
+      image: productImages?.[0] ?? "",
+      size: selectedSize ?? undefined,
+      article: "0432135",
+      priceRub,
+      quantity: Math.max(1, Number(quantity || 1)),
+      deliveryText: "Послезавтра, из наличия",
+      isFavorite: false,
+    };
+
+    try {
+      const existingRaw = localStorage.getItem(CART_STORAGE_KEY);
+      const existing = existingRaw ? JSON.parse(existingRaw) : [];
+      const items = Array.isArray(existing) ? existing : [];
+
+      const idx = items.findIndex((x) => x && x.id === id);
+      if (idx >= 0) {
+        const prev = items[idx] || {};
+        const prevQty = Number(prev.quantity || 0);
+        items[idx] = {
+          ...prev,
+          ...nextItem,
+          quantity: Math.max(1, prevQty + nextItem.quantity),
+        };
+      } else {
+        items.push(nextItem);
+      }
+
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+      window.dispatchEvent(new Event(CART_UPDATED_EVENT));
+    } catch {
+      // ignore
+    }
+
+    router.push("/trash");
   };
 
   const handleToggleRecommendedFavorite = (id) => {
