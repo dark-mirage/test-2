@@ -141,14 +141,57 @@ export default function ProductPage() {
     );
   };
 
-  const handleCopy = async (text) => {
+  const copyText = async (text) => {
+    const value = String(text);
+
+    // Modern Clipboard API (may be unavailable in some mobile/WebView contexts)
     try {
-      await navigator.clipboard.writeText(String(text));
-      setIsArticleCopied(true);
-      window.setTimeout(() => setIsArticleCopied(false), 1200);
+      if (
+        typeof navigator !== "undefined" &&
+        navigator.clipboard &&
+        typeof navigator.clipboard.writeText === "function" &&
+        typeof window !== "undefined" &&
+        window.isSecureContext
+      ) {
+        await navigator.clipboard.writeText(value);
+        return true;
+      }
     } catch {
-      // no-op
+      // fallback below
     }
+
+    // Fallback: hidden textarea + execCommand('copy')
+    try {
+      if (typeof document === "undefined") return false;
+      const ta = document.createElement("textarea");
+      ta.value = value;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      ta.style.top = "0";
+      document.body.appendChild(ta);
+
+      ta.focus();
+      ta.select();
+      try {
+        ta.setSelectionRange(0, ta.value.length);
+      } catch {
+        // ignore
+      }
+
+      const ok = document.execCommand?.("copy") ?? false;
+      document.body.removeChild(ta);
+      return Boolean(ok);
+    } catch {
+      return false;
+    }
+  };
+
+  const handleCopy = async (text) => {
+    const ok = await copyText(text);
+    if (!ok) return;
+    setIsArticleCopied(true);
+    window.setTimeout(() => setIsArticleCopied(false), 1200);
   };
 
   return (
