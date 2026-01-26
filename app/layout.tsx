@@ -3,8 +3,8 @@ import Script from "next/script";
 import type { ReactNode } from "react";
 
 import TelegramInit from "@/components/blocks/telegram/TelegramInit";
+import TelegramNavButtons from "@/components/blocks/telegram/TelegramNavButtons";
 import WebViewErrorAlert from "@/components/blocks/telegram/WebViewErrorAlert";
-
 import TelegramViewportManager from "./TelegramViewportManager";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -19,6 +19,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body suppressHydrationWarning>
         <TelegramInit />
+        <TelegramNavButtons />
         <TelegramViewportManager />
         {children}
         <WebViewErrorAlert />
