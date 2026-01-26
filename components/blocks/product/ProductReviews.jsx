@@ -5,6 +5,14 @@ import Link from "next/link";
 import styles from "./ProductReviews.module.css";
 import cx from "clsx";
 
+function toBrandSlug(value) {
+  const raw = String(value ?? "")
+    .trim()
+    .toLowerCase();
+  if (!raw) return "";
+  return raw.replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+}
+
 export default function ProductReviews({
   brandName,
   reviews = [],
@@ -85,8 +93,9 @@ export default function ProductReviews({
     );
   };
 
-  const reviewsHref = brandName
-    ? `/reviews/${String(brandName).toLowerCase()}`
+  const brandSlug = toBrandSlug(brandName);
+  const reviewsHref = brandSlug
+    ? `/reviews/${encodeURIComponent(brandSlug)}`
     : "/reviews";
   const previewImages = Array.isArray(productImages)
     ? productImages.slice(0, 2)

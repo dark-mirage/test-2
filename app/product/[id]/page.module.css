@@ -40,7 +40,7 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   white-space: nowrap;
   background: #f4f3f1;
   border-radius: 9999px;
@@ -77,8 +77,6 @@
   height: 18px;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.08);
   color: rgba(0, 0, 0, 0.75);
   font-size: 16px;
   line-height: 1;

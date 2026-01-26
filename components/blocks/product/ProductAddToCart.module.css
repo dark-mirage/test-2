@@ -5,9 +5,9 @@
   bottom: var(--lm-footer-height, 0px);
   z-index: 50;
   background: #ffffff;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
   padding: 10px 10px;
   border-radius: 14px 14px 0 0;
+  box-shadow: 0px 0px 40px 0px #00000026;
 }
 
 .row {
