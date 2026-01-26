@@ -67,74 +67,70 @@ export default function CategoryPage() {
   }
 
   return (
-    <>
-      <Header title="Поиск" />
+    <div className={styles.root}>
+      <h3 className={styles.searchTitle}>Каталог</h3>
       <SearchBar />
-      <div className={styles.root}>
-        <div className={styles.tabsWrap}>
-          <CatalogTabs activeTab={activeTab} onTabChange={setActiveTab} />
-        </div>
 
-        <main className={styles.main}>
-          {activeTab === "catalog" ? (
-            <>
-              {/* Заголовок категории и кнопка "все" */}
-              <div className={styles.sectionHeader}>
-                <div className={styles.headerRow}>
-                  <h1 className={styles.title}>{category.title}</h1>
-                  <button type="button" className={styles.allBtn}>
-                    <span className={styles.allText}>все</span>
-                    <div className={styles.allIconWrap}>
-                      <Image
-                        src="/icons/global/Wrap.svg"
-                        alt=""
-                        width={16}
-                        height={15}
-                      />
-                    </div>
-                  </button>
-                </div>
-              </div>
 
-              {/* Список подкатегорий */}
-              <div className={styles.listOuter}>
-                <div className={styles.list}>
-                  {/* Разделитель сверху */}
-                  <div className={`${styles.divider} ${styles.dividerTop}`} />
-
-                  {/* Подкатегории */}
-                  <div className={styles.items}>
-                    {category.subcategories.map((subcategory, index) => (
-                      <div key={subcategory}>
-                        <div className={styles.itemRow}>
-                          <span className={styles.subcategory}>
-                            {subcategory}
-                          </span>
-                          <div className={styles.chevron}>
-                            <Image
-                              src="/icons/global/Wrap.svg"
-                              alt=""
-                              width={7}
-                              height={11}
-                            />
-                          </div>
-                        </div>
-                        {/* Разделитель */}
-                        {index < category.subcategories.length - 1 && (
-                          <div className={styles.divider} />
-                        )}
-                      </div>
-                    ))}
+      <main className={styles.main}>
+        {activeTab === "catalog" ? (
+          <>
+            {/* Заголовок категории и кнопка "все" */}
+            <div className={styles.sectionHeader}>
+              <div className={styles.headerRow}>
+                <h1 className={styles.title}>{category.title}</h1>
+                <button type="button" className={styles.allBtn}>
+                  <span className={styles.allText}>все</span>
+                  <div className={styles.allIconWrap}>
+                    <Image
+                      src="/icons/global/Wrap.svg"
+                      alt=""
+                      width={16}
+                      height={15}
+                    />
                   </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Список подкатегорий */}
+            <div className={styles.listOuter}>
+              <div className={styles.list}>
+                {/* Разделитель сверху */}
+                <div className={`${styles.divider} ${styles.dividerTop}`} />
+
+                {/* Подкатегории */}
+                <div className={styles.items}>
+                  {category.subcategories.map((subcategory, index) => (
+                    <div key={subcategory}>
+                      <div className={styles.itemRow}>
+                        <span className={styles.subcategory}>
+                          {subcategory}
+                        </span>
+                        <div className={styles.chevron}>
+                          <Image
+                            src="/icons/global/Wrap.svg"
+                            alt=""
+                            width={7}
+                            height={11}
+                          />
+                        </div>
+                      </div>
+                      {/* Разделитель */}
+                      {index < category.subcategories.length - 1 && (
+                        <div className={styles.divider} />
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
-            </>
-          ) : (
-            <BrandsList />
-          )}
-        </main>
-        <Footer />
-      </div>
-    </>
+            </div>
+          </>
+        ) : (
+          <BrandsList />
+        )}
+      </main>
+      <Footer />
+    </div>
   );
 }
