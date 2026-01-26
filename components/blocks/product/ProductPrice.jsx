@@ -1,9 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import styles from "./ProductPrice.module.css";
+import SplitPaymentSheet from "./SplitPaymentSheet";
 
 export default function ProductPrice({ price, splitPayment, deliveryInfo }) {
+  const [isSplitOpen, setIsSplitOpen] = useState(false);
+
   const splitAmount = splitPayment?.amount ?? "";
   const splitAmountText = String(splitAmount).includes("₽")
     ? String(splitAmount)
@@ -53,6 +56,9 @@ export default function ProductPrice({ price, splitPayment, deliveryInfo }) {
               type="button"
               className={styles.splitAction}
               aria-label="Настройки"
+              aria-haspopup="dialog"
+              aria-expanded={isSplitOpen}
+              onClick={() => setIsSplitOpen(true)}
             >
               <Image
                 src="/icons/product/constructor-icon.svg"
@@ -61,6 +67,13 @@ export default function ProductPrice({ price, splitPayment, deliveryInfo }) {
                 height={18}
               />
             </button>
+
+            <SplitPaymentSheet
+              open={isSplitOpen}
+              onClose={() => setIsSplitOpen(false)}
+              price={price}
+              splitPayment={splitPayment}
+            />
           </div>
         )}
       </div>
