@@ -7,6 +7,7 @@ import { Trash2 } from "lucide-react";
 import Footer from "@/components/layout/Footer";
 import ProductSection from "@/components/blocks/product/ProductSection";
 import { useCart } from "@/components/blocks/cart/useCart";
+import BottomSheet from "@/components/ui/BottomSheet";
 import styles from "./page.module.css";
 import cn from "clsx";
 
@@ -260,12 +261,12 @@ export default function TrashBasketPage() {
   return (
     <div className={styles.c1}>
       <div className={styles.c2}>
-        <div className={cn(styles.c3, styles.tw1)}>
-          <h1 className={styles.c4}>Корзина</h1>
+        <div className={styles.tw1}>
+          <p className={styles.c4}>Корзина</p>
           {items.length > 0 ? (
-            <span className={styles.c5}>
+            <p className={styles.c5}>
               {selectedQuantity} {itemsWord}
-            </span>
+            </p>
           ) : null}
         </div>
 
@@ -335,12 +336,22 @@ export default function TrashBasketPage() {
                             </div>
                           ) : null}
                           <div className={styles.c24}>
-                            {item.size ? `Размер: ${item.size}` : null}
-                            {item.article
-                              ? ` ${item.size ? "• " : ""}Артикул: ${
-                                  item.article
-                                }`
-                              : null}
+                            {item.size ? (
+                              <p>
+                                Размер:{" "}
+                                <span className={styles.c24Value}>
+                                  {item.size}
+                                </span>
+                              </p>
+                            ) : null}
+                            {item.article ? (
+                              <p>
+                                Артикул:{" "}
+                                <span className={styles.c24Value}>
+                                  {item.article}
+                                </span>
+                              </p>
+                            ) : null}
                           </div>
                         </div>
 
@@ -373,7 +384,7 @@ export default function TrashBasketPage() {
                                 ? "Убрать из избранного"
                                 : "Добавить в избранное"
                             }
-                            className=""
+                            className={styles.iconButton}
                           >
                             <img
                               src={
@@ -390,6 +401,7 @@ export default function TrashBasketPage() {
                             type="button"
                             onClick={() => removeOne(item.id)}
                             aria-label="Удалить"
+                            className={styles.iconButton}
                           >
                             <img
                               src="/icons/global/xicon.svg"
@@ -607,13 +619,7 @@ export default function TrashBasketPage() {
                   <span className={styles.c68}>
                     {selectedQuantity} {pluralizeItemsRu(selectedQuantity)}
                   </span>
-                  <button
-                    type="button"
-                    className={styles.c69}
-                    disabled={selectedQuantity === 0}
-                  >
-                    К оформлению
-                  </button>
+                  <p className={styles.c69}>К оформлению</p>
                   <div className={cn(styles.c70, styles.tw33)}>
                     <span className={styles.c71}>{formatRub(totalRub)}</span>
                     {discountRub > 0 ? (
@@ -631,40 +637,31 @@ export default function TrashBasketPage() {
         </div>
       ) : null}
 
-      {/* Delete modal - overlay bottom-[80px] dan boshlanadi */}
-      {deleteConfirmOpen ? (
-        <div
-          className={cn(styles.c74, styles.tw35)}
-          onClick={closeDeleteConfirm}
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className={cn(styles.c75, styles.tw36)}>
-            <div className={styles.c76}>
-              <div className={styles.c77} onClick={(e) => e.stopPropagation()}>
-                <div className={cn(styles.c78, styles.tw37)} />
+      <BottomSheet
+        open={deleteConfirmOpen}
+        onClose={closeDeleteConfirm}
+        ariaLabel="Удаление товаров из корзины"
+        header={<div className={styles.deleteSheetHeader} />}
+      >
+        <div className={styles.deleteSheetContent}>
+          <button
+            type="button"
+            onClick={confirmDeleteSelected}
+            className={cn(styles.c79, styles.tw38)}
+          >
+            <Trash2 className={cn(styles.c80, styles.tw39)} />
+            <span className={styles.c81}>Удалить товары из корзины</span>
+          </button>
 
-                <button
-                  type="button"
-                  onClick={confirmDeleteSelected}
-                  className={cn(styles.c79, styles.tw38)}
-                >
-                  <Trash2 className={cn(styles.c80, styles.tw39)} />
-                  <span className={styles.c81}>Удалить товары из корзины</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={closeDeleteConfirm}
-                  className={cn(styles.c82, styles.tw40)}
-                >
-                  Отмена
-                </button>
-              </div>
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={closeDeleteConfirm}
+            className={cn(styles.c82, styles.tw40)}
+          >
+            Отмена
+          </button>
         </div>
-      ) : null}
+      </BottomSheet>
 
       <Footer />
     </div>

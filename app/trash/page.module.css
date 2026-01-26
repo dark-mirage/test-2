@@ -5,23 +5,33 @@
   background: #f4f3f1;
   /* Avoid unstable 100vh in Telegram WebApp */
   min-height: var(--tg-viewport-stable-height, 100vh);
+  padding-top: 50px;
 }
+
 .c2 {
   padding-left: 1rem;
   padding-right: 1rem;
-  padding-top: 20px;
 }
-.c3 {
-  display: flex;
-}
+
 .c4 {
-  color: 22px;
+  font-size: 20px;
   font-weight: 600;
   line-height: 1.1em;
   color: #000000;
+  margin: 0;
+}
+
+.tw1 {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.tw1 h1 {
+  margin: 0;
 }
 .c5 {
-  color: 13px;
+  font-size: 13px;
   font-weight: 400;
   color: #7e7e7e;
 }
@@ -37,6 +47,15 @@
   color: #7e7e7e;
   display: flex;
   align-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.c8 {
+  display: block;
 }
 .c9 {
   display: flex;
@@ -50,8 +69,7 @@
 }
 .c11 {
   background: #ffffff;
-  border-bottom-left-radius: 25px;
-  border-bottom-right-radius: 25px;
+  border-radius: 25px;
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 2.5rem;
@@ -70,16 +88,18 @@
   color: #7e7e7e;
 }
 .c14 {
+  display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 1.5rem;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   border-radius: 16px;
+  line-height: 1;
   background: #2d2d2d;
   color: #ffffff;
-  color: 13px;
-  font-weight: 600;
+  font-size: 13.1px;
+  font-weight: 500;
 }
 .c15 {
   background: #ffffff;
@@ -112,6 +132,12 @@
   align-items: flex-start;
   justify-content: space-between;
 }
+
+.c21 {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
 .c22 {
   color: 14px;
   font-weight: 600;
@@ -122,27 +148,42 @@
   white-space: nowrap;
 }
 .c23 {
-  color: 12px;
   color: #dd8825;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1;
 }
 .c24 {
   margin-top: 0.25rem;
-  color: 12px;
   color: #7e7e7e;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
 }
+
+.c24Value {
+  color: #000000;
+}
+
+.c24 p {
+  margin: 0;
+}
+
 .c25 {
   flex-shrink: 0;
 }
 .c26 {
-  margin-top: 0.5rem;
-  color: 20px;
+  margin-top: 20px;
   font-weight: 600;
-  line-height: 1em;
   color: #000000;
 }
 .c27 {
@@ -167,8 +208,28 @@
   display: flex;
   align-items: center;
 }
+
+.iconButton {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.c31 {
+  display: block;
+}
+
+.c32 {
+  display: block;
+}
 .c33 {
   display: flex;
+  gap: 25px;
   align-items: center;
   background: #f4f3f1;
   border-radius: 8px;
@@ -177,21 +238,32 @@
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
 }
+
+.c33 button {
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .c34 {
   text-align: center;
-  color: 18px;
   color: #b6b6b6;
+  border: 0;
+  background: transparent;
+  padding: 0;
 }
 .c35 {
   text-align: center;
-  color: 14px;
+  color: 13px;
   font-weight: 600;
-  color: #b6b6b6;
+  color: #000000;
 }
+
 .c36 {
   text-align: center;
-  color: 18px;
-  color: #b6b6b6;
+  color: #000000;
+  border: 0;
+  background: transparent;
+  padding: 0;
 }
 .c37 {
   margin-top: 1rem;
@@ -221,13 +293,22 @@
 .c40 {
   border-radius: 9999px;
   background: #ffffff;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #e5e5e5;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.c41 {
+  display: block;
+}
+
+.c49 {
+  display: block;
 }
 .c42 {
   margin-top: 0.25rem;
@@ -279,7 +360,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: 14px;
+  color: 13px;
   color: #000000;
 }
 .c53 {
@@ -291,8 +372,18 @@
   align-items: center;
 }
 .c55 {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.c56 {
+  display: block;
 }
 .c57 {
   position: absolute;
@@ -367,8 +458,10 @@
 }
 .c66 {
   position: fixed;
-  bottom: 80px;
+  bottom: 64px;
   z-index: 40;
+  box-shadow: 0px 0px 40px 0px #00000026;
+  border-radius: 25px 25px 0 0;
 }
 .c67 {
   max-width: 28rem;
@@ -381,28 +474,30 @@
   border-top-right-radius: 25px;
 }
 .c68 {
-  color: 13px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: #ffffff;
 }
 .c69 {
-  color: 13px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: #ffffff;
 }
+
 .c70 {
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 .c71 {
-  color: 13px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: #ffffff;
 }
 .c72 {
-  color: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
+  color: #7e7e7e;
 }
 .c73 {
   width: 100%;
@@ -447,7 +542,12 @@
   width: 100%;
   display: flex;
   align-items: center;
+  gap: 12px;
   text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 14px 0;
+  cursor: pointer;
 }
 .c80 {
   color: #aa2d2d;
@@ -465,11 +565,32 @@
   color: 15px;
   font-weight: 500;
   color: #000000;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.tw1 {
-  align-items: baseline;
-  gap: 0.75rem;
+.deleteSheetHeader {
+  height: 12px;
+}
+
+.deleteSheetContent {
+  padding: 0 15px
+    calc(
+      18px + max(var(--ios-safe-bottom, 0px), var(--tg-safe-area-bottom, 0px))
+    );
+  display: flex;
+  flex-direction: column;
+}
+
+.deleteSheetContent .c79 {
+  margin-top: 0;
+}
+
+.deleteSheetContent .c82 {
+  margin-top: 12px;
 }
 
 .tw2 {
@@ -513,6 +634,13 @@
 
 .tw11 {
   gap: 0.5rem;
+  margin-top: 5px;
+}
+
+.tw11 span:last-child {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.06;
 }
 
 .tw12 {
@@ -630,7 +758,7 @@
 .tw36 {
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: -9px;
 }
 
 .tw37 {
@@ -682,6 +810,9 @@
   width: 100%;
   background: transparent;
   outline: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
 .promoInput::placeholder {
   color: #7e7e7e;
