@@ -34,6 +34,13 @@ export default function ProductCard({
     return `4 × ${formatted} ₽ в сплит`;
   })();
 
+  const deliveryLabel =
+    (typeof product?.deliveryDate === "string" &&
+      product.deliveryDate.trim()) ||
+    (typeof product?.deliveryText === "string" &&
+      product.deliveryText.trim()) ||
+    "Доставка";
+
   return (
     <div
       className={cn(styles.root, isCompact ? styles.compact : styles.normal)}
@@ -119,14 +126,10 @@ export default function ProductCard({
         <div className={styles.name}>{product.name}</div>
       </div>
 
-      {/* Кнопка даты доставки */}
-      {product.deliveryDate ? (
-        <button type="button" className={styles.deliveryBtn}>
-          <span className={styles.deliveryText}>{product.deliveryDate}</span>
-        </button>
-      ) : (
-        <div className={styles.deliverySpacer} aria-hidden="true" />
-      )}
+      {/* Кнопка доставки */}
+      <button type="button" className={styles.deliveryBtn}>
+        <span className={styles.deliveryText}>{deliveryLabel}</span>
+      </button>
     </div>
   );
 }

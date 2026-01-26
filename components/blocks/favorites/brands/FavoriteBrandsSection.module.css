@@ -1,25 +1,26 @@
-.c1{
+.c1 {
   background: #ffffff;
   border-radius: 25px;
-  margin-top: 2rem;
+  margin-top: 12px;
   padding-left: 1rem;
   padding-right: 1rem;
-  padding-top: 19px;
+  padding-top: 24px;
   padding-bottom: 24px;
 }
-.c2{
+.c2 {
   color: 20px;
   font-weight: 700;
   line-height: 1.06em;
   letter-spacing: -0.01em;
   color: #000000;
-  margin-bottom: 14px;
+  margin: 0px;
 }
-.c3{
+.c3 {
   display: flex;
   flex-direction: column;
+  padding-left: 0;
 }
 
-.tw1{
+.tw1 {
   gap: 8px;
 }

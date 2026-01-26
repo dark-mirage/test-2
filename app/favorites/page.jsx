@@ -139,16 +139,17 @@ export default function FavoritesPage() {
   const hasFavorites = products.length > 0 || brands.some((b) => b.isFavorite);
 
   return (
-    <>
-      <Header title="Избранное" />
+    <div className={styles.page}>
       <main className={styles.c1}>
-        {/* Секция брендов */}
-        {brands.some((b) => b.isFavorite) && (
-          <BrandsSection
-            brands={brands.filter((b) => b.isFavorite)}
-            onToggleFavorite={handleToggleBrandFavorite}
-          />
-        )}
+        <div className={styles.header}>
+          <Header title="Избранное" />
+          {brands.some((b) => b.isFavorite) && (
+            <BrandsSection
+              brands={brands.filter((b) => b.isFavorite)}
+              onToggleFavorite={handleToggleBrandFavorite}
+            />
+          )}
+        </div>
 
         {/* Пустое состояние или товары */}
         {!hasFavorites ? (
@@ -176,6 +177,6 @@ export default function FavoritesPage() {
         />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

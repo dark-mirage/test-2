@@ -1,12 +1,18 @@
-.c1 {
+.page {
   /* Avoid unstable 100vh in Telegram WebApp */
   min-height: var(--tg-viewport-stable-height, 100vh);
-  background: #f4f3f1;
   padding-bottom: 5rem;
+  background: #f4f3f1;
 }
+
+.header {
+  padding-top: 50px;
+  background: #ffffff;
+  border-radius: 0 0 25px 25px;
+}
+
 .c2 {
   background: #ffffff;
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
+  border-radius: 25px;
   margin-top: 0.5rem;
 }

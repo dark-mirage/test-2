@@ -1,18 +1,15 @@
 "use client";
 import React, { useState } from "react";
-import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FavoriteBrandsSection from "@/components/blocks/favorites/brands/FavoriteBrandsSection";
-import BrandsFilter from "@/components/blocks/favorites/brands/BrandsFilter";
 import BrandsSearch from "@/components/blocks/favorites/brands/BrandsSearch";
 import AllBrandsList from "@/components/blocks/favorites/brands/AllBrandsList";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
-import cx from "clsx";
 
 export default function BrandsPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLetter, setSelectedLetter] = useState();
 
   const [favoriteBrands, setFavoriteBrands] = useState([
     {
@@ -74,8 +71,6 @@ export default function BrandsPage() {
     },
   ]);
 
-  const filterLetters = ["А", "Б"];
-
   const handleToggleFavorite = (id) => {
     const brand = allBrands.find((b) => b.id === id);
     if (brand) {
@@ -101,47 +96,35 @@ export default function BrandsPage() {
   );
 
   return (
-    <>
-      <Header title="Бренды" />
-      <main className={styles.c1}>
-        {/* Секция избранных брендов */}
-        {favoriteBrands.length > 0 && (
-          <FavoriteBrandsSection brands={favoriteBrands} />
-        )}
+    <div className={styles.pageMain}>
+      <h3 className={styles.pageTitle}>Бренды</h3>
+      <div className={styles.page}>
+        <main className={styles.content}>
+          {favoriteBrands.length > 0 ? (
+            <FavoriteBrandsSection brands={favoriteBrands} />
+          ) : null}
 
-        {/* Секция всех брендов */}
-        <div className={styles.c2}>
-          <Link href="/favorites/brands">
-            <h2 className={styles.c3}>Все</h2>
-          </Link>
+          <section className={styles.allCard}>
+            <h2 className={styles.sectionTitle}>Все</h2>
 
-          {/* Поисковая строка */}
-          <div className={styles.c4}>
-            <BrandsSearch
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Найти бренд"
-            />
-          </div>
+            <div className={styles.searchWrap}>
+              <BrandsSearch
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Найти бренд"
+              />
+            </div>
 
-          {/* Фильтры и список брендов */}
-          <div className={cx(styles.c5, styles.tw1)}>
-            {/* Фильтры по буквам */}
-            <BrandsFilter
-              letters={filterLetters}
-              selectedLetter={selectedLetter}
-              onSelectLetter={setSelectedLetter}
-            />
-
-            {/* Список брендов */}
             <AllBrandsList
               brands={filteredBrands}
               onToggleFavorite={handleToggleFavorite}
             />
-          </div>
-        </div>
-      </main>
+          </section>
+        </main>
+
+        <Footer />
+      </div>
       <Footer />
-    </>
+    </div>
   );
 }
