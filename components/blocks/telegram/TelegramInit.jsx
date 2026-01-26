@@ -22,14 +22,12 @@ function compareSemver(a, b) {
 }
 
 function applyThemeColors(tg) {
-  // Set CSS variable from Telegram theme params (safe, always ok)
   const telegramBg = tg?.themeParams?.bg_color ?? "#ffffff";
 
   if (typeof document !== "undefined") {
     document.documentElement.style.setProperty("--tg-theme-bg", telegramBg);
   }
 
-  // Read app background from CSS variable (fallback to beige)
   const appBg =
     typeof document !== "undefined"
       ? getComputedStyle(document.documentElement)
@@ -37,10 +35,6 @@ function applyThemeColors(tg) {
           .trim() || "#f6f5f3"
       : "#f6f5f3";
 
-  // ✅ IMPORTANT:
-  // Telegram WebApp v6.0 prints warnings if you call setHeaderColor/setBackgroundColor
-  // even though the functions exist.
-  // So we call them only on versions >= 6.1
   const minColorSupport = "6.1";
   const canSetColors =
     typeof tg?.version === "string" &&
@@ -62,7 +56,6 @@ function applyThemeColors(tg) {
 }
 
 function requestFullscreenBestEffort(tg) {
-  // Fullscreen is supported only in newer versions
   const minSupported = "7.0";
 
   if (
@@ -98,6 +91,12 @@ export default function TelegramInit() {
         tg.ready();
         tg.expand();
         requestFullscreenBestEffort(tg);
+
+        // ✅ swipe down bilan yopilib ketishini bloklaydi (agar Telegram support qilsa)
+        tg.disableVerticalSwipes?.();
+
+        // ✅ fallback: chiqish bo‘lsa confirm chiqaradi (xohlasangiz yoqing)
+        // tg.enableClosingConfirmation?.();
       } catch {
         // ignore
       }
@@ -108,14 +107,15 @@ export default function TelegramInit() {
         applyThemeColors(tg);
       };
 
-      // Viewport CSS vars are handled in a separate component (TelegramViewportManager)
-      // to avoid unstable `100vh` layout issues in Telegram.
       tg.onEvent("themeChanged", onTheme);
 
       window.setTimeout(() => {
         try {
           tg.expand();
           requestFullscreenBestEffort(tg);
+
+          // ✅ ba’zida expand’dan keyin yana bir marta chaqirish foydali
+          tg.disableVerticalSwipes?.();
         } catch {
           // ignore
         }
