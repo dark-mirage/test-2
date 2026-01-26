@@ -2,6 +2,7 @@
   min-height: var(--tg-viewport-stable-height, 100vh);
   background: #f4f3f1;
   padding-bottom: calc(72px + var(--lm-footer-height, 0px));
+  padding-top: 50px;
 }
 
 .closePill {
@@ -16,12 +17,11 @@
 }
 
 .topbarTitle {
-  justify-self: center;
+  text-align: center;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: #111111;
-  padding-top: 30px;
   padding-bottom: 9px;
 }
 
