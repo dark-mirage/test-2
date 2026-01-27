@@ -29,6 +29,7 @@
 .c6 {
   display: flex;
   overflow-x: auto;
+  padding: 0 1rem;
 }
 .c7 {
   border-radius: 9999px;
@@ -268,18 +269,20 @@
   z-index: 1000;
   width: 100%;
   max-width: 28rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
+
 .c59 {
   margin-bottom: 0.75rem;
 }
+
 .c60 {
-  width: 100%;
+  width: calc(100vw - 2rem);
   border-radius: 1rem;
+  margin-left: 1rem;
 }
+
 .c61 {
   max-width: 28rem;
   margin-left: auto;
@@ -358,13 +361,13 @@
 .c75 {
   padding-left: 1rem;
   padding-right: 1rem;
-  padding-top: 1rem;
+  padding-top: 98px;
 }
 .c76 {
   margin-top: 0.25rem;
 }
 .c77 {
-  margin-top: 0.5rem;
+  margin-top: 11px;
   background: #f4f3f1;
   border-radius: 1rem;
   display: flex;
@@ -379,6 +382,8 @@
   flex: 1 1 0%;
   font-size: 14px;
   color: #000000;
+  background: none;
+  border: none;
 }
 .c80 {
   display: grid;
@@ -390,9 +395,6 @@
   margin-top: 0.5rem;
   margin-left: 1rem;
   margin-right: 1rem;
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
-  border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -486,7 +488,7 @@
 }
 
 .tw13 {
-  top: 1rem;
+  top: 98px;
   left: 1rem;
   right: 1rem;
 }
