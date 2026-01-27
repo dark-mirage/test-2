@@ -13,13 +13,10 @@ function MenuIcon({ src, alt = "" }) {
 
 export default function ProfilePage() {
   return (
-    <>
-      <Header title="Профиль" />
+    <div className={styles.page}>
+      <h3 className={styles.profileTitle}>Профиль</h3>
       <main className={styles.c2}>
-        <ProfileHeader
-          avatar="/icons/profile/illustration/avatar.svg"
-          name="Evgeny"
-        />
+        <ProfileHeader avatar="/img/profileLogo.png" name="Evgeny" />
         <div className={styles.c3}>
           <MenuSection
             items={[
@@ -70,7 +67,7 @@ export default function ProfilePage() {
               },
               {
                 text: "Пригласить друзей",
-                icon: <MenuIcon src="/icons/profile/people-icon.svg" />,
+                icon: <MenuIcon src="/icons/profile/addFriends.svg" />,
                 href: "/invite-friends",
                 fontWeight: 500,
               },
@@ -137,6 +134,6 @@ export default function ProfilePage() {
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

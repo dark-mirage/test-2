@@ -1,8 +1,23 @@
+.page {
+  padding-top: 70px;
+}
+
+.profileTitle {
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: 0px;
+  text-align: center;
+  vertical-align: middle;
+  color: #000000;
+}
+
 .c2 {
   /* Avoid unstable 100vh in Telegram WebApp */
   min-height: var(--tg-viewport-stable-height, 100vh);
   background: #ffffff;
   padding-bottom: 5rem;
+  padding-top: 19px;
 }
 .c3 {
   padding-left: 1rem;

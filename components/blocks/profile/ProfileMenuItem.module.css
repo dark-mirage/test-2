@@ -1,15 +1,15 @@
-.c1{
+.c1 {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.c2{
+.c2 {
   position: absolute;
 }
-.c3{
+.c3 {
   position: absolute;
-  background: #FF601D;
+  background: #ff601d;
   border-width: 1px;
   border-style: solid;
   border-radius: 8px;
@@ -17,30 +17,30 @@
   align-items: center;
   justify-content: center;
 }
-.c4{
-  color: 10.29px;
+.c4 {
+  font-size: 10.29px;
   font-weight: 600;
   line-height: 1.21em;
   color: #ffffff;
 }
-.c5{
+.c5 {
   display: block;
   width: 100%;
 }
 
-.tw1{
+.tw1 {
   width: 1.5rem;
   height: 1.5rem;
 }
 
-.tw2{
+.tw2 {
   right: 15px;
   top: 22px;
   width: 6px;
   height: 10.5px;
 }
 
-.tw3{
+.tw3 {
   right: 40px;
   top: 20px;
   width: 1rem;
@@ -48,7 +48,7 @@
   border-color: #fff;
 }
 
-.container{
+.container {
   position: relative;
   display: flex;
   align-items: center;
@@ -57,42 +57,42 @@
   height: 55px;
   padding-left: 15px;
   padding-right: 15px;
-  background: #F4F3F1;
+  background: #f4f3f1;
 }
 
-.radiusAll{
+.radiusAll {
   border-radius: 1rem;
 }
 
-.radiusTop{
+.radiusTop {
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
 }
 
-.radiusBottom{
+.radiusBottom {
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
 }
 
-.text{
+.text {
   font-size: 15px;
   line-height: 1.06em;
   color: #000;
   flex: 1 1 0%;
 }
 
-.fontNormal{
+.fontNormal {
   font-weight: 400;
 }
 
-.fontMedium{
+.fontMedium {
   font-weight: 500;
 }
 
-.fontSemibold{
+.fontSemibold {
   font-weight: 600;
 }
 
-.link{
+.link {
   display: block;
 }
