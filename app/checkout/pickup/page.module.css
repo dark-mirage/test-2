@@ -359,9 +359,14 @@
   min-height: var(--tg-viewport-stable-height, 100vh);
 }
 .c75 {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 98px;
+  padding-bottom: 0.75rem;
 }
 .c76 {
   margin-top: 0.25rem;
