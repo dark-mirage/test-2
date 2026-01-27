@@ -12,6 +12,7 @@ export default function ProductSection({
   onToggleFavorite = (_id) => {},
   layout = "grid",
   hideFavoriteButton = false,
+  cardProps = {},
   headerVariant = "title",
   tabs = ["Для вас", "Похожие"],
   activeTab,
@@ -52,6 +53,7 @@ export default function ProductSection({
               onToggleFavorite={onToggleFavorite}
               variant="compact"
               hideFavoriteButton={hideFavoriteButton}
+              {...cardProps}
             />
           ))}
         </div>
@@ -95,6 +97,7 @@ export default function ProductSection({
             onToggleFavorite={onToggleFavorite}
             variant="normal"
             hideFavoriteButton={hideFavoriteButton}
+            {...cardProps}
           />
         ))}
       </div>

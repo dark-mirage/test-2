@@ -4,7 +4,6 @@
 }
 
 .sectionGrid {
-  margin-top: 11px;
   padding: 18px 0px 24px 0;
   background: #fff;
   border-radius: 25px;
@@ -48,7 +47,6 @@
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  padding-left: 16px;
 }
 
 .titleGrid {

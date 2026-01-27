@@ -15,10 +15,10 @@
 }
 
 .imageWrap {
-  height: 191px;
+  height: 210px;
   position: relative;
-  background: rgba(17, 17, 17, 0.06);
-  border-radius: 18px;
+  background: #f4f3f1;
+  border-radius: 22px;
   overflow: hidden;
 }
 
@@ -49,10 +49,10 @@
 
 .favoriteBtn {
   position: absolute;
-  top: 6px;
-  right: 8px;
-  width: 32px;
-  height: 32px;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
   border-radius: 9999px;
   border: 0;
   background: transparent;
@@ -63,8 +63,26 @@
 }
 
 .favoriteIcon {
-  width: 23px;
-  height: 23px;
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.starsRow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 13px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.star {
+  width: 24px;
+  height: 24px;
+  opacity: 0.28;
   display: block;
 }
 

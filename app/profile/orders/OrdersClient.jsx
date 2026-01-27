@@ -213,7 +213,7 @@ export default function OrdersClient() {
 
   return (
     <div className={`tg-viewport ${styles.page}`}>
-        <h3 className={styles.ordersClientstitle}>Заказы</h3>
+      <h3 className={styles.ordersClientstitle}>Заказы</h3>
       <main className={styles.main}>
         <Link href="/profile/purchased" className={styles.topLink}>
           <span className={styles.topLinkLeft}>

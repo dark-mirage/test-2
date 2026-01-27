@@ -10,6 +10,7 @@ export default function ProductCard({
   onToggleFavorite,
   variant = "normal",
   hideFavoriteButton = false,
+  showStars = false,
 }) {
   const isCompact = variant === "compact";
   const router = useRouter();
@@ -72,6 +73,21 @@ export default function ProductCard({
             <div className={cx(styles.c1, styles.tw1)}>{product.image}</div>
           )}
         </div>
+
+        {showStars && !isCompact ? (
+          <div className={styles.starsRow} aria-hidden="true">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <img
+                key={i}
+                src="/icons/product/Star.svg"
+                alt=""
+                className={styles.star}
+                loading="lazy"
+              />
+            ))}
+          </div>
+        ) : null}
+
         {!hideFavoriteButton ? (
           <button
             onClick={(e) => {
