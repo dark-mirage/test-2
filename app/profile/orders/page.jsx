@@ -1,5 +1,9 @@
-import { redirect } from "next/navigation";
+import OrdersClient from "./OrdersClient";
+
+export const metadata = {
+  title: "Заказы",
+};
 
 export default function OrdersPage() {
-  redirect("/profile/purchased");
+  return <OrdersClient />;
 }
