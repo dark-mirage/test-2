@@ -829,6 +829,9 @@
 
 .pvzListItemActive {
   background: #f4f3f1;
+  border-radius: 16px;
+  margin: 1rem 0;
+  padding: 16px;
 }
 
 .pvzListItemInactive {
