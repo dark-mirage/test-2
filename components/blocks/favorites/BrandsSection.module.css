@@ -2,7 +2,7 @@
   background: #ffffff;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
-  padding-top: 19px;
+  padding-top: 22px;
 }
 .c2 {
   display: flex;
@@ -10,6 +10,7 @@
   justify-content: space-between;
   padding-left: 1rem;
   padding-right: 1rem;
+  margin-bottom: 12px;
 }
 .c3 {
   color: 20px;
@@ -30,7 +31,7 @@
 .c6 {
   display: flex;
   overflow-x: auto;
-  padding-bottom: 0.5rem;
+  padding-bottom: 23px;
   padding-left: 1rem;
   padding-right: 1rem;
 }
