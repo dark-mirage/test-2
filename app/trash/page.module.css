@@ -827,7 +827,11 @@
 }
 
 .promoInputDefault {
-  color: #000000;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 106%;
+  letter-spacing: 0%;
+  text-transform: uppercase;
 }
 
 .promoInputActive {
