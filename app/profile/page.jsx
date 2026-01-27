@@ -1,6 +1,5 @@
 "use client";
 
-import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ProfileHeader from "@/components/blocks/profile/ProfileHeader";
 import MenuSection from "@/components/blocks/profile/ProfileMenuSection";
@@ -23,7 +22,7 @@ export default function ProfilePage() {
               {
                 text: "Добавить на экран «Домой»",
                 icon: <MenuIcon src="/icons/profile/home-icon.svg" />,
-                href: "/add-to-home",
+                href: "/profile/add-to-home",
                 fontWeight: 500,
               },
             ]}
@@ -36,19 +35,19 @@ export default function ProfilePage() {
               {
                 text: "Заказы",
                 icon: <MenuIcon src="/icons/profile/orders-icon.svg" />,
-                href: "/orders",
+                href: "/profile/orders",
                 fontWeight: 500,
               },
               {
                 text: "Купленные товары",
                 icon: <MenuIcon src="/icons/profile/bag-icon.svg" />,
-                href: "/profile/orders",
+                href: "/profile/purchased",
                 fontWeight: 500,
               },
               {
                 text: "Возвраты",
                 icon: <MenuIcon src="/icons/profile/undo-icon.svg" />,
-                href: "/returns",
+                href: "/profile/returns",
                 fontWeight: 500,
               },
             ]}
@@ -74,7 +73,7 @@ export default function ProfilePage() {
               {
                 text: "Промокоды",
                 icon: <MenuIcon src="/icons/profile/promo-icon.svg" />,
-                href: "/promocodes",
+                href: "/profile/promocodes",
                 fontWeight: 500,
                 badge: 5,
               },
@@ -113,20 +112,20 @@ export default function ProfilePage() {
               {
                 text: "Настройки",
                 icon: <MenuIcon src="/icons/profile/settings-icon.svg" />,
-                href: "/settings",
+                href: "/profile/settings",
                 fontWeight: 500,
               },
               {
                 text: "О сервисе",
                 icon: <MenuIcon src="/icons/profile/info-icon.svg" />,
                 // icon: <LogoutIcon />,
-                href: "/logout",
+                href: "/profile/about",
                 fontWeight: 500,
               },
               {
                 text: "чат с поддержкой",
                 icon: <MenuIcon src="/icons/profile/chat-icon.svg" />,
-                href: "/support",
+                href: "/profile/support",
                 fontWeight: 500,
               },
             ]}

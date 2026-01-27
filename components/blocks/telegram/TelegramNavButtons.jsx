@@ -17,8 +17,7 @@ export default function TelegramNavButtons() {
       pathname === "/catalog" ||
       pathname === "/favorites" ||
       pathname === "/trash" ||
-      pathname === "/profile" ||
-      pathname === "/checkout";
+      pathname === "/profile";
 
     if (isMainPage) {
       tg.BackButton?.hide();
