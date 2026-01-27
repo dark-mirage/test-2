@@ -14,11 +14,11 @@
 }
 .c3 {
   color: #ffffff;
-  color: 14px;
+  font-size: 14px;
 }
 .c4 {
   color: #ffffff;
-  color: 6px;
+  font-size: 6px;
   line-height: 1.05;
   text-transform: uppercase;
   text-align: center;
@@ -57,7 +57,7 @@
   background: #ffffff;
 }
 .c13 {
-  color: 13px;
+  font-size: 13px;
   font-weight: 600;
 }
 .c14 {
@@ -68,7 +68,7 @@
   border-style: solid;
 }
 .c15 {
-  color: 13px;
+  font-size: 13px;
   font-weight: 600;
 }
 .c16 {
@@ -106,7 +106,7 @@
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  color: 12px;
+  font-size: 12px;
   color: #000000;
 }
 .c21 {
@@ -160,7 +160,7 @@
   justify-content: space-between;
 }
 .c30 {
-  color: 22px;
+  font-size: 22px;
   font-weight: 700;
   color: #000000;
 }
@@ -187,7 +187,7 @@
   margin-top: 0.125rem;
 }
 .c36 {
-  color: 14px;
+  font-size: 14px;
 }
 .c37 {
   display: flex;
@@ -198,7 +198,7 @@
   margin-top: 0.125rem;
 }
 .c39 {
-  color: 14px;
+  font-size: 14px;
 }
 .c40 {
   display: flex;
@@ -210,7 +210,7 @@
 }
 .c42 {
   display: grid;
-  color: 14px;
+  font-size: 14px;
   width: 100%;
 }
 .c43 {
@@ -243,7 +243,7 @@
   margin-top: 0.125rem;
 }
 .c52 {
-  color: 14px;
+  font-size: 14px;
 }
 .c53 {
   display: flex;
@@ -254,7 +254,7 @@
   margin-top: 0.125rem;
 }
 .c55 {
-  color: 14px;
+  font-size: 14px;
 }
 .c56 {
   margin-top: 1.25rem;
@@ -285,16 +285,14 @@
   margin-left: auto;
   margin-right: auto;
   background: #ffffff;
-  /* Avoid unstable 100vh in Telegram WebApp */
   min-height: var(--tg-viewport-stable-height, 100vh);
+  padding-top: 98px;
 }
 .c62 {
   padding-left: 1rem;
   padding-right: 1rem;
-  padding-top: 0.5rem;
 }
 .c63 {
-  margin-top: 1rem;
   background: #f4f3f1;
   border-radius: 1rem;
   display: flex;
@@ -307,8 +305,10 @@
 }
 .c65 {
   flex: 1 1 0%;
-  color: 14px;
+  font-size: 14px;
   color: #000000;
+  background: none;
+  border: none;
 }
 .c66 {
   display: grid;
@@ -318,18 +318,25 @@
 }
 .c68 {
   margin-top: 0.5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .c69 {
   margin-top: 0.125rem;
   opacity: 0.7;
 }
 .c71 {
-  color: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 106%;
   color: #000000;
 }
 .c72 {
-  color: 12px;
+  font-size: 12.44px;
+  line-height: 106%;
   color: #7e7e7e;
 }
 .c73 {
@@ -337,7 +344,7 @@
   padding-right: 1rem;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
-  color: 14px;
+  font-size: 14px;
   color: #7e7e7e;
 }
 .c74 {
@@ -370,7 +377,7 @@
 }
 .c79 {
   flex: 1 1 0%;
-  color: 14px;
+  font-size: 14px;
   color: #000000;
 }
 .c80 {
@@ -381,25 +388,33 @@
 }
 .c82 {
   margin-top: 0.5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .c84 {
-  color: 22px;
+  font-size: 22px;
   font-weight: 700;
   color: #000000;
 }
 .c85 {
   margin-top: 0.25rem;
-  color: 14px;
+  font-size: 14px;
   color: #000000;
 }
 .c86 {
   margin-top: 0.5rem;
-  color: 14px;
+  font-size: 14px;
   color: #000000;
 }
 .c87 {
   margin-top: 0.5rem;
-  color: 14px;
+  font-size: 14px;
   color: #000000;
 }
 .c88 {
@@ -407,7 +422,7 @@
   padding-right: 1rem;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
-  color: 14px;
+  font-size: 14px;
   color: #7e7e7e;
 }
 
@@ -616,11 +631,13 @@
   width: 1.75rem;
   height: 1.75rem;
   place-items: center;
+  border: none;
+  background: none;
 }
 
 .tw43 {
-  width: 1rem;
-  height: 1rem;
+  width: 10px;
+  height: 10px;
 }
 
 .tw44 {
@@ -671,6 +688,10 @@
   border-radius: 16px;
   font-size: 14px;
   font-weight: 500;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition:
     background-color 150ms ease,
     color 150ms ease;
@@ -710,6 +731,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  outline: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition:
     background-color 150ms ease,
     color 150ms ease,
@@ -763,13 +787,21 @@
 .searchItem {
   width: 100%;
   text-align: left;
-  padding-left: 16px;
-  padding-right: 16px;
   padding-top: 16px;
   padding-bottom: 16px;
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  background: #ffffff;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 150ms ease;
+}
+
+.searchItem:active {
+  background: #f4f3f1;
 }
 
 .searchItemBorder {
@@ -779,11 +811,13 @@
 .pvzListItem {
   width: 100%;
   text-align: left;
-  padding-left: 16px;
-  padding-right: 16px;
   padding-top: 16px;
   padding-bottom: 16px;
   transition: background-color 150ms ease;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .pvzListItemActive {
@@ -796,4 +830,71 @@
 
 .pvzListItemBorder {
   border-bottom: 1px solid #e5e5e5;
+}
+
+.pvzModalRoot {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: 28rem;
+  z-index: 2000;
+  transform: translateX(-50%);
+}
+
+.pvzModalBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  transition: opacity 240ms ease;
+}
+
+.pvzModalBackdropOpen {
+  opacity: 1;
+}
+
+.pvzModalBackdropClosed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pvzModalSheetWrap {
+  transition:
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 240ms ease;
+  will-change: transform, opacity;
+}
+
+.pvzModalSheetOpen {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.pvzModalSheetClosed {
+  transform: translateX(-50%) translateY(16px);
+  opacity: 0;
+}
+
+.geoToast {
+  transition:
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 200ms ease;
+  will-change: transform, opacity;
+}
+
+.geoToastOpen {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.geoToastClosed {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pvzModalBackdrop,
+  .pvzModalSheetWrap,
+  .geoToast {
+    transition: none;
+  }
 }

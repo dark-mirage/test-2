@@ -304,6 +304,7 @@
 .c54 {
   display: grid;
 }
+
 .c55 {
   padding: 0.25rem;
   display: flex;
@@ -320,20 +321,20 @@
   height: 100%;
 }
 .c57 {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   color: #000000;
 }
 .c58 {
-  font-size: 40px;
-  font-weight: 300;
-  line-height: 100%;
-  color: #000000;
+  font-size: 40.25px;
+  font-weight: 200;
+  line-height: 106%;
+  color: #2d2d2d;
 }
 .c59 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #000000;
+  font-size: 11px;
+  font-weight: 500;
+  color: #2d2d2d;
 }
 .c60 {
   margin-top: 1rem;
@@ -553,6 +554,35 @@
   width: 100%;
   max-width: 28rem;
 }
+
+.checkoutModalBackdropOpen {
+  opacity: 1;
+}
+
+.checkoutModalBackdropClosed {
+  opacity: 0;
+}
+
+.c103 {
+  transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity;
+}
+
+.checkoutModalSheet {
+  left: 50%;
+  bottom: 0;
+  transform: translate3d(-50%, 100%, 0);
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.checkoutModalSheetOpen {
+  transform: translate3d(-50%, 0, 0);
+}
+
+.checkoutModalSheetClosed {
+  transform: translate3d(-50%, 100%, 0);
+}
 .c105 {
   background: #ffffff;
   border-top-left-radius: 28px;
@@ -664,6 +694,11 @@
   left: 0;
   background: rgba(0, 0, 0, 0.4);
 }
+
+.c124 {
+  transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity;
+}
 .c125 {
   position: absolute;
   width: 100%;
@@ -690,9 +725,7 @@
   background: #e5e5e5;
 }
 .c129 {
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-bottom: 1rem;
+  padding: 1rem;
 }
 .c130 {
   display: flex;
@@ -711,6 +744,9 @@
   border-width: 1px;
   border-style: solid;
   border-color: #e5e5e5;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
 .c133 {
   opacity: 0.8;
@@ -725,10 +761,12 @@
   margin-top: 0.75rem;
 }
 .c136 {
-  margin-top: 0.75rem;
-  font-size: 14px;
+  margin-top: 16px;
+  font-size: 15px;
   color: #7e7e7e;
-  text-decoration: underline;
+  text-decoration: none;
+  background: none;
+  border: none;
 }
 .c137 {
   margin-top: 1rem;
@@ -828,7 +866,9 @@
   text-align: left;
   font-size: 12px;
   color: #7e7e7e;
-  text-decoration: underline;
+  text-decoration: none;
+  background: none;
+  border: none;
 }
 .c150 {
   margin-top: 1rem;
@@ -861,6 +901,20 @@
   bottom: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.4);
+}
+
+.c154 {
+  transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c103,
+  .c124,
+  .c154,
+  .checkoutModalSheet {
+    transition: none;
+  }
 }
 .c155 {
   position: absolute;
@@ -1034,8 +1088,8 @@
 }
 
 .tw18 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .tw19 {
@@ -1288,19 +1342,23 @@
 }
 
 .paymentOption {
-  border-radius: 16px;
-  background: #f4f3f1;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 11px;
   border-width: 2px;
   border-style: solid;
+  border-radius: 16px;
+  background: #f4f3f1;
 }
 
 .paymentOptionSbp {
+  display: flex;
+  background: none;
   align-items: flex-start;
-  justify-content: flex-start;
-  gap: 8px;
+  justify-content: center;
+  padding: 12px 14px;
+  min-height: 70px;
+  gap: 12px;
 }
 
 .paymentOptionCard {
@@ -1314,11 +1372,56 @@
 }
 
 .paymentOptionUnselectedSbp {
-  border-color: #2d2d2d47;
+  border-color: #e5e5e5;
 }
 
 .paymentOptionUnselectedCard {
   border-color: #e5e5e5;
+}
+
+.paymentGrid3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.paymentOptionSavedCard {
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+}
+
+.paymentOptionAddCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardBadge {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+}
+
+.savedCardText {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
+  line-height: 1.1;
+}
+
+.addCardPlus {
+  color: #2d2d2d;
+  font-size: 40.25px;
+  font-weight: 200;
+  line-height: 1;
+}
+
+.addCardText {
+  font-size: 11px;
+  font-weight: 400;
+  color: #2d2d2d;
+  line-height: 1.1;
 }
 
 .toggle {
@@ -1377,15 +1480,34 @@
   border-radius: 16px;
   font-size: 15px;
   font-weight: 500;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
+  padding: 0 16px;
   user-select: none;
   transition:
     transform 120ms ease,
     opacity 120ms ease,
     background-color 150ms ease;
+}
+
+.payButtonSide {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.payButtonLabel {
+  justify-self: center;
+  white-space: nowrap;
+}
+
+.payButtonSuffix {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
 }
 .payButton:active {
   transform: scale(0.98);

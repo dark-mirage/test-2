@@ -5,12 +5,49 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/components/blocks/cart/useCart";
 import styles from "./page.module.css";
 import cn from "clsx";
+import SplitPaymentSheet from "@/components/blocks/product/SplitPaymentSheet";
 
 const CHECKOUT_SELECTED_KEY = "loyaltymarket_checkout_selected_ids_v1";
 const CHECKOUT_PROMO_KEY = "loyaltymarket_checkout_promo_v1";
 const CHECKOUT_RECIPIENT_KEY = "loyaltymarket_checkout_recipient_v1";
 const CHECKOUT_CUSTOMS_KEY = "loyaltymarket_checkout_customs_v1";
 const CHECKOUT_CARD_KEY = "loyaltymarket_checkout_card_v1";
+
+const CHECKOUT_MODAL_ANIMATION_MS = 240;
+const CHECKOUT_MODAL_UNMOUNT_DELAY_MS = CHECKOUT_MODAL_ANIMATION_MS + 30;
+
+function useAnimatedPresence(open) {
+  const [mounted, setMounted] = useState(open);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    let frame1 = 0;
+    let frame2 = 0;
+    let timer;
+
+    if (open) {
+      frame1 = requestAnimationFrame(() => {
+        setMounted(true);
+        setActive(false);
+        frame2 = requestAnimationFrame(() => setActive(true));
+      });
+    } else {
+      frame1 = requestAnimationFrame(() => setActive(false));
+      timer = setTimeout(
+        () => setMounted(false),
+        CHECKOUT_MODAL_UNMOUNT_DELAY_MS,
+      );
+    }
+
+    return () => {
+      if (frame1) cancelAnimationFrame(frame1);
+      if (frame2) cancelAnimationFrame(frame2);
+      if (timer) clearTimeout(timer);
+    };
+  }, [open]);
+
+  return { mounted, active };
+}
 
 /**
  * @typedef {{ fullName: string, phoneDigits: string, email: string }} CheckoutRecipient
@@ -411,7 +448,10 @@ function CheckoutPageInner() {
 
   const closeCardModal = () => {
     setIsCardModalOpen(false);
-    if (!card) setPaymentMethod("sbp");
+    if (!card) {
+      setPaymentMethod("sbp");
+      setUseSplit(false);
+    }
   };
 
   const openCardModal = () => {
@@ -429,6 +469,11 @@ function CheckoutPageInner() {
   const [usePoints, setUsePoints] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("sbp");
   const [useSplit, setUseSplit] = useState(false);
+  const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
+
+  const recipientSheet = useAnimatedPresence(isRecipientModalOpen);
+  const customsSheet = useAnimatedPresence(isCustomsModalOpen);
+  const cardSheet = useAnimatedPresence(isCardModalOpen);
 
   const [selectedIds, setSelectedIds] = useState(() => new Set());
   const [promo, setPromo] = useState(null);
@@ -482,6 +527,20 @@ function CheckoutPageInner() {
   const discountRub = selectedQuantity > 0 ? (promo?.discountRub ?? 0) : 0;
   const pointsRub = selectedQuantity > 0 && usePoints ? 200 : 0;
   const totalRub = Math.max(0, selectedSubtotalRub - discountRub - pointsRub);
+
+  const payButtonTitle = useSplit
+    ? "Оформить сплит"
+    : paymentMethod === "sbp"
+      ? "Оплатить через СБП"
+      : "Оплатить картой";
+
+  const payButtonSuffix =
+    paymentMethod === "card" && card?.last4 ? `…${card.last4}` : "";
+
+  const splitPayment = useMemo(
+    () => ({ count: 4, amount: "880", text: "без переплаты" }),
+    [],
+  );
 
   return (
     <div className={styles.c2}>
@@ -663,11 +722,19 @@ function CheckoutPageInner() {
           )}
 
           <div className={styles.c53}>
-            <div className={cn(styles.c54, styles.tw18)}>
+            <div
+              className={cn(
+                styles.c54,
+                card ? styles.paymentGrid3 : styles.tw18,
+              )}
+            >
               <button
                 type="button"
                 aria-pressed={paymentMethod === "sbp"}
-                onClick={() => setPaymentMethod("sbp")}
+                onClick={() => {
+                  setUseSplit(false);
+                  setPaymentMethod("sbp");
+                }}
                 className={cn(
                   styles.paymentOption,
                   styles.paymentOptionSbp,
@@ -685,26 +752,64 @@ function CheckoutPageInner() {
                 </span>
                 <span className={styles.c57}>СБП</span>
               </button>
-              <button
-                type="button"
-                aria-pressed={paymentMethod === "card"}
-                onClick={() => {
-                  setPaymentMethod("card");
-                  openCardModal();
-                }}
-                className={cn(
-                  styles.paymentOption,
-                  styles.paymentOptionCard,
-                  paymentMethod === "card"
-                    ? styles.paymentOptionSelected
-                    : styles.paymentOptionUnselectedCard,
-                )}
-              >
-                <span className={styles.c58}>{card ? "••••" : "+"}</span>
-                <span className={styles.c59}>
-                  {card ? `Карта •••• ${card.last4}` : "Добавить карту"}
-                </span>
-              </button>
+
+              {card ? (
+                <button
+                  type="button"
+                  aria-pressed={paymentMethod === "card"}
+                  onClick={() => setPaymentMethod("card")}
+                  className={cn(
+                    styles.paymentOption,
+                    styles.paymentOptionSavedCard,
+                    paymentMethod === "card"
+                      ? styles.paymentOptionSelected
+                      : styles.paymentOptionUnselectedCard,
+                  )}
+                >
+                  <span className={styles.cardBadge}>
+                    <img src="/img/tbanklogo.png" alt="tbanklogo" />
+                  </span>
+                  <span className={styles.savedCardText}>•• {card.last4}</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  aria-pressed={paymentMethod === "card"}
+                  onClick={() => {
+                    setPaymentMethod("card");
+                    openCardModal();
+                  }}
+                  className={cn(
+                    styles.paymentOption,
+                    styles.paymentOptionAddCard,
+                    paymentMethod === "card"
+                      ? styles.paymentOptionSelected
+                      : styles.paymentOptionUnselectedCard,
+                  )}
+                >
+                  <span className={styles.addCardPlus}>+</span>
+                  <span className={styles.addCardText}>Добавить карту</span>
+                </button>
+              )}
+
+              {card ? (
+                <button
+                  type="button"
+                  aria-label="Добавить карту"
+                  onClick={() => {
+                    setPaymentMethod("card");
+                    openCardModal();
+                  }}
+                  className={cn(
+                    styles.paymentOption,
+                    styles.paymentOptionAddCard,
+                    styles.paymentOptionUnselectedCard,
+                  )}
+                >
+                  <span className={styles.addCardPlus}>+</span>
+                  <span className={styles.addCardText}>Добавить карту</span>
+                </button>
+              ) : null}
             </div>
 
             <div className={cn(styles.c60, styles.spaceY2)}>
@@ -809,7 +914,16 @@ function CheckoutPageInner() {
                     type="button"
                     aria-label="Включить сплит"
                     aria-pressed={useSplit}
-                    onClick={() => setUseSplit((v) => !v)}
+                    onClick={() => {
+                      setUseSplit((prev) => {
+                        const next = !prev;
+                        if (next) {
+                          setPaymentMethod("card");
+                          if (!card) openCardModal();
+                        }
+                        return next;
+                      });
+                    }}
                     className={cn(
                       styles.toggle,
                       useSplit ? styles.toggleOn : styles.toggleOff,
@@ -843,6 +957,13 @@ function CheckoutPageInner() {
               <button
                 type="button"
                 disabled={selectedQuantity === 0}
+                onClick={() => {
+                  if (selectedQuantity === 0) return;
+                  if (useSplit) {
+                    setIsSplitSheetOpen(true);
+                    return;
+                  }
+                }}
                 className={cn(
                   styles.payButton,
                   selectedQuantity > 0
@@ -850,19 +971,29 @@ function CheckoutPageInner() {
                     : styles.payButtonDisabled,
                 )}
               >
-                <span>
-                  {paymentMethod === "sbp"
-                    ? "Оплатить через СБП"
-                    : "Оплатить картой"}
+                <span className={styles.payButtonSide} />
+                <span className={styles.payButtonLabel}>{payButtonTitle}</span>
+                <span className={styles.payButtonSide}>
+                  {paymentMethod === "sbp" ? (
+                    <img
+                      src="/icons/global/cbp.png"
+                      alt=""
+                      className={cn(styles.c96, styles.tw34)}
+                    />
+                  ) : payButtonSuffix ? (
+                    <span className={styles.payButtonSuffix}>
+                      {payButtonSuffix}
+                    </span>
+                  ) : null}
                 </span>
-                {paymentMethod === "sbp" ? (
-                  <img
-                    src="/icons/global/cbp.png"
-                    alt=""
-                    className={cn(styles.c96, styles.tw34)}
-                  />
-                ) : null}
               </button>
+
+              <SplitPaymentSheet
+                open={isSplitSheetOpen}
+                onClose={() => setIsSplitSheetOpen(false)}
+                price={formatRub(totalRub)}
+                splitPayment={splitPayment}
+              />
 
               <div className={cn(styles.c97, styles.tw35)}>
                 <img src="/icons/global/security.png" alt="" />{" "}
@@ -870,10 +1001,7 @@ function CheckoutPageInner() {
               </div>
 
               <div className={cn(styles.c98, styles.tw36)}>
-                Нажимая «
-                {paymentMethod === "sbp"
-                  ? "Оплатить через СБП"
-                  : "Оплатить картой"}
+                Нажимая «{payButtonTitle}
                 », вы принимаете условия{" "}
                 <a href="#" className={styles.c99}>
                   публичной оферты
@@ -893,16 +1021,29 @@ function CheckoutPageInner() {
         </div>
       </div>
 
-      {isRecipientModalOpen ? (
+      {recipientSheet.mounted ? (
         <div className={styles.c102} style={{ zIndex: 2500 }}>
           <button
             type="button"
             aria-label="Закрыть"
             onClick={() => setIsRecipientModalOpen(false)}
-            className={styles.c103}
+            className={cn(
+              styles.c103,
+              recipientSheet.active
+                ? styles.checkoutModalBackdropOpen
+                : styles.checkoutModalBackdropClosed,
+            )}
           />
 
-          <div className={cn(styles.c104, styles.tw37, styles.leftHalf)}>
+          <div
+            className={cn(
+              styles.c104,
+              styles.checkoutModalSheet,
+              recipientSheet.active
+                ? styles.checkoutModalSheetOpen
+                : styles.checkoutModalSheetClosed,
+            )}
+          >
             <div className={styles.c105}>
               <div className={styles.c106}>
                 <div className={cn(styles.c107, styles.tw38)} />
@@ -1079,36 +1220,50 @@ function CheckoutPageInner() {
         </div>
       ) : null}
 
-      {isCustomsModalOpen ? (
+      {customsSheet.mounted ? (
         <div className={styles.c123} style={{ zIndex: 2500 }}>
           <button
             type="button"
             aria-label="Закрыть"
             onClick={() => setIsCustomsModalOpen(false)}
-            className={styles.c124}
+            className={cn(
+              styles.c124,
+              customsSheet.active
+                ? styles.checkoutModalBackdropOpen
+                : styles.checkoutModalBackdropClosed,
+            )}
           />
 
-          <div className={cn(styles.c125, styles.tw45, styles.leftHalf)}>
+          <div
+            className={cn(
+              styles.c125,
+              styles.checkoutModalSheet,
+              customsSheet.active
+                ? styles.checkoutModalSheetOpen
+                : styles.checkoutModalSheetClosed,
+            )}
+          >
             <div className={styles.c126}>
               <div className={styles.c127}>
                 <div className={cn(styles.c128, styles.tw46)} />
               </div>
 
+              <button
+                type="button"
+                aria-label="Закрыть"
+                onClick={() => setIsCustomsModalOpen(false)}
+                className={cn(styles.c132, styles.tw48)}
+              >
+                <img
+                  src="/icons/global/xicon.svg"
+                  alt=""
+                  className={cn(styles.c133, styles.tw49)}
+                />
+              </button>
+
               <div className={styles.c129}>
                 <div className={cn(styles.c130, styles.tw47)}>
                   <div className={cn(styles.c131)}>Данные для таможни</div>
-                  <button
-                    type="button"
-                    aria-label="Закрыть"
-                    onClick={() => setIsCustomsModalOpen(false)}
-                    className={cn(styles.c132, styles.tw48)}
-                  >
-                    <img
-                      src="/icons/global/xicon.svg"
-                      alt=""
-                      className={cn(styles.c133, styles.tw49)}
-                    />
-                  </button>
                 </div>
 
                 <div className={styles.c134}>
@@ -1259,16 +1414,29 @@ function CheckoutPageInner() {
         </div>
       ) : null}
 
-      {isCardModalOpen ? (
+      {cardSheet.mounted ? (
         <div className={styles.c153} style={{ zIndex: 2500 }}>
           <button
             type="button"
             aria-label="Закрыть"
             onClick={closeCardModal}
-            className={styles.c154}
+            className={cn(
+              styles.c154,
+              cardSheet.active
+                ? styles.checkoutModalBackdropOpen
+                : styles.checkoutModalBackdropClosed,
+            )}
           />
 
-          <div className={cn(styles.c155, styles.tw61, styles.leftHalf)}>
+          <div
+            className={cn(
+              styles.c155,
+              styles.checkoutModalSheet,
+              cardSheet.active
+                ? styles.checkoutModalSheetOpen
+                : styles.checkoutModalSheetClosed,
+            )}
+          >
             <div className={styles.c156}>
               <div className={styles.c157}>
                 <div className={cn(styles.c158, styles.tw62)} />

@@ -166,6 +166,42 @@ export default function CheckoutPickupPage() {
   );
 }
 
+const PICKUP_MODAL_ANIMATION_MS = 240;
+const PICKUP_MODAL_UNMOUNT_DELAY_MS = PICKUP_MODAL_ANIMATION_MS + 30;
+
+function useAnimatedPresence(open) {
+  const [mounted, setMounted] = useState(open);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    let frame1 = 0;
+    let frame2 = 0;
+    let timer;
+
+    if (open) {
+      frame1 = requestAnimationFrame(() => {
+        setMounted(true);
+        setActive(false);
+        frame2 = requestAnimationFrame(() => setActive(true));
+      });
+    } else {
+      frame1 = requestAnimationFrame(() => setActive(false));
+      timer = setTimeout(
+        () => setMounted(false),
+        PICKUP_MODAL_UNMOUNT_DELAY_MS,
+      );
+    }
+
+    return () => {
+      if (frame1) cancelAnimationFrame(frame1);
+      if (frame2) cancelAnimationFrame(frame2);
+      if (timer) clearTimeout(timer);
+    };
+  }, [open]);
+
+  return { mounted, active };
+}
+
 function CheckoutPickupPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -244,6 +280,34 @@ function CheckoutPickupPageInner() {
   const [geoError, setGeoError] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const lastUserLocationRef = useRef(null);
+
+  const [geoErrorDisplay, setGeoErrorDisplay] = useState(null);
+  useEffect(() => {
+    if (geoError) setGeoErrorDisplay(geoError);
+  }, [geoError]);
+
+  const geoErrorPresence = useAnimatedPresence(Boolean(geoError));
+  const pvzModalPresence = useAnimatedPresence(
+    Boolean(selectedPvz && isPvzModalOpen),
+  );
+
+  useEffect(() => {
+    if (!pvzModalPresence.mounted) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setIsPvzModalOpen(false);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [pvzModalPresence.mounted]);
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -1120,9 +1184,22 @@ function CheckoutPickupPageInner() {
           </button>
 
           {geoError ? (
-            <div className={cn(styles.c19, styles.tw11)}>
-              <div className={cn(styles.c20, styles.tw12)}>{geoError}</div>
-            </div>
+            geoErrorPresence.mounted ? (
+              <div className={cn(styles.c19, styles.tw11)}>
+                <div
+                  className={cn(
+                    styles.c20,
+                    styles.tw12,
+                    styles.geoToast,
+                    geoErrorPresence.active
+                      ? styles.geoToastOpen
+                      : styles.geoToastClosed,
+                  )}
+                >
+                  {geoErrorDisplay}
+                </div>
+              </div>
+            ) : null
           ) : null}
 
           <div className={cn(styles.c21, styles.tw13)}>
@@ -1130,115 +1207,138 @@ function CheckoutPickupPageInner() {
           </div>
         </div>
 
-        {selectedPvz && isPvzModalOpen ? (
-          <div
-            className={cn(styles.c23, styles.tw15, styles.leftHalf)}
-            style={{ zIndex: 2000 }}
-          >
-            <div className={styles.c24}>
-              <div className={cn(styles.c25)}>
-                <div className={styles.c26}>
-                  <div className={cn(styles.c27, styles.tw16)} />
-                </div>
-
-                <div className={styles.c28}>
-                  <div className={cn(styles.c29, styles.tw17)}>
-                    <div className={cn(styles.c30)}>{selectedPvz.provider}</div>
-                    <button
-                      type="button"
-                      aria-label="Закрыть"
-                      onClick={() => setIsPvzModalOpen(false)}
-                      className={cn(styles.c31, styles.tw18)}
-                    >
-                      <img
-                        src="/icons/global/xicon.svg"
-                        alt=""
-                        className={cn(styles.c32, styles.tw19)}
-                      />
-                    </button>
+        {pvzModalPresence.mounted && selectedPvz ? (
+          <div className={cn(styles.pvzModalRoot, styles.leftHalf)}>
+            <div
+              className={cn(
+                styles.pvzModalBackdrop,
+                pvzModalPresence.active
+                  ? styles.pvzModalBackdropOpen
+                  : styles.pvzModalBackdropClosed,
+              )}
+              onClick={() => setIsPvzModalOpen(false)}
+            />
+            <div
+              className={cn(
+                styles.c23,
+                styles.tw15,
+                styles.pvzModalSheetWrap,
+                pvzModalPresence.active
+                  ? styles.pvzModalSheetOpen
+                  : styles.pvzModalSheetClosed,
+              )}
+              style={{ zIndex: 2000 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className={styles.c24}>
+                <div className={cn(styles.c25)}>
+                  <div className={styles.c26}>
+                    <div className={cn(styles.c27, styles.tw16)} />
                   </div>
 
-                  <div className={cn(styles.c33, styles.spaceY3)}>
-                    <div className={cn(styles.c34, styles.tw20)}>
-                      <MapPin className={cn(styles.c35, styles.tw21)} />
-                      <div className={styles.c36}>{selectedPvz.address}</div>
+                  <div className={styles.c28}>
+                    <div className={cn(styles.c29, styles.tw17)}>
+                      <div className={cn(styles.c30)}>
+                        {selectedPvz.provider}
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="Закрыть"
+                        onClick={() => setIsPvzModalOpen(false)}
+                        className={cn(styles.c31, styles.tw18)}
+                      >
+                        <img
+                          src="/icons/global/xicon.svg"
+                          alt=""
+                          className={cn(styles.c32, styles.tw19)}
+                        />
+                      </button>
                     </div>
 
-                    <div className={cn(styles.c37, styles.tw22)}>
-                      <CalendarDays className={cn(styles.c38, styles.tw23)} />
-                      <div className={styles.c39}>
-                        {selectedPvz.deliveryText}
+                    <div className={cn(styles.c33, styles.spaceY3)}>
+                      <div className={cn(styles.c34, styles.tw20)}>
+                        <MapPin className={cn(styles.c35, styles.tw21)} />
+                        <div className={styles.c36}>{selectedPvz.address}</div>
+                      </div>
+
+                      <div className={cn(styles.c37, styles.tw22)}>
+                        <CalendarDays className={cn(styles.c38, styles.tw23)} />
+                        <div className={styles.c39}>
+                          {selectedPvz.deliveryText}
+                        </div>
+                      </div>
+
+                      <div className={cn(styles.c40, styles.tw24)}>
+                        <Clock className={cn(styles.c41, styles.tw25)} />
+                        <div className={cn(styles.c42, styles.tw26)}>
+                          <div>Понедельник</div>
+                          <div className={cn(styles.c43, styles.tw27)}>
+                            08:30–20:00
+                          </div>
+
+                          <div>Вторник</div>
+                          <div className={cn(styles.c44, styles.tw28)}>
+                            08:30–20:00
+                          </div>
+
+                          <div>Среда</div>
+                          <div className={cn(styles.c45, styles.tw29)}>
+                            08:30–20:00
+                          </div>
+
+                          <div>Четверг</div>
+                          <div className={cn(styles.c46, styles.tw30)}>
+                            08:30–20:00
+                          </div>
+
+                          <div>Пятница</div>
+                          <div className={cn(styles.c47, styles.tw31)}>
+                            08:30–20:00
+                          </div>
+
+                          <div>Суббота</div>
+                          <div className={cn(styles.c48, styles.tw32)}>
+                            08:30–20:00
+                          </div>
+
+                          <div>Воскресенье</div>
+                          <div className={cn(styles.c49, styles.tw33)}>
+                            08:30–20:00
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={cn(styles.c50, styles.tw34)}>
+                        <Hourglass className={cn(styles.c51, styles.tw35)} />
+                        <div className={styles.c52}>Срок хранения — 7 дней</div>
+                      </div>
+
+                      <div className={cn(styles.c53, styles.tw36)}>
+                        <CreditCard className={cn(styles.c54, styles.tw37)} />
+                        <div className={styles.c55}>
+                          {selectedPvz.priceText}
+                        </div>
                       </div>
                     </div>
 
-                    <div className={cn(styles.c40, styles.tw24)}>
-                      <Clock className={cn(styles.c41, styles.tw25)} />
-                      <div className={cn(styles.c42, styles.tw26)}>
-                        <div>Понедельник</div>
-                        <div className={cn(styles.c43, styles.tw27)}>
-                          08:30–20:00
-                        </div>
-
-                        <div>Вторник</div>
-                        <div className={cn(styles.c44, styles.tw28)}>
-                          08:30–20:00
-                        </div>
-
-                        <div>Среда</div>
-                        <div className={cn(styles.c45, styles.tw29)}>
-                          08:30–20:00
-                        </div>
-
-                        <div>Четверг</div>
-                        <div className={cn(styles.c46, styles.tw30)}>
-                          08:30–20:00
-                        </div>
-
-                        <div>Пятница</div>
-                        <div className={cn(styles.c47, styles.tw31)}>
-                          08:30–20:00
-                        </div>
-
-                        <div>Суббота</div>
-                        <div className={cn(styles.c48, styles.tw32)}>
-                          08:30–20:00
-                        </div>
-
-                        <div>Воскресенье</div>
-                        <div className={cn(styles.c49, styles.tw33)}>
-                          08:30–20:00
-                        </div>
-                      </div>
+                    <div className={styles.c56}>
+                      <Button
+                        type="button"
+                        variant="primary"
+                        size="lg"
+                        className={styles.c57}
+                        onClick={() => {
+                          if (!selectedPvz) return;
+                          const params = new URLSearchParams();
+                          params.set("pickupPvzId", selectedPvz.id);
+                          params.set("pickupProvider", selectedPvz.provider);
+                          params.set("pickupAddress", selectedPvz.address);
+                          router.push(`/checkout?${params.toString()}`);
+                        }}
+                      >
+                        Доставить сюда
+                      </Button>
                     </div>
-
-                    <div className={cn(styles.c50, styles.tw34)}>
-                      <Hourglass className={cn(styles.c51, styles.tw35)} />
-                      <div className={styles.c52}>Срок хранения — 7 дней</div>
-                    </div>
-
-                    <div className={cn(styles.c53, styles.tw36)}>
-                      <CreditCard className={cn(styles.c54, styles.tw37)} />
-                      <div className={styles.c55}>{selectedPvz.priceText}</div>
-                    </div>
-                  </div>
-
-                  <div className={styles.c56}>
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="lg"
-                      className={styles.c57}
-                      onClick={() => {
-                        if (!selectedPvz) return;
-                        const params = new URLSearchParams();
-                        params.set("pickupPvzId", selectedPvz.id);
-                        params.set("pickupProvider", selectedPvz.provider);
-                        params.set("pickupAddress", selectedPvz.address);
-                        router.push(`/checkout?${params.toString()}`);
-                      }}
-                    >
-                      Доставить сюда
-                    </Button>
                   </div>
                 </div>
               </div>
