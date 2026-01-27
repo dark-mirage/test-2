@@ -11,6 +11,9 @@ export default function ProductCard({
   variant = "normal",
   hideFavoriteButton = false,
   showStars = false,
+  starsInteractive = false,
+  onRatingChange,
+  onStarSelect,
 }) {
   const isCompact = variant === "compact";
   const router = useRouter();
@@ -41,6 +44,12 @@ export default function ProductCard({
     (typeof product?.deliveryText === "string" &&
       product.deliveryText.trim()) ||
     "Доставка";
+
+  const currentRating = (() => {
+    const n = Number(product?.rating ?? 0);
+    if (!Number.isFinite(n)) return 0;
+    return Math.max(0, Math.min(5, Math.trunc(n)));
+  })();
 
   return (
     <div
@@ -75,16 +84,47 @@ export default function ProductCard({
         </div>
 
         {showStars && !isCompact ? (
-          <div className={styles.starsRow} aria-hidden="true">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <img
-                key={i}
-                src="/icons/product/Star.svg"
-                alt=""
-                className={styles.star}
-                loading="lazy"
-              />
-            ))}
+          <div className={styles.starsRow} aria-label="Оценка" role="group">
+            {Array.from({ length: 5 }).map((_, i) => {
+              const value = i + 1;
+              const isActive = value <= currentRating;
+
+              if (!starsInteractive) {
+                return (
+                  <img
+                    key={i}
+                    src="/icons/product/Star.svg"
+                    alt=""
+                    className={isActive ? styles.starActive : styles.star}
+                    loading="lazy"
+                    aria-hidden="true"
+                  />
+                );
+              }
+
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className={styles.starBtn}
+                  aria-label={`Оценить на ${value}`}
+                  aria-pressed={isActive}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRatingChange?.(product?.id, value);
+                    onStarSelect?.(product?.id, value);
+                  }}
+                >
+                  <img
+                    src="/icons/product/Star.svg"
+                    alt=""
+                    className={isActive ? styles.starActive : styles.star}
+                    loading="lazy"
+                    aria-hidden="true"
+                  />
+                </button>
+              );
+            })}
           </div>
         ) : null}
 

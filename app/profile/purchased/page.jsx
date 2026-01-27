@@ -3,7 +3,9 @@ import Footer from "@/components/layout/Footer";
 import ProductSection from "@/components/blocks/product/ProductSection";
 import BottomSheet from "@/components/ui/BottomSheet";
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
+import { mockPurchasedProducts } from "./mockPurchasedProducts";
 
 function parsePriceRub(value) {
   const raw = String(value ?? "");
@@ -19,68 +21,36 @@ const SORT_OPTIONS = [
   { key: "expensive", label: "Подороже" },
 ];
 
+const RATINGS_KEY = "lm:purchasedRatings";
+
 export default function PurchasedPage() {
+  const router = useRouter();
+
   useEffect(() => {
     // Telegram WebApp topbar title odatda document.title dan olinadi.
     document.title = "Купленные товары";
   }, []);
 
-  const [purchasedProducts, setPurchasedProducts] = useState([
-    {
-      id: 1,
-      name: "Туфли Prada Monolith Brushed Original Bla...",
-      brand: "Prada",
-      price: "112 490 ₽",
-      image: "/products/shoes-1.png",
-      isFavorite: false,
-      deliveryDate: "30 марта",
-    },
-    {
-      id: 2,
-      name: "Лонгслив Comme Des Garcons Play",
-      brand: "Comme Des Garcons",
-      price: "12 990 ₽",
-      image: "/products/t-shirt-1.png",
-      isFavorite: true,
-      deliveryDate: "Послезавтра",
-    },
-    {
-      id: 3,
-      name: "Футболка Daze",
-      brand: "Daze",
-      price: "2 890 ₽",
-      image: "/products/t-shirt-2.png",
-      isFavorite: false,
-      deliveryDate: "30 марта",
-    },
-    {
-      id: 4,
-      name: "Кроссовки Nike Dunk Low",
-      brand: "Nike",
-      price: "12 990 ₽",
-      image: "/products/shoes-2.png",
-      isFavorite: true,
-      deliveryDate: "Послезавтра",
-    },
-    {
-      id: 5,
-      name: "Куртка зимняя",
-      brand: "NoName",
-      price: "15 990 ₽",
-      image: "/products/t-shirt-2.png",
-      isFavorite: false,
-      deliveryDate: "30 марта",
-    },
-    {
-      id: 6,
-      name: "Лонгслив Comme Des Garçons Play",
-      brand: "Comme Des Garcons",
-      price: "2 890 ₽",
-      image: "/products/t-shirt-1.png",
-      isFavorite: false,
-      deliveryDate: "Послезавтра",
-    },
-  ]);
+  const [purchasedProducts, setPurchasedProducts] = useState(() => {
+    const base = mockPurchasedProducts.map((p) => ({ ...p }));
+
+    if (typeof window === "undefined") return base;
+
+    try {
+      const raw = localStorage.getItem(RATINGS_KEY);
+      const saved = raw ? JSON.parse(raw) : null;
+      if (!saved || typeof saved !== "object" || Array.isArray(saved)) {
+        return base;
+      }
+
+      return base.map((p) => ({
+        ...p,
+        rating: typeof saved[p.id] === "number" ? saved[p.id] : (p.rating ?? 0),
+      }));
+    } catch {
+      return base;
+    }
+  });
 
   const toggleFavorite = (id) => {
     setPurchasedProducts((prev) =>
@@ -90,6 +60,34 @@ export default function PurchasedPage() {
           : product,
       ),
     );
+  };
+
+  const setRating = (id, rating) => {
+    if (!id) return;
+    setPurchasedProducts((prev) =>
+      prev.map((product) =>
+        product.id === id ? { ...product, rating } : product,
+      ),
+    );
+
+    try {
+      const raw = localStorage.getItem(RATINGS_KEY);
+      const saved = raw ? JSON.parse(raw) : {};
+      const next =
+        saved && typeof saved === "object" && !Array.isArray(saved)
+          ? { ...saved }
+          : {};
+      next[id] = rating;
+      localStorage.setItem(RATINGS_KEY, JSON.stringify(next));
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleStarSelect = (id, rating) => {
+    setRating(id, rating);
+    if (!id) return;
+    router.push(`/profile/purchased/review/${id}?rating=${rating}`);
   };
 
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -196,7 +194,11 @@ export default function PurchasedPage() {
             products={displayedProducts}
             onToggleFavorite={toggleFavorite}
             layout="grid"
-            cardProps={{ showStars: true }}
+            cardProps={{
+              showStars: true,
+              starsInteractive: true,
+              onStarSelect: handleStarSelect,
+            }}
           />
 
           <ProductSection
@@ -204,7 +206,11 @@ export default function PurchasedPage() {
             products={displayedProducts}
             onToggleFavorite={toggleFavorite}
             layout="grid"
-            cardProps={{ showStars: true }}
+            cardProps={{
+              showStars: true,
+              starsInteractive: true,
+              onStarSelect: handleStarSelect,
+            }}
           />
         </div>
       </main>
