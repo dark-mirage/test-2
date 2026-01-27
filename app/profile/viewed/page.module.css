@@ -1,6 +1,12 @@
+.pageViewed {
+  padding-top: 98px;
+  min-height: var(--tg-viewport-stable-height, 100vh);
+  padding-bottom: calc(24px + var(--lm-footer-height, 0px));
+}
+
 .c1 {
   /* Avoid unstable 100vh in Telegram WebApp */
-  min-height: var(--tg-viewport-stable-height, 100vh);
+
   background: #f4f3f1;
 }
 .c2 {
@@ -16,16 +22,17 @@
   background: #ffffff;
 }
 .c3 {
-  margin-bottom: 15px;
-  padding-right: 15px;
   background: #f4f3f1;
-  border-radius: 0.75rem;
-  padding: 0.25rem;
-  padding-left: 16px;
+  border-radius: 6px;
+  padding: 6px 7px;
+  margin: 0 16px;
+  margin-top: 27px;
 }
 .c4 {
-  color: 15px;
   font-weight: 500;
-  line-height: 1.21em;
-  color: #000000;
+  font-size: 12px;
+  line-height: 106%;
+  text-transform: uppercase;
+  color: #7e7e7e;
+  vertical-align: middle;
 }

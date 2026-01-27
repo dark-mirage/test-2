@@ -1,5 +1,6 @@
 "use client";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import ProductSection from "@/components/blocks/product/ProductSection";
 import { useMemo, useState } from "react";
 import styles from "./page.module.css";
@@ -84,7 +85,7 @@ export default function ViewedPage() {
   }, []);
 
   return (
-    <div>
+    <div className={styles.pageViewed}>
       <Header title="Просмотренное"></Header>
       <main className={styles.c1}>
         <div className={styles.c2}>
@@ -99,6 +100,8 @@ export default function ViewedPage() {
           />
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
