@@ -49,6 +49,10 @@
   padding: 0;
 }
 
+a {
+  color: inherit;
+}
+
 html,
 body {
   height: 100%;
