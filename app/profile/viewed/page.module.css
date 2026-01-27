@@ -1,5 +1,5 @@
 .pageViewed {
-  padding-top: 98px;
+  padding-top: 50px;
   min-height: var(--tg-viewport-stable-height, 100vh);
   padding-bottom: calc(24px + var(--lm-footer-height, 0px));
 }
