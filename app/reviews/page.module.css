@@ -1,5 +1,222 @@
 .page {
-  min-height: var(--tg-viewport-height);
-  background: var(--items-background);
-  padding-bottom: 80px;
+  /* Avoid unstable 100vh in Telegram WebApp */
+  min-height: var(--tg-viewport-stable-height, 100vh);
+  background: #f4f3f1;
+  padding-bottom: calc(var(--lm-footer-height, 0px) + 16px);
+}
+
+.header {
+  padding-top: 50px;
+  padding-bottom: 12px;
+  background: #ffffff;
+  border-radius: 0 0 25px 25px;
+}
+
+.title {
+  margin: 0;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: center;
+  color: #000000;
+}
+
+.tabs {
+  margin-top: 10px;
+  padding: 0 12px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.tab {
+  border: 0;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 120ms ease,
+    filter 120ms ease,
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.tab:active {
+  transform: scale(0.98);
+  filter: brightness(0.98);
+}
+
+.tab:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.35);
+  outline-offset: 2px;
+}
+
+.tabActive {
+  background: #1f1f1f;
+  color: #ffffff;
+}
+
+.tabInactive {
+  background: #f1f1f1;
+  color: #111111;
+}
+
+.main {
+  /* keep content separated from header radius */
+  padding-top: 8px;
+}
+
+.list {
+  padding: 10px 12px 0;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.cardHeader {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.thumbWrap {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #f4f3f1;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb {
+  width: 34px;
+  height: 34px;
+  object-fit: cover;
+}
+
+.headerText {
+  min-width: 0;
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardMeta {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  color: #8a8a8a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.dot {
+  color: #b7b7b7;
+}
+
+.menuBtn {
+  border: 0;
+  background: transparent;
+  padding: 2px 6px;
+  cursor: pointer;
+  color: #b7b7b7;
+  font-size: 18px;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menuBtn:active {
+  transform: scale(0.98);
+}
+
+.reviewLine {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reviewDate {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  color: #8a8a8a;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.photos {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.photo {
+  width: 84px;
+  height: 84px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #f4f3f1;
+}
+
+.reviewText {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.reviewRow {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.reviewLabel {
+  font-weight: 600;
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.starOff {
+  opacity: 0.22;
+  filter: grayscale(1);
+}
+
+.starOn {
+  opacity: 1;
+  filter: none;
 }
