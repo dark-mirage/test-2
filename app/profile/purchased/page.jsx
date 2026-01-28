@@ -2,7 +2,13 @@
 import Footer from "@/components/layout/Footer";
 import ProductSection from "@/components/blocks/product/ProductSection";
 import BottomSheet from "@/components/ui/BottomSheet";
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { mockPurchasedProducts } from "./mockPurchasedProducts";
@@ -22,6 +28,60 @@ const SORT_OPTIONS = [
 ];
 
 const RATINGS_KEY = "lm:purchasedRatings";
+const REVIEW_PRODUCTS_KEY = "lm:reviewProducts";
+
+const EMPTY_OBJECT = Object.freeze({});
+
+function useLocalStorageObject(key, changeEventName) {
+  // `getSnapshot` must return the same reference when the underlying data
+  // hasn't changed, otherwise React can enter an update loop.
+  const cacheRef = useRef({
+    lastRaw: null,
+    lastValue: EMPTY_OBJECT,
+  });
+
+  const getSnapshot = () => {
+    let raw = null;
+    try {
+      raw = localStorage.getItem(key);
+    } catch {
+      raw = null;
+    }
+
+    if (raw === cacheRef.current.lastRaw) return cacheRef.current.lastValue;
+
+    let nextValue = EMPTY_OBJECT;
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          nextValue = parsed;
+        }
+      } catch {
+        nextValue = EMPTY_OBJECT;
+      }
+    }
+
+    cacheRef.current.lastRaw = raw;
+    cacheRef.current.lastValue = nextValue;
+    return nextValue;
+  };
+
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      // 'storage' fires for other tabs; we also dispatch a custom event for same-tab updates.
+      const handler = () => onStoreChange();
+      window.addEventListener("storage", handler);
+      window.addEventListener(changeEventName, handler);
+      return () => {
+        window.removeEventListener("storage", handler);
+        window.removeEventListener(changeEventName, handler);
+      };
+    },
+    getSnapshot,
+    () => EMPTY_OBJECT,
+  );
+}
 
 export default function PurchasedPage() {
   const router = useRouter();
@@ -31,26 +91,14 @@ export default function PurchasedPage() {
     document.title = "Купленные товары";
   }, []);
 
-  const [purchasedProducts, setPurchasedProducts] = useState(() => {
-    const base = mockPurchasedProducts.map((p) => ({ ...p }));
+  const ratingsFromStorage = useLocalStorageObject(RATINGS_KEY, "lm:ratings");
 
-    if (typeof window === "undefined") return base;
-
-    try {
-      const raw = localStorage.getItem(RATINGS_KEY);
-      const saved = raw ? JSON.parse(raw) : null;
-      if (!saved || typeof saved !== "object" || Array.isArray(saved)) {
-        return base;
-      }
-
-      return base.map((p) => ({
-        ...p,
-        rating: typeof saved[p.id] === "number" ? saved[p.id] : (p.rating ?? 0),
-      }));
-    } catch {
-      return base;
-    }
-  });
+  // IMPORTANT: Don't read `localStorage` in the initial state initializer.
+  // Client Components still render on the server, and differing initial state
+  // causes hydration mismatches (e.g. stars active vs inactive).
+  const [purchasedProducts, setPurchasedProducts] = useState(() =>
+    mockPurchasedProducts.map((p) => ({ ...p, rating: p.rating ?? 0 })),
+  );
 
   const toggleFavorite = (id) => {
     setPurchasedProducts((prev) =>
@@ -64,29 +112,55 @@ export default function PurchasedPage() {
 
   const setRating = (id, rating) => {
     if (!id) return;
-    setPurchasedProducts((prev) =>
-      prev.map((product) =>
-        product.id === id ? { ...product, rating } : product,
-      ),
-    );
 
     try {
-      const raw = localStorage.getItem(RATINGS_KEY);
-      const saved = raw ? JSON.parse(raw) : {};
-      const next =
-        saved && typeof saved === "object" && !Array.isArray(saved)
-          ? { ...saved }
-          : {};
+      const saved =
+        ratingsFromStorage && typeof ratingsFromStorage === "object"
+          ? ratingsFromStorage
+          : EMPTY_OBJECT;
+      const next = { ...saved };
       next[id] = rating;
       localStorage.setItem(RATINGS_KEY, JSON.stringify(next));
     } catch {
       // ignore
+    } finally {
+      // Ensure same-tab subscribers update.
+      try {
+        window.dispatchEvent(new Event("lm:ratings"));
+      } catch {
+        // ignore
+      }
     }
   };
 
   const handleStarSelect = (id, rating) => {
     setRating(id, rating);
     if (!id) return;
+
+    try {
+      const product = purchasedProducts.find((p) => p.id === id);
+      if (product) {
+        const imageFromMock = mockPurchasedProducts.find(
+          (p) => p.id === id,
+        )?.image;
+        const raw = localStorage.getItem(REVIEW_PRODUCTS_KEY);
+        const saved = raw ? JSON.parse(raw) : {};
+        const next =
+          saved && typeof saved === "object" && !Array.isArray(saved)
+            ? { ...saved }
+            : {};
+
+        next[id] = {
+          ...product,
+          rating,
+          image: product.image || imageFromMock,
+        };
+        localStorage.setItem(REVIEW_PRODUCTS_KEY, JSON.stringify(next));
+      }
+    } catch {
+      // ignore
+    }
+
     router.push(`/profile/purchased/review/${id}?rating=${rating}`);
   };
 
@@ -116,8 +190,14 @@ export default function PurchasedPage() {
         break;
     }
 
-    return list;
-  }, [purchasedProducts, sortKey]);
+    return list.map((p) => ({
+      ...p,
+      rating:
+        typeof ratingsFromStorage?.[p.id] === "number"
+          ? ratingsFromStorage[p.id]
+          : (p.rating ?? 0),
+    }));
+  }, [purchasedProducts, ratingsFromStorage, sortKey]);
 
   return (
     <div className="tg-viewport">
