@@ -23,6 +23,11 @@ export default function BottomSheet({
   const [active, setActive] = useState(false);
   const titleId = useId();
   const closeBtnRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     let frame1 = 0;
@@ -56,20 +61,21 @@ export default function BottomSheet({
     document.body.style.overflow = "hidden";
 
     const onKeyDown = (e) => {
-      if (e.key === "Escape") onClose?.();
+      if (e.key === "Escape") onCloseRef.current?.();
     };
 
     window.addEventListener("keydown", onKeyDown);
     if (open) {
       const el = initialFocusRef?.current || closeBtnRef.current;
-      el?.focus?.();
+      // Avoid stealing focus from active elements during re-renders.
+      if (el && document.activeElement !== el) el?.focus?.();
     }
 
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [initialFocusRef, mounted, onClose, open]);
+  }, [initialFocusRef, mounted, open]);
 
   if (!mounted) return null;
 
