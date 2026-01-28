@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import clsx from "clsx";
+import { Trash2 } from "lucide-react";
 
 import Footer from "@/components/layout/Footer";
+import BottomSheet from "@/components/ui/BottomSheet";
 
 import styles from "./page.module.css";
 
@@ -33,7 +35,7 @@ function Stars({ value = 0 }) {
   );
 }
 
-function ReviewCard({ item }) {
+function ReviewCard({ item, showMenu = false, onMenu }) {
   const hasReviewDetails = Boolean(
     item?.reviewedAt ||
     (item?.photos && item.photos.length) ||
@@ -63,9 +65,16 @@ function ReviewCard({ item }) {
           </div>
         </div>
 
-        <button type="button" className={styles.menuBtn} aria-label="Меню">
-          ⋮
-        </button>
+        {showMenu ? (
+          <button
+            type="button"
+            className={styles.menuBtn}
+            aria-label="Меню"
+            onClick={() => onMenu?.(item)}
+          >
+            ⋮
+          </button>
+        ) : null}
       </div>
 
       <div className={styles.reviewLine}>
@@ -121,6 +130,8 @@ function ReviewCard({ item }) {
 
 export default function ReviewsPage() {
   const [tab, setTab] = useState("pending");
+  const [reviewMenuOpen, setReviewMenuOpen] = useState(false);
+  const [activeReviewId, setActiveReviewId] = useState(null);
 
   const pendingItems = useMemo(
     () => [
@@ -152,42 +163,50 @@ export default function ReviewsPage() {
     [],
   );
 
-  const reviewedItems = useMemo(
-    () => [
-      {
-        id: "r1",
-        name: "Джинсы Carne Bollente",
-        size: "L",
-        article: "4465457",
-        image: "/products/t-shirt-1.png",
-        rating: 4,
-        reviewedAt: "21 апреля",
-        photos: [
-          "/products/shoes-2.png",
-          "/products/shoes-2.png",
-          "/products/shoes-2.png",
-        ],
-        pros: "их нет",
-        cons: "не очень",
-        comment: "ткань плохая верните деньги",
-      },
-      {
-        id: "r2",
-        name: "Джинсы Carne Bollente",
-        size: "L",
-        article: "4465457",
-        image: "/products/t-shirt-1.png",
-        rating: 4,
-        reviewedAt: "21 апреля",
-        pros: "их нет",
-        cons: "не очень",
-        comment: "ткань плохая верните деньги",
-      },
-    ],
-    [],
-  );
+  const [reviewedItems, setReviewedItems] = useState(() => [
+    {
+      id: "r1",
+      name: "Джинсы Carne Bollente",
+      size: "L",
+      article: "4465457",
+      image: "/products/t-shirt-1.png",
+      rating: 4,
+      reviewedAt: "21 апреля",
+      photos: [
+        "/products/shoes-2.png",
+        "/products/shoes-2.png",
+        "/products/shoes-2.png",
+      ],
+      pros: "их нет",
+      cons: "не очень",
+      comment: "ткань плохая верните деньги",
+    },
+    {
+      id: "r2",
+      name: "Джинсы Carne Bollente",
+      size: "L",
+      article: "4465457",
+      image: "/products/t-shirt-1.png",
+      rating: 4,
+      reviewedAt: "21 апреля",
+      pros: "их нет",
+      cons: "не очень",
+      comment: "ткань плохая верните деньги",
+    },
+  ]);
 
   const items = tab === "pending" ? pendingItems : reviewedItems;
+
+  const closeReviewMenu = () => {
+    setReviewMenuOpen(false);
+    setActiveReviewId(null);
+  };
+
+  const confirmDeleteReview = () => {
+    if (!activeReviewId) return;
+    setReviewedItems((prev) => prev.filter((r) => r.id !== activeReviewId));
+    closeReviewMenu();
+  };
 
   return (
     <div className={styles.page}>
@@ -225,10 +244,45 @@ export default function ReviewsPage() {
       <main className={styles.main}>
         <div className={styles.list}>
           {items.map((item) => (
-            <ReviewCard key={item.id} item={item} />
+            <ReviewCard
+              key={item.id}
+              item={item}
+              showMenu={tab === "reviewed"}
+              onMenu={(it) => {
+                setActiveReviewId(it.id);
+                setReviewMenuOpen(true);
+              }}
+            />
           ))}
         </div>
       </main>
+
+      <BottomSheet
+        open={tab === "reviewed" && reviewMenuOpen}
+        onClose={closeReviewMenu}
+        ariaLabel="Действия с отзывом"
+        header={<div className={styles.deleteSheetHeader} />}
+      >
+        <div className={styles.deleteSheetContent}>
+          <button
+            type="button"
+            onClick={confirmDeleteReview}
+            className={styles.deleteActionBtn}
+            disabled={!activeReviewId}
+          >
+            <Trash2 className={styles.deleteActionIcon} />
+            <span>Удалить отзыв</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={closeReviewMenu}
+            className={styles.deleteCancelBtn}
+          >
+            Отмена
+          </button>
+        </div>
+      </BottomSheet>
 
       <Footer />
     </div>
