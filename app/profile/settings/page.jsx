@@ -37,6 +37,12 @@ export default function SettingsPage() {
     phone: "",
     email: "",
   });
+  const [recipientTouched, setRecipientTouched] = useState({
+    fio: false,
+    phone: false,
+    email: false,
+  });
+  const [recipientSubmitAttempted, setRecipientSubmitAttempted] = useState(false);
 
   useEffect(() => {
     if (!pickupSheetOpen) return;
@@ -54,9 +60,81 @@ export default function SettingsPage() {
         phone: recipient?.phone || "",
         email: recipient?.email || "",
       });
+      setRecipientTouched({ fio: false, phone: false, email: false });
+      setRecipientSubmitAttempted(false);
     });
     return () => cancelAnimationFrame(frame);
   }, [recipient, recipientSheetOpen]);
+
+  const normalizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
+
+  const formatRuPhone = (value) => {
+    let digits = normalizePhoneDigits(value);
+
+    // Support users typing: 8..., 7..., +7..., or just 9...
+    if (digits.startsWith("8")) digits = `7${digits.slice(1)}`;
+    if (digits.startsWith("7")) digits = digits.slice(1);
+
+    // We want up to 10 national digits after +7
+    digits = digits.slice(0, 10);
+
+    const p1 = digits.slice(0, 3);
+    const p2 = digits.slice(3, 6);
+    const p3 = digits.slice(6, 8);
+    const p4 = digits.slice(8, 10);
+
+    let out = "+7";
+    if (p1) out += ` ${p1}`;
+    if (p2) out += ` ${p2}`;
+    if (p3) out += `-${p3}`;
+    if (p4) out += `-${p4}`;
+    return out;
+  };
+
+  const isValidPhone = (value) => {
+    const digits = normalizePhoneDigits(value);
+    // Accept +7XXXXXXXXXX or 7XXXXXXXXXX or 8XXXXXXXXXX (after normalization)
+    if (digits.length === 11 && (digits.startsWith("7") || digits.startsWith("8"))) {
+      return true;
+    }
+    // Also accept just 10 digits (national) as user may omit +7
+    if (digits.length === 10) return true;
+    return false;
+  };
+
+  const isValidEmail = (value) => {
+    const s = String(value || "").trim();
+    if (!s) return true;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(s);
+  };
+
+  const isValidFio = (value) => {
+    const s = String(value || "").trim();
+    if (!s) return true;
+    // Screenshot shows Latin name as invalid; enforce Cyrillic letters.
+    if (!/^[А-Яа-яЁё\-\s]+$/.test(s)) return false;
+    const parts = s.split(/\s+/).filter(Boolean);
+    if (parts.length < 2) return false;
+    return parts.every((p) => p.replace(/-/g, "").length >= 2);
+  };
+
+  const recipientErrors = useMemo(() => {
+    const fio = String(recipientDraft.fio || "");
+    const phone = String(recipientDraft.phone || "");
+    const email = String(recipientDraft.email || "");
+
+    return {
+      fio: fio.trim() && !isValidFio(fio) ? "Неверный формат" : "",
+      phone:
+        phone.trim() && !isValidPhone(phone)
+          ? "Укажите в формате +7 XXX XXX-XX-XX"
+          : "",
+      email: email.trim() && !isValidEmail(email) ? "Неверный формат" : "",
+    };
+  }, [recipientDraft.email, recipientDraft.fio, recipientDraft.phone]);
+
+  const showRecipientError = (key) =>
+    Boolean(recipientErrors[key]) && (recipientSubmitAttempted || recipientTouched[key]);
 
   const selectedPickup = useMemo(() => {
     if (!pickupPointId) return null;
@@ -79,9 +157,16 @@ export default function SettingsPage() {
   };
 
   const saveRecipient = () => {
+    setRecipientSubmitAttempted(true);
+
+    const hasErrors = Boolean(
+      recipientErrors.fio || recipientErrors.phone || recipientErrors.email,
+    );
+    if (hasErrors) return;
+
     setRecipient({
       fio: String(recipientDraft.fio || "").trim(),
-      phone: String(recipientDraft.phone || "").trim(),
+      phone: formatRuPhone(recipientDraft.phone),
       email: String(recipientDraft.email || "").trim(),
     });
     setRecipientSheetOpen(false);
@@ -338,7 +423,7 @@ export default function SettingsPage() {
             <label className={styles.field}>
               <span className={styles.srOnly}>ФИО</span>
               <input
-                className={styles.input}
+                className={`${styles.input} ${showRecipientError("fio") ? styles.inputError : ""}`}
                 value={recipientDraft.fio}
                 onChange={(e) =>
                   setRecipientDraft((prev) => ({
@@ -346,32 +431,48 @@ export default function SettingsPage() {
                     fio: e.target.value,
                   }))
                 }
+                onBlur={() =>
+                  setRecipientTouched((prev) => ({ ...prev, fio: true }))
+                }
                 placeholder="ФИО"
                 autoComplete="name"
               />
+              {showRecipientError("fio") ? (
+                <div className={styles.errorText} role="status">
+                  {recipientErrors.fio}
+                </div>
+              ) : null}
             </label>
 
             <label className={styles.field}>
               <span className={styles.srOnly}>Телефон</span>
               <input
-                className={styles.input}
+                className={`${styles.input} ${showRecipientError("phone") ? styles.inputError : ""}`}
                 value={recipientDraft.phone}
                 onChange={(e) =>
                   setRecipientDraft((prev) => ({
                     ...prev,
-                    phone: e.target.value,
+                    phone: formatRuPhone(e.target.value),
                   }))
+                }
+                onBlur={() =>
+                  setRecipientTouched((prev) => ({ ...prev, phone: true }))
                 }
                 placeholder="Телефон"
                 inputMode="tel"
                 autoComplete="tel"
               />
+              {showRecipientError("phone") ? (
+                <div className={styles.errorText} role="status">
+                  {recipientErrors.phone}
+                </div>
+              ) : null}
             </label>
 
             <label className={styles.field}>
               <span className={styles.srOnly}>Электронная почта</span>
               <input
-                className={styles.input}
+                className={`${styles.input} ${showRecipientError("email") ? styles.inputError : ""}`}
                 value={recipientDraft.email}
                 onChange={(e) =>
                   setRecipientDraft((prev) => ({
@@ -379,10 +480,18 @@ export default function SettingsPage() {
                     email: e.target.value,
                   }))
                 }
+                onBlur={() =>
+                  setRecipientTouched((prev) => ({ ...prev, email: true }))
+                }
                 placeholder="Электронная почта"
                 inputMode="email"
                 autoComplete="email"
               />
+              {showRecipientError("email") ? (
+                <div className={styles.errorText} role="status">
+                  {recipientErrors.email}
+                </div>
+              ) : null}
             </label>
           </div>
         </div>
