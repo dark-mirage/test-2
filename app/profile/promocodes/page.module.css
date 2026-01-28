@@ -6,11 +6,13 @@
 }
 
 .main {
-  padding: 22px 12px 0;
+  padding: 22px 16px 0 16px;
 }
 
 .list {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 10px;
 }
 
@@ -62,7 +64,6 @@
   line-height: 16px;
   font-weight: 400;
   color: #7e7e7e;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
