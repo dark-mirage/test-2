@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import styles from "./page.module.css";
 
 const RETURN_DRAFT_KEY = "lm:returnDraft";
+const RETURN_REQUESTS_KEY = "lm:returnRequests";
 
 function saveReturnDraft(payload) {
   try {
@@ -36,9 +37,25 @@ function StatusPill({ type, children }) {
 }
 
 function RequestCard({ req }) {
+  const router = useRouter();
+  const isClickable = Boolean(req?.id) && !req?.disabled;
+
   return (
     <section
       className={`${styles.card} ${req.disabled ? styles.cardDisabled : ""}`}
+      role={isClickable ? "button" : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      onClick={() => {
+        if (!isClickable) return;
+        router.push(`/profile/returns/request/${req.id}`);
+      }}
+      onKeyDown={(e) => {
+        if (!isClickable) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          router.push(`/profile/returns/request/${req.id}`);
+        }
+      }}
     >
       <div className={styles.cardTop}>
         <div className={styles.cardNo}>№{req.no}</div>
@@ -162,70 +179,22 @@ function ReturnOrderCard({ order }) {
 
 export default function ReturnsPage() {
   const [tab, setTab] = useState("requests");
+  const [requests, setRequests] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     document.title = "Возвраты";
   }, []);
 
-  const requests = useMemo(
-    () => [
-      {
-        no: "4523464267",
-        title: "Заявка от 12 марта",
-        statusText: "Одобрена",
-        statusType: "approved",
-        product: {
-          src: "/products/shoes-2.png",
-          name: "Джинсы Carne Bollente",
-          size: "L",
-          article: "4465457",
-          priceRub: 9119,
-        },
-      },
-      {
-        no: "4523464267",
-        title: "Заявка от 11 марта",
-        statusText: "На рассмотрении",
-        statusType: "review",
-        product: {
-          src: "/products/shoes-2.png",
-          name: "Джинсы Carne Bollente",
-          size: "L",
-          article: "4465457",
-          priceRub: 9119,
-        },
-      },
-      {
-        no: "4523464267",
-        title: "Заявка от 8 марта",
-        statusText: "Отклонена",
-        statusType: "rejected",
-        product: {
-          src: "/products/shoes-2.png",
-          name: "Джинсы Carne Bollente",
-          size: "L",
-          article: "4465457",
-          priceRub: 9119,
-        },
-      },
-      {
-        no: "4523464267",
-        title: "Заявка от 1 марта",
-        statusText: "Закрыта",
-        statusType: "closed",
-        disabled: true,
-        product: {
-          src: "/products/shoes-2.png",
-          name: "Джинсы Carne Bollente",
-          size: "L",
-          article: "4465457",
-          priceRub: 9119,
-        },
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(RETURN_REQUESTS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      setRequests(Array.isArray(parsed) ? parsed : []);
+    } catch {
+      setRequests([]);
+    }
+  }, []);
 
   const hasRequests = Array.isArray(requests) && requests.length > 0;
 

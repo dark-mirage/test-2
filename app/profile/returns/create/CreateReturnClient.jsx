@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 
 const RETURN_DRAFT_KEY = "lm:returnDraft";
+const RETURN_REQUESTS_KEY = "lm:returnRequests";
 
 function formatRub(amount) {
   try {
@@ -42,6 +44,8 @@ function Radio({ checked }) {
 }
 
 export default function CreateReturnClient() {
+  const router = useRouter();
+
   const fileInputRef = useRef(null);
   const commentRef = useRef(null);
   const activeSlotRef = useRef(null);
@@ -78,19 +82,6 @@ export default function CreateReturnClient() {
 
   const selectedReasonLabel =
     reasons.find((reason) => reason.id === selected)?.label ?? "";
-
-  useEffect(() => {
-    return () => {
-      Object.values(photos).forEach((photo) => {
-        if (!photo) return;
-        try {
-          URL.revokeObjectURL(photo.url);
-        } catch {
-          // ignore
-        }
-      });
-    };
-  }, [photos]);
 
   const photoSlots = [
     { id: "product", label: "Товар" },
@@ -179,14 +170,56 @@ export default function CreateReturnClient() {
     const hasAllPhotos = photoSlots.every((slot) => Boolean(photos[slot.id]));
     if (!hasComment || !hasAllPhotos) return;
 
-    // Placeholder submit action for the mock UI
-    // eslint-disable-next-line no-console
-    console.log("return:create", {
+    const now = new Date();
+    const months = [
+      "января",
+      "февраля",
+      "марта",
+      "апреля",
+      "мая",
+      "июня",
+      "июля",
+      "августа",
+      "сентября",
+      "октября",
+      "ноября",
+      "декабря",
+    ];
+
+    const title = `Заявка от ${now.getDate()} ${months[now.getMonth()]}`;
+    const id = `${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+    const no = String(Math.floor(1e10 + Math.random() * 9e10));
+
+    const requestPayload = {
+      id,
+      no,
+      title,
+      statusText: "На рассмотрении",
+      statusType: "review",
+      nextTitle: "Что дальше",
+      nextText:
+        "Мы проверяем вашу заявку на возврат, пожалуйста, ожидайте решения.",
       product,
-      reason: selected,
-      comment,
-      photosCount: Object.values(photos).filter(Boolean).length,
-    });
+      reasonId: selected,
+      reasonLabel: selectedReasonLabel,
+      comment: comment.trim(),
+      photos,
+      createdAt: now.toISOString(),
+    };
+
+    try {
+      const raw = localStorage.getItem(RETURN_REQUESTS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      const prev = Array.isArray(parsed) ? parsed : [];
+      localStorage.setItem(
+        RETURN_REQUESTS_KEY,
+        JSON.stringify([requestPayload, ...prev]),
+      );
+    } catch {
+      // ignore
+    }
+
+    router.push(`/profile/returns/request/${id}`);
   }
 
   const primaryLabel = step === "reason" ? "Продолжить" : "Отправить заявку";
