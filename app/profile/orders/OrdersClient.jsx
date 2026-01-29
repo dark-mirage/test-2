@@ -154,7 +154,9 @@ function OrderCard({ order }) {
   const router = useRouter();
   const thumbs = (order.items ?? []).slice(0, 5);
   const isOpenable =
-    order?.statusTitle === "Получен" || order?.statusTitle === "Отменён";
+    order?.statusTitle === "Получен" ||
+    order?.statusTitle === "Отменён" ||
+    order?.statusTitle === "В пункте выдачи";
 
   return (
     <section

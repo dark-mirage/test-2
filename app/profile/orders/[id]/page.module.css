@@ -117,6 +117,48 @@
   color: rgba(17, 17, 17, 0.45);
 }
 
+.barcodeCard {
+  margin: 22px 0;
+  background: #f1f0ee;
+  border-radius: 18px;
+  padding: 12px;
+}
+
+.barcodeInner {
+  height: 120px;
+  border-radius: 14px;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.barcodeLines {
+  width: 92%;
+  height: 74px;
+  border-radius: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    #111111 0px,
+    #111111 2px,
+    transparent 2px,
+    transparent 5px,
+    #111111 5px,
+    #111111 6px,
+    transparent 6px,
+    transparent 10px
+  );
+  opacity: 0.9;
+}
+
+.barcodeText {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: rgba(17, 17, 17, 0.55);
+  letter-spacing: 0.02em;
+}
+
 .infoCard {
   background: #f1f0ee;
   border-radius: 18px;

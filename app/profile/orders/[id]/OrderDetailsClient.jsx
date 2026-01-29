@@ -73,6 +73,19 @@ function ActionRow({ label }) {
   );
 }
 
+function BarcodeCard({ code }) {
+  if (!code) return null;
+
+  return (
+    <section className={styles.barcodeCard} aria-label="Штрихкод для получения">
+      <div className={styles.barcodeInner} aria-hidden="true">
+        <div className={styles.barcodeLines} />
+      </div>
+      <div className={styles.barcodeText}>{code}</div>
+    </section>
+  );
+}
+
 function ThumbsStrip({ items }) {
   const [active, setActive] = useState(0);
 
@@ -152,13 +165,19 @@ export default function OrderDetailsClient({ id }) {
           {order.receivedAt ? (
             <div className={styles.statusDate}>{order.receivedAt}</div>
           ) : null}
-          {order.subtitle ? (
-            <div className={styles.statusSubtitle}>{order.subtitle}</div>
+          {order.statusSubtitle || order.subtitle ? (
+            <div className={styles.statusSubtitle}>
+              {order.statusSubtitle || order.subtitle}
+            </div>
           ) : null}
           {order.statusHint ? (
             <div className={styles.statusHint}>{order.statusHint}</div>
           ) : null}
         </section>
+
+        {order?.barcode?.code ? (
+          <BarcodeCard code={order.barcode.code} />
+        ) : null}
 
         <section className={styles.infoCard}>
           <InfoRow
