@@ -367,30 +367,7 @@ export default function OrderDetailsClient({ id, variant }) {
 
         <section className={styles.infoCard}>
           <InfoRow
-            icon={
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 21s7-4.4 7-11a7 7 0 10-14 0c0 6.6 7 11 7 11z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            }
+            icon={<img src="/icons/profile/location.svg" alt="Location Icon" />}
             title={order?.pickupPoint?.title || "Пункт выдачи"}
             primary={order?.pickupPoint?.address || "—"}
             secondary={order?.pickupPoint?.meta || ""}
@@ -400,26 +377,7 @@ export default function OrderDetailsClient({ id, variant }) {
 
           <InfoRow
             icon={
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M12 11a4 4 0 100-8 4 4 0 000 8z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <img src="/icons/profile/personIcon.svg" alt="personIcon Icon" />
             }
             title={order?.recipient?.title || "Получатель"}
             primary={order?.recipient?.name || "—"}

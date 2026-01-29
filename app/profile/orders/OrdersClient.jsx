@@ -154,6 +154,7 @@ function OrderCard({ order }) {
   const router = useRouter();
   const thumbs = (order.items ?? []).slice(0, 5);
   const isOpenable =
+    order?.statusTitle === "Оформлен" ||
     order?.statusTitle === "В пути" ||
     order?.statusTitle === "Получен" ||
     order?.statusTitle === "Отменён" ||
@@ -166,6 +167,8 @@ function OrderCard({ order }) {
       return `/profile/orders/received/${oid}`;
     if (order?.statusTitle === "Отменён")
       return `/profile/orders/cancelled/${oid}`;
+    if (order?.statusTitle === "Оформлен")
+      return `/profile/orders/in-transit/${oid}`;
     if (order?.statusTitle === "В пути")
       return `/profile/orders/in-transit/${oid}`;
     if (order?.statusTitle === "В пункте выдачи")

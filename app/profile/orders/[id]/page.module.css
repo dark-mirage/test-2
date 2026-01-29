@@ -166,16 +166,16 @@
   width: 3px;
   flex: 1 0 18px;
   min-height: 18px;
-  margin-top: 6px;
+  margin-top: 4px;
   border-radius: 999px;
 }
 
 .timelineLine {
-  background: rgba(17, 17, 17, 0.85);
+  background: #2d2d2d;
 }
 
 .timelineLineUpcoming {
-  background: rgba(17, 17, 17, 0.18);
+  background: #d2d0ca;
 }
 
 .timelineContent {
