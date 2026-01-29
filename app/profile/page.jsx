@@ -88,7 +88,7 @@ export default function ProfilePage() {
               {
                 text: "Отзывы",
                 icon: <MenuIcon src="/icons/profile/stars-icon.svg" />,
-                href: "/reviews",
+                href: "/profile/reviews",
                 fontWeight: 500,
               },
               {

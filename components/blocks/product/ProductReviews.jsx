@@ -95,8 +95,8 @@ export default function ProductReviews({
 
   const brandSlug = toBrandSlug(brandName);
   const reviewsHref = brandSlug
-    ? `/reviews/${encodeURIComponent(brandSlug)}`
-    : "/reviews";
+    ? `/profile/reviews/${encodeURIComponent(brandSlug)}`
+    : "/profile/reviews";
   const previewImages = Array.isArray(productImages)
     ? productImages.slice(0, 2)
     : [];

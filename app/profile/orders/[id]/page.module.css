@@ -1,0 +1,299 @@
+.page {
+  min-height: var(--tg-viewport-stable-height, 100vh);
+  background: #ffffff;
+}
+
+.header {
+  padding-top: 50px;
+  padding-bottom: 10px;
+}
+
+.title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: center;
+  color: #111111;
+}
+
+.orderNo {
+  margin-top: 2px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.main {
+  padding: 10px 16px calc(var(--lm-footer-height, 0px) + 18px);
+}
+
+.statusBlock {
+  margin-top: 6px;
+  margin-bottom: 14px;
+}
+
+.statusTitle {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #111111;
+}
+
+.statusDate {
+  margin-top: 3px;
+  font-size: 14px;
+  color: rgba(17, 17, 17, 0.65);
+}
+
+.infoCard {
+  background: #f1f0ee;
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.infoRow {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.infoIcon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  color: rgba(17, 17, 17, 0.8);
+}
+
+.infoText {
+  min-width: 0;
+}
+
+.infoTitle {
+  font-size: 12px;
+  color: rgba(17, 17, 17, 0.6);
+}
+
+.infoPrimary {
+  margin-top: 2px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #111111;
+}
+
+.infoSecondary {
+  margin-top: 2px;
+  font-size: 13px;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 12px 0;
+}
+
+.productsList {
+  margin-top: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.productRow {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.productThumbWrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.productThumb,
+.productThumbMuted {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.productThumbMuted {
+  opacity: 0.45;
+}
+
+.productMeta {
+  min-width: 0;
+}
+
+.productName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.productSub {
+  margin-top: 2px;
+  font-size: 13px;
+  color: rgba(17, 17, 17, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.productPrice {
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.totalsCard {
+  margin-top: 14px;
+  background: #f1f0ee;
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.totalRowTop,
+.totalRow,
+.totalRowBottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.totalRowTop {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.totalRow {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.totalLabelMuted {
+  color: rgba(17, 17, 17, 0.65);
+}
+
+.totalValueMuted {
+  color: rgba(17, 17, 17, 0.65);
+}
+
+.totalSubRow {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  color: rgba(17, 17, 17, 0.65);
+}
+
+.totalSubLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bullet {
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.totalDivider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 16px 0;
+}
+
+.totalFinalLabel {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111111;
+}
+
+.totalFinalValue {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #111111;
+}
+
+.actionsCard {
+  margin-top: 14px;
+  background: #f1f0ee;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.actionRow {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  color: #111111;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.actionRow:active {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.actionLabel {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.actionChevron {
+  width: 6px;
+  height: 11px;
+}
+
+.actionsDivider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.supportBtn {
+  margin-top: 14px;
+  width: 100%;
+  height: 56px;
+  border-radius: 18px;
+  border: 0;
+  background: #f1f0ee;
+  color: #111111;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.supportBtn:active {
+  transform: translateY(1px);
+  filter: brightness(0.98);
+}
+
+.emptyCard {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px;
+  text-align: center;
+  color: rgba(17, 17, 17, 0.7);
+}

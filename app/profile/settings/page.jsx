@@ -42,7 +42,8 @@ export default function SettingsPage() {
     phone: false,
     email: false,
   });
-  const [recipientSubmitAttempted, setRecipientSubmitAttempted] = useState(false);
+  const [recipientSubmitAttempted, setRecipientSubmitAttempted] =
+    useState(false);
 
   useEffect(() => {
     if (!pickupSheetOpen) return;
@@ -66,7 +67,8 @@ export default function SettingsPage() {
     return () => cancelAnimationFrame(frame);
   }, [recipient, recipientSheetOpen]);
 
-  const normalizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
+  const normalizePhoneDigits = (value) =>
+    String(value || "").replace(/\D/g, "");
 
   const formatRuPhone = (value) => {
     let digits = normalizePhoneDigits(value);
@@ -94,7 +96,10 @@ export default function SettingsPage() {
   const isValidPhone = (value) => {
     const digits = normalizePhoneDigits(value);
     // Accept +7XXXXXXXXXX or 7XXXXXXXXXX or 8XXXXXXXXXX (after normalization)
-    if (digits.length === 11 && (digits.startsWith("7") || digits.startsWith("8"))) {
+    if (
+      digits.length === 11 &&
+      (digits.startsWith("7") || digits.startsWith("8"))
+    ) {
       return true;
     }
     // Also accept just 10 digits (national) as user may omit +7
@@ -134,7 +139,8 @@ export default function SettingsPage() {
   }, [recipientDraft.email, recipientDraft.fio, recipientDraft.phone]);
 
   const showRecipientError = (key) =>
-    Boolean(recipientErrors[key]) && (recipientSubmitAttempted || recipientTouched[key]);
+    Boolean(recipientErrors[key]) &&
+    (recipientSubmitAttempted || recipientTouched[key]);
 
   const selectedPickup = useMemo(() => {
     if (!pickupPointId) return null;

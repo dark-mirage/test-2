@@ -61,7 +61,20 @@
 .card {
   background: #ffffff;
   border-radius: 18px;
-  padding: 14px;
+  padding: 16px;
+}
+
+.card[role="button"] {
+  cursor: pointer;
+}
+
+.card[role="button"]:active {
+  transform: scale(0.995);
+}
+
+.card[role="button"]:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.25);
+  outline-offset: 2px;
 }
 
 .statusRow {
@@ -171,11 +184,29 @@
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 12.65px;
+}
+
+.starBtn {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.starBtn:active {
+  transform: scale(0.98);
+}
+
+.starBtn:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.35);
+  outline-offset: 4px;
+  border-radius: 10px;
 }
 
 .star {
-  width: 26px;
-  height: 26px;
+  width: 36.72px;
+  height: 36.72px;
   opacity: 0.35;
 }

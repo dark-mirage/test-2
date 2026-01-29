@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import Footer from "@/components/layout/Footer";
 import styles from "./page.module.css";
+import { mockOrders } from "./mockOrders";
 
 function formatRub(amount) {
   try {
@@ -57,26 +59,120 @@ function ProductThumb({ src, muted = false }) {
   );
 }
 
-function StarsRow() {
+const REVIEW_PRODUCTS_KEY = "lm:reviewProducts";
+
+function clampRating(value) {
+  const n = Number(value ?? 0);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(1, Math.min(5, Math.trunc(n)));
+}
+
+function saveReviewProductSnapshot(productId, snapshot) {
+  const pid = Number(productId);
+  if (!Number.isFinite(pid) || pid <= 0) return;
+
+  try {
+    const raw = localStorage.getItem(REVIEW_PRODUCTS_KEY);
+    const prev = raw ? JSON.parse(raw) : null;
+    const next =
+      prev && typeof prev === "object" && !Array.isArray(prev)
+        ? { ...prev }
+        : {};
+
+    next[pid] = {
+      ...(typeof snapshot === "object" && snapshot ? snapshot : {}),
+      id: pid,
+    };
+
+    localStorage.setItem(REVIEW_PRODUCTS_KEY, JSON.stringify(next));
+  } catch {
+    // ignore
+  }
+}
+
+function StarsRow({ order }) {
+  const router = useRouter();
+
+  const rateableItems = Array.isArray(order?.items)
+    ? order.items.filter((x) => x?.src && !x?.muted)
+    : [];
+
+  const handleRate = (value) => {
+    const rating = clampRating(value);
+
+    if (order?.statusTitle !== "Получен") return;
+
+    if (rateableItems.length >= 2) {
+      router.push("/profile/reviews");
+      return;
+    }
+
+    if (rateableItems.length === 1) {
+      const item = rateableItems[0];
+      const productId =
+        Number(item?.id) ||
+        Number(order?.reviewProductId) ||
+        Number(item?.pid) ||
+        3;
+
+      saveReviewProductSnapshot(productId, {
+        name: item?.name || `Товар ${productId}`,
+        image: item?.src,
+        price: item?.price || "",
+      });
+
+      router.push(`/profile/purchased/review/${productId}?rating=${rating}`);
+    }
+  };
+
   return (
     <div className={styles.stars} aria-label="Оценка заказа">
       {Array.from({ length: 5 }).map((_, i) => (
-        <img
+        <button
           key={i}
-          src="/icons/product/Star.svg"
-          alt=""
-          className={styles.star}
-        />
+          type="button"
+          className={styles.starBtn}
+          aria-label={`Поставить оценку ${i + 1} из 5`}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRate(i + 1);
+          }}
+        >
+          <img
+            src="/icons/product/Star.svg"
+            alt=""
+            aria-hidden="true"
+            className={styles.star}
+          />
+        </button>
       ))}
     </div>
   );
 }
 
 function OrderCard({ order }) {
+  const router = useRouter();
   const thumbs = (order.items ?? []).slice(0, 5);
+  const isReceived = order?.statusTitle === "Получен";
 
   return (
-    <section className={styles.card}>
+    <section
+      className={styles.card}
+      role={isReceived ? "button" : undefined}
+      tabIndex={isReceived ? 0 : undefined}
+      onClick={() => {
+        if (!isReceived) return;
+        router.push(`/profile/orders/${encodeURIComponent(order.id)}`);
+      }}
+      onKeyDown={(e) => {
+        if (!isReceived) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          router.push(`/profile/orders/${encodeURIComponent(order.id)}`);
+        }
+      }}
+      aria-label={isReceived ? "Открыть заказ" : undefined}
+    >
       <StatusHeader
         title={order.statusTitle}
         progress={order.progress}
@@ -106,7 +202,7 @@ function OrderCard({ order }) {
         </div>
       </div>
 
-      {order.showRating ? <StarsRow /> : null}
+      {order.showRating ? <StarsRow order={order} /> : null}
     </section>
   );
 }
@@ -117,99 +213,7 @@ export default function OrdersClient() {
     document.title = "Заказы";
   }, []);
 
-  const orders = useMemo(
-    () => [
-      {
-        id: "o1",
-        statusTitle: "Оформлен",
-        progress: "2 из 2",
-        orderNumber: "Заказ №42974781892",
-        itemsCount: 2,
-        totalRub: 3720,
-        items: [
-          { src: "/products/t-shirt-1.png" },
-          { src: "/products/t-shirt-2.png" },
-        ],
-      },
-      {
-        id: "o2",
-        statusTitle: "В пути",
-        progress: "4 из 5",
-        orderNumber: "Заказ №42974781892",
-        itemsCount: 5,
-        totalRub: 3720,
-        items: [
-          { src: "/products/t-shirt-1.png" },
-          { src: "/products/t-shirt-2.png" },
-          { src: "/products/shoes-1.png" },
-          { src: "/products/shoes-2.png" },
-          { src: "/products/t-shirt-1.png", muted: true },
-        ],
-      },
-      {
-        id: "o3",
-        statusTitle: "В пути",
-        orderNumber: "Заказ №42974781894",
-        subtitle: "Отказ в выпуске посылки по причине отсутствия корректных...",
-        itemsCount: 1,
-        totalRub: 1715,
-        items: [{ src: "/products/shoes-2.png" }],
-      },
-      {
-        id: "o4",
-        statusTitle: "В пункте выдачи",
-        progress: "4 из 5",
-        orderNumber: "Заказ №42974781890",
-        itemsCount: 2,
-        totalRub: 13720,
-        items: [
-          { src: "/products/t-shirt-1.png" },
-          { src: "/products/t-shirt-2.png" },
-          { src: "/products/shoes-1.png" },
-          { src: "/products/shoes-2.png", muted: true },
-          { src: "/products/t-shirt-1.png" },
-        ],
-      },
-      {
-        id: "o5",
-        statusTitle: "Отменён",
-        orderNumber: "Заказ №42974781893",
-        subtitle: "Нет в продаже",
-        itemsCount: 2,
-        totalRub: 1715,
-        items: [
-          { src: "/products/shoes-2.png" },
-          { src: "/products/shoes-2.png" },
-        ],
-      },
-      {
-        id: "o6",
-        statusTitle: "Отменён",
-        progress: "2 из 2",
-        orderNumber: "Заказ №42974781893",
-        itemsCount: 2,
-        totalRub: 1715,
-        items: [
-          { src: "/products/shoes-2.png" },
-          { src: "/products/shoes-2.png" },
-        ],
-      },
-      {
-        id: "o7",
-        statusTitle: "Получен",
-        progress: "1 из 2",
-        orderNumber: "Заказ №42974781891",
-        itemsCount: 2,
-        totalRub: 13720,
-        items: [
-          { src: "/products/t-shirt-1.png" },
-          { src: "/products/t-shirt-1.png", muted: true },
-        ],
-        showRating: true,
-      },
-    ],
-    [],
-  );
+  const orders = useMemo(() => mockOrders, []);
 
   return (
     <div className={`tg-viewport ${styles.page}`}>
