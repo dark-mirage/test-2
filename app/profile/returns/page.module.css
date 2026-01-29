@@ -18,7 +18,7 @@
 }
 
 .main {
-  padding: 0 16px calc(var(--lm-footer-height, 0px) + 18px);
+  padding: 0 0px calc(var(--lm-footer-height, 0px) + 18px);
 }
 
 .tabsWrap {
@@ -54,8 +54,51 @@
   gap: 12px;
 }
 
+.emptyStateCard {
+  margin-top: 11px;
+  background: #ffffff;
+  border-radius: 25px;
+  padding: 71px 64px 39px;
+  text-align: center;
+}
+
+.emptyStateTitle {
+  font-size: 20px;
+  line-height: 106%;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #000000;
+}
+
+.emptyStateText {
+  margin-top: 9px;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 400;
+  color: #000000;
+}
+
+.emptyStateBtn {
+  margin-top: 16px;
+  height: 39px;
+  padding: 0 19px;
+  border-radius: 13px;
+  border: 0;
+  background: #2d2d2d;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.emptyStateBtn:active {
+  transform: translateY(1px);
+  filter: brightness(0.98);
+}
+
 .returnCard {
-  padding: 14px;
+  padding: 16px;
   border-radius: 25px;
 }
 
@@ -157,7 +200,7 @@
 .card {
   background: #ffffff;
   border-radius: 25px;
-  padding: 14px;
+  padding: 16px;
 }
 
 .cardDisabled {

@@ -1,9 +1,20 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import Footer from "@/components/layout/Footer";
 import styles from "./page.module.css";
+
+const RETURN_DRAFT_KEY = "lm:returnDraft";
+
+function saveReturnDraft(payload) {
+  try {
+    localStorage.setItem(RETURN_DRAFT_KEY, JSON.stringify(payload));
+  } catch {
+    // ignore
+  }
+}
 
 function formatRub(amount) {
   try {
@@ -69,11 +80,46 @@ function FaqRow({ icon, title, text }) {
 }
 
 function ReturnOrderCard({ order }) {
+  const router = useRouter();
+
   return (
     <section
       className={`${styles.card} ${styles.returnCard} ${
         order.disabled ? styles.cardDisabled : ""
       }`}
+      role="button"
+      tabIndex={0}
+      onClick={() => {
+        const first = order?.items?.[0];
+        saveReturnDraft({
+          product: {
+            orderNo: order.orderNo,
+            src: first?.src,
+            name: first?.name,
+            size: first?.size,
+            article: first?.article,
+            priceRub: first?.priceRub,
+          },
+        });
+        router.push("/profile/returns/create");
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          const first = order?.items?.[0];
+          saveReturnDraft({
+            product: {
+              orderNo: order.orderNo,
+              src: first?.src,
+              name: first?.name,
+              size: first?.size,
+              article: first?.article,
+              priceRub: first?.priceRub,
+            },
+          });
+          router.push("/profile/returns/create");
+        }
+      }}
     >
       <div className={styles.returnTopRow}>
         <div className={styles.returnOrderNo}>{order.orderNo}</div>
@@ -116,6 +162,7 @@ function ReturnOrderCard({ order }) {
 
 export default function ReturnsPage() {
   const [tab, setTab] = useState("requests");
+  const router = useRouter();
 
   useEffect(() => {
     document.title = "Возвраты";
@@ -179,6 +226,8 @@ export default function ReturnsPage() {
     ],
     [],
   );
+
+  const hasRequests = Array.isArray(requests) && requests.length > 0;
 
   const returnOrders = useMemo(
     () => [
@@ -266,11 +315,39 @@ export default function ReturnsPage() {
 
       <main className={styles.main}>
         {tab === "requests" ? (
-          <div className={styles.cards}>
-            {requests.map((r, idx) => (
-              <RequestCard key={`${r.title}_${idx}`} req={r} />
-            ))}
-          </div>
+          hasRequests ? (
+            <div className={styles.cards}>
+              {requests.map((r, idx) => (
+                <RequestCard key={`${r.title}_${idx}`} req={r} />
+              ))}
+            </div>
+          ) : (
+            <section className={styles.emptyStateCard}>
+              <div className={styles.emptyStateTitle}>Возвратов пока нет</div>
+              <div className={styles.emptyStateText}>
+                Все оформленные заявки на возврат будут отображаться здесь
+              </div>
+              <button
+                type="button"
+                className={styles.emptyStateBtn}
+                onClick={() => {
+                  saveReturnDraft({
+                    product: {
+                      orderNo: "Заказ №4523464267",
+                      src: "/products/shoes-2.png",
+                      name: "Джинсы Carne Bollente",
+                      size: "L",
+                      article: "4465457",
+                      priceRub: 9119,
+                    },
+                  });
+                  router.push("/profile/returns/create");
+                }}
+              >
+                Создать заявку
+              </button>
+            </section>
+          )
         ) : (
           <div className={styles.cards}>
             {returnOrders.map((o, idx) => (
