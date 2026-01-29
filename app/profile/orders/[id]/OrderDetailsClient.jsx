@@ -209,9 +209,11 @@ function TrackingTimeline() {
                   <div className={styles.timelineTitle}>
                     {row.title}
                     {row.showCaret ? (
-                      <span className={styles.timelineCaret} aria-hidden="true">
-                        ^
-                      </span>
+                      <img
+                        src="/icons/profile/Wrap.svg"
+                        aria-hidden="true"
+                        alt="icon"
+                      />
                     ) : null}
                   </div>
                   {row.date ? (
