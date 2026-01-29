@@ -24,6 +24,61 @@
   color: rgba(17, 17, 17, 0.55);
 }
 
+.thumbsStrip {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge (legacy) */
+}
+
+.thumbsStrip::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none; /* Chrome/Safari */
+}
+
+.thumbPillUnselected,
+.thumbPillSelected {
+  width: 83px;
+  height: 83px;
+  border-radius: 10px;
+  border: 2px solid #d5d5d5;
+  background: #ffffff;
+  cursor: pointer;
+  padding: 10px;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.thumbPillSelected {
+  border-color: #2d2d2d;
+}
+
+.thumbPillUnselected:active,
+.thumbPillSelected:active {
+  transform: scale(0.99);
+}
+
+.thumbImg,
+.thumbImgMuted {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+}
+
+.thumbImgMuted {
+  opacity: 0.45;
+}
+
 .main {
   padding: 10px 16px calc(var(--lm-footer-height, 0px) + 18px);
 }
@@ -34,16 +89,30 @@
 }
 
 .statusTitle {
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #111111;
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 106%;
+  letter-spacing: 0%;
+  text-transform: capitalize;
+  color: #000000;
 }
 
 .statusDate {
   margin-top: 3px;
   font-size: 14px;
   color: rgba(17, 17, 17, 0.65);
+}
+
+.statusSubtitle {
+  margin-top: 4px;
+  font-size: 14px;
+  color: rgba(17, 17, 17, 0.75);
+}
+
+.statusHint {
+  margin-top: 4px;
+  font-size: 14px;
+  color: rgba(17, 17, 17, 0.45);
 }
 
 .infoCard {
@@ -97,7 +166,7 @@
 }
 
 .productsList {
-  margin-top: 14px;
+  margin-top: 22px;
   display: grid;
   gap: 14px;
 }
@@ -159,7 +228,7 @@
 }
 
 .totalsCard {
-  margin-top: 14px;
+  margin-top: 22px;
   background: #f1f0ee;
   border-radius: 18px;
   padding: 16px;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 
 import Footer from "@/components/layout/Footer";
@@ -73,6 +73,39 @@ function ActionRow({ label }) {
   );
 }
 
+function ThumbsStrip({ items }) {
+  const [active, setActive] = useState(0);
+
+  if (!Array.isArray(items) || items.length === 0) return null;
+
+  return (
+    <div className={styles.thumbsStrip} aria-label="Товары в заказе">
+      {items.slice(0, 10).map((it, idx) => {
+        const selected = idx === active;
+        return (
+          <button
+            key={it?.id ?? `${idx}`}
+            type="button"
+            className={
+              selected ? styles.thumbPillSelected : styles.thumbPillUnselected
+            }
+            aria-pressed={selected}
+            onClick={() => setActive(idx)}
+          >
+            <img
+              src={it?.src}
+              alt=""
+              aria-hidden="true"
+              className={it?.muted ? styles.thumbImgMuted : styles.thumbImg}
+              loading="lazy"
+            />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function OrderDetailsClient({ id }) {
   const params = useParams();
   const resolvedId = id ?? params?.id;
@@ -109,6 +142,8 @@ export default function OrderDetailsClient({ id }) {
         {order.orderNumberShort ? (
           <div className={styles.orderNo}>{order.orderNumberShort}</div>
         ) : null}
+
+        <ThumbsStrip items={products} />
       </header>
 
       <main className={styles.main}>
@@ -116,6 +151,12 @@ export default function OrderDetailsClient({ id }) {
           <div className={styles.statusTitle}>{order.statusTitle}</div>
           {order.receivedAt ? (
             <div className={styles.statusDate}>{order.receivedAt}</div>
+          ) : null}
+          {order.subtitle ? (
+            <div className={styles.statusSubtitle}>{order.subtitle}</div>
+          ) : null}
+          {order.statusHint ? (
+            <div className={styles.statusHint}>{order.statusHint}</div>
           ) : null}
         </section>
 

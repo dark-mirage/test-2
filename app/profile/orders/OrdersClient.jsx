@@ -153,25 +153,26 @@ function StarsRow({ order }) {
 function OrderCard({ order }) {
   const router = useRouter();
   const thumbs = (order.items ?? []).slice(0, 5);
-  const isReceived = order?.statusTitle === "Получен";
+  const isOpenable =
+    order?.statusTitle === "Получен" || order?.statusTitle === "Отменён";
 
   return (
     <section
       className={styles.card}
-      role={isReceived ? "button" : undefined}
-      tabIndex={isReceived ? 0 : undefined}
+      role={isOpenable ? "button" : undefined}
+      tabIndex={isOpenable ? 0 : undefined}
       onClick={() => {
-        if (!isReceived) return;
+        if (!isOpenable) return;
         router.push(`/profile/orders/${encodeURIComponent(order.id)}`);
       }}
       onKeyDown={(e) => {
-        if (!isReceived) return;
+        if (!isOpenable) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           router.push(`/profile/orders/${encodeURIComponent(order.id)}`);
         }
       }}
-      aria-label={isReceived ? "Открыть заказ" : undefined}
+      aria-label={isOpenable ? "Открыть заказ" : undefined}
     >
       <StatusHeader
         title={order.statusTitle}
