@@ -154,9 +154,25 @@ function OrderCard({ order }) {
   const router = useRouter();
   const thumbs = (order.items ?? []).slice(0, 5);
   const isOpenable =
+    order?.statusTitle === "В пути" ||
     order?.statusTitle === "Получен" ||
     order?.statusTitle === "Отменён" ||
     order?.statusTitle === "В пункте выдачи";
+
+  const detailsHref = (() => {
+    const oid = encodeURIComponent(order.id);
+
+    if (order?.statusTitle === "Получен")
+      return `/profile/orders/received/${oid}`;
+    if (order?.statusTitle === "Отменён")
+      return `/profile/orders/cancelled/${oid}`;
+    if (order?.statusTitle === "В пути")
+      return `/profile/orders/in-transit/${oid}`;
+    if (order?.statusTitle === "В пункте выдачи")
+      return `/profile/orders/pickup/${oid}`;
+
+    return `/profile/orders/${oid}`;
+  })();
 
   return (
     <section
@@ -165,13 +181,13 @@ function OrderCard({ order }) {
       tabIndex={isOpenable ? 0 : undefined}
       onClick={() => {
         if (!isOpenable) return;
-        router.push(`/profile/orders/${encodeURIComponent(order.id)}`);
+        router.push(detailsHref);
       }}
       onKeyDown={(e) => {
         if (!isOpenable) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          router.push(`/profile/orders/${encodeURIComponent(order.id)}`);
+          router.push(detailsHref);
         }
       }}
       aria-label={isOpenable ? "Открыть заказ" : undefined}

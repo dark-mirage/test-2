@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import Footer from "@/components/layout/Footer";
 import styles from "./page.module.css";
 import { getMockOrderById } from "../mockOrders";
+
+const REVIEW_PRODUCTS_KEY = "lm:reviewProducts";
 
 function formatRub(amount) {
   try {
@@ -59,9 +61,9 @@ function ProductRow({ item }) {
   );
 }
 
-function ActionRow({ label }) {
+function ActionRow({ label, onClick }) {
   return (
-    <button type="button" className={styles.actionRow}>
+    <button type="button" className={styles.actionRow} onClick={onClick}>
       <span className={styles.actionLabel}>{label}</span>
       <img
         src="/icons/global/small-arrow.svg"
@@ -73,6 +75,29 @@ function ActionRow({ label }) {
   );
 }
 
+function saveReviewProductSnapshot(productId, snapshot) {
+  const pid = Number(productId);
+  if (!Number.isFinite(pid) || pid <= 0) return;
+
+  try {
+    const raw = localStorage.getItem(REVIEW_PRODUCTS_KEY);
+    const prev = raw ? JSON.parse(raw) : null;
+    const next =
+      prev && typeof prev === "object" && !Array.isArray(prev)
+        ? { ...prev }
+        : {};
+
+    next[pid] = {
+      ...(typeof snapshot === "object" && snapshot ? snapshot : {}),
+      id: pid,
+    };
+
+    localStorage.setItem(REVIEW_PRODUCTS_KEY, JSON.stringify(next));
+  } catch {
+    // ignore
+  }
+}
+
 function BarcodeCard({ code }) {
   if (!code) return null;
 
@@ -82,6 +107,129 @@ function BarcodeCard({ code }) {
         <div className={styles.barcodeLines} />
       </div>
       <div className={styles.barcodeText}>{code}</div>
+    </section>
+  );
+}
+
+function TrackingTimeline() {
+  const stages = [
+    {
+      title: "Оформлен",
+      date: "1 апреля",
+      events: [{ label: "Добавлен в реестр", date: "3 апреля" }],
+    },
+    {
+      title: "В пути",
+      date: "6 апреля",
+      events: [
+        { label: "Покинул склад в Китае", date: "6 апреля" },
+        { label: "Поступил на таможню в Китае", date: "10 апреля" },
+        { label: "Поступил на таможню в России", date: "12 апреля" },
+      ],
+    },
+    { title: "В пункте выдачи", date: "", events: [] },
+    { title: "Получен", date: "", events: [] },
+  ];
+
+  const currentIndex = 1;
+
+  const rows = [];
+  stages.forEach((stage, stageIdx) => {
+    const canExpand = stageIdx <= currentIndex && stage.events?.length;
+
+    rows.push({
+      key: `s_${stageIdx}_${stage.title}`,
+      type: "stage",
+      stageIdx,
+      title: stage.title,
+      date: stage.date,
+      showCaret: stageIdx <= currentIndex,
+      hasNext: stageIdx < stages.length - 1 || canExpand,
+      connector:
+        stageIdx < currentIndex
+          ? "dark"
+          : stageIdx === currentIndex && canExpand
+            ? "dark"
+            : "light",
+    });
+
+    if (canExpand) {
+      stage.events.forEach((ev, evIdx) => {
+        const isLastEvent = evIdx === stage.events.length - 1;
+        const hasNext = !(stageIdx === stages.length - 1 && isLastEvent);
+
+        rows.push({
+          key: `e_${stageIdx}_${evIdx}_${ev.label}`,
+          type: "event",
+          stageIdx,
+          label: ev.label,
+          date: ev.date,
+          hasNext,
+          connector:
+            stageIdx < currentIndex
+              ? "dark"
+              : stageIdx === currentIndex
+                ? isLastEvent
+                  ? "light"
+                  : "dark"
+                : "light",
+        });
+      });
+    }
+  });
+
+  return (
+    <section className={styles.timelineCard} aria-label="Статус доставки">
+      {rows.map((row) => {
+        const isStage = row.type === "stage";
+        const isUpcoming = row.stageIdx > currentIndex;
+        const lineClass =
+          row.connector === "dark"
+            ? styles.timelineLine
+            : styles.timelineLineUpcoming;
+
+        return (
+          <div key={row.key} className={styles.timelineRow}>
+            <div className={styles.timelineLeft} aria-hidden="true">
+              <div
+                className={
+                  isStage
+                    ? isUpcoming
+                      ? styles.timelineDotUpcoming
+                      : styles.timelineDotDone
+                    : styles.timelineDotSmall
+                }
+              />
+              {row.hasNext ? <div className={lineClass} /> : null}
+            </div>
+
+            <div className={styles.timelineContent}>
+              {isStage ? (
+                <div className={styles.timelineHeader}>
+                  <div className={styles.timelineTitle}>
+                    {row.title}
+                    {row.showCaret ? (
+                      <span className={styles.timelineCaret} aria-hidden="true">
+                        ^
+                      </span>
+                    ) : null}
+                  </div>
+                  {row.date ? (
+                    <div className={styles.timelineDate}>{row.date}</div>
+                  ) : null}
+                </div>
+              ) : (
+                <div className={styles.timelineEventRow}>
+                  <div className={styles.timelineEventLabel}>{row.label}</div>
+                  {row.date ? (
+                    <div className={styles.timelineEventDate}>{row.date}</div>
+                  ) : null}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
     </section>
   );
 }
@@ -119,8 +267,9 @@ function ThumbsStrip({ items }) {
   );
 }
 
-export default function OrderDetailsClient({ id }) {
+export default function OrderDetailsClient({ id, variant }) {
   const params = useParams();
+  const router = useRouter();
   const resolvedId = id ?? params?.id;
 
   const order = useMemo(() => getMockOrderById(resolvedId), [resolvedId]);
@@ -147,6 +296,41 @@ export default function OrderDetailsClient({ id }) {
 
   const products = Array.isArray(order?.items) ? order.items : [];
   const totals = order?.totals;
+
+  const resolvedVariant = (() => {
+    if (variant) return variant;
+    if (order?.statusTitle === "Получен") return "received";
+    if (order?.statusTitle === "Отменён") return "cancelled";
+    if (order?.statusTitle === "В пункте выдачи") return "pickup";
+    if (order?.statusTitle === "В пути") return "inTransit";
+    return "default";
+  })();
+
+  const canShowBarcode =
+    resolvedVariant === "pickup" && Boolean(order?.barcode?.code);
+
+  const canShowActions = resolvedVariant !== "cancelled";
+
+  const handleLeaveReview = () => {
+    if (resolvedVariant !== "received") return;
+
+    const rateableItems = products.filter((x) => x?.src && !x?.muted);
+    if (rateableItems.length >= 2) {
+      router.push("/profile/reviews");
+      return;
+    }
+
+    const single = rateableItems[0];
+    const productId = Number(single?.id) || 3;
+
+    saveReviewProductSnapshot(productId, {
+      name: single?.name || `Товар ${productId}`,
+      image: single?.src,
+      price: single?.priceRub ? formatRub(single.priceRub) : "",
+    });
+
+    router.push(`/profile/purchased/review/${productId}`);
+  };
 
   return (
     <div className={`tg-viewport ${styles.page}`}>
@@ -175,9 +359,9 @@ export default function OrderDetailsClient({ id }) {
           ) : null}
         </section>
 
-        {order?.barcode?.code ? (
-          <BarcodeCard code={order.barcode.code} />
-        ) : null}
+        {resolvedVariant === "inTransit" ? <TrackingTimeline /> : null}
+
+        {canShowBarcode ? <BarcodeCard code={order.barcode.code} /> : null}
 
         <section className={styles.infoCard}>
           <InfoRow
@@ -313,14 +497,28 @@ export default function OrderDetailsClient({ id }) {
           </section>
         ) : null}
 
-        <section className={styles.actionsCard}>
-          <ActionRow label="Доставка и отслеживание" />
-          <div className={styles.actionsDivider} />
-          <ActionRow label="Условия возврата" />
-        </section>
+        {canShowActions ? (
+          <section className={styles.actionsCard}>
+            {resolvedVariant === "received" ? (
+              <>
+                <ActionRow label="Оставить отзыв" onClick={handleLeaveReview} />
+                <div className={styles.actionsDivider} />
+                <ActionRow label="Условия возврата" />
+              </>
+            ) : (
+              <>
+                <ActionRow label="Доставка и отслеживание" />
+                <div className={styles.actionsDivider} />
+                <ActionRow label="Условия возврата" />
+              </>
+            )}
+          </section>
+        ) : null}
 
         <button type="button" className={styles.supportBtn}>
-          Чат с поддержкой
+          {resolvedVariant === "cancelled"
+            ? "Написать в поддержку"
+            : "Чат с поддержкой"}
         </button>
       </main>
 
