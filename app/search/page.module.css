@@ -5,7 +5,7 @@
 }
 
 .container {
-  padding-top: 30px;
+  padding-top: calc(var(--tg-safe-area-top, 0px) + 43px);
 }
 
 .closeBtn {

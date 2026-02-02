@@ -132,7 +132,6 @@ export default function ProductImageGallery({
 
   return (
     <div className={styles.c1}>
-      {/* Основное изображение */}
       <div
         className={styles.c2}
         onTouchStart={onTouchStart}

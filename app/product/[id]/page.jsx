@@ -239,190 +239,188 @@ export default function ProductPage() {
   };
 
   return (
-    <>
-      <main className={cx("tg-viewport", styles.c1, styles.tw1)}>
-        <Container>
-          <section className={styles.hero}>
-            {/* Галерея изображений */}
-            <ProductImageGallery
-              images={productImages}
-              productName="Кофта Supreme"
-              isFavorite={isFavorite}
-              onToggleFavorite={() => setIsFavorite(!isFavorite)}
-              currentImageIndex={currentImageIndex}
-              onImageChange={setCurrentImageIndex}
-            />
-
-            <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
-              <div className={cx(styles.breadcrumbRow, "scrollbar-hide")}>
-                {breadcrumb.map((label, idx) => {
-                  const isLast = idx === breadcrumb.length - 1;
-                  return (
-                    <button
-                      key={`${label}-${idx}`}
-                      type="button"
-                      aria-current={isLast ? "page" : undefined}
-                      className={cx(
-                        styles.breadcrumbChip,
-                        isLast && styles.breadcrumbChipActive,
-                      )}
-                    >
-                      <span className={styles.breadcrumbChipText}>{label}</span>
-                      {!isLast ? (
-                        <span
-                          className={styles.breadcrumbArrow}
-                          aria-hidden="true"
-                        >
-                          ›
-                        </span>
-                      ) : null}
-                    </button>
-                  );
-                })}
-              </div>
-            </nav>
-
-            {/* Информация о товаре */}
-            <ProductInfo
-              productName="Кофта Supreme"
-              brand="Supreme"
-              brandLink="/brands/supreme"
-              images={productImages}
-              currentImageIndex={currentImageIndex}
-              onImageChange={setCurrentImageIndex}
-              theme="light"
-              showThumbnails={true}
-            />
-
-            {/* Выбор размера */}
-            <ProductSizes
-              sizes={sizes}
-              availableSizes={availableSizes}
-              onSizeSelect={(size) => setSelectedSize(size)}
-            />
-          </section>
-
-          {/* Цена и оплата */}
-          <ProductPrice
-            price="127 899 ₽"
-            deliveryInfo="Доставка из Китая до РФ 0₽"
-            splitPayment={{
-              count: 4,
-              amount: "880",
-              text: "без переплаты",
-            }}
+    <main className={cx("tg-viewport", styles.c1, styles.tw1)}>
+      <Container>
+        <section className={styles.hero}>
+          {/* Галерея изображений */}
+          <ProductImageGallery
+            images={productImages}
+            productName="Кофта Supreme"
+            isFavorite={isFavorite}
+            onToggleFavorite={() => setIsFavorite(!isFavorite)}
+            currentImageIndex={currentImageIndex}
+            onImageChange={setCurrentImageIndex}
           />
 
-          <ProductShippingOptions
-            pickupDate="Сегодня"
-            pickupSub="из наличия"
-            pickupAddress="Оренбург, улица Пролетарская, 23, 2 этаж"
-            deliveryDate="Послезавтра"
-            deliverySub="из наличия"
-            deliveryHint="В пункт выдачи от 99₽"
-          />
-
-          <ProductBrandsCarousel brands={brandsCarousel} />
-
-          <section className={styles.cardsOuter}>
-            <div className={cx(styles.cardsRow, "scrollbar-hide")}>
-              {infoCards.map((c) => (
-                <div key={c.title} className={styles.cardItem}>
-                  <InfoCard title={c.title} iconSrc={c.icon} />
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Отзывы */}
-          <ProductReviews
-            brandName="Supreme"
-            reviews={reviews}
-            ratingDistribution={ratingDistribution}
-            productImages={productImages.slice(0, 2)}
-          />
-
-          <section className={styles.about}>
-            <h2 className={styles.aboutTitle}>О товаре</h2>
-
-            <div className={styles.aboutGrid}>
-              <div className={styles.aboutRow}>
-                <span className={styles.aboutKey}>Артикул</span>
-                <span className={styles.aboutVal}>
-                  <span className={styles.aboutValRow}>
-                    <span>0432135</span>
-                    <button
-                      type="button"
-                      className={styles.copyBtn}
-                      aria-label="Скопировать артикул"
-                      onClick={() => handleCopy("0432135")}
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        width="18"
-                        height="18"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+          <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+            <div className={cx(styles.breadcrumbRow, "scrollbar-hide")}>
+              {breadcrumb.map((label, idx) => {
+                const isLast = idx === breadcrumb.length - 1;
+                return (
+                  <button
+                    key={`${label}-${idx}`}
+                    type="button"
+                    aria-current={isLast ? "page" : undefined}
+                    className={cx(
+                      styles.breadcrumbChip,
+                      isLast && styles.breadcrumbChipActive,
+                    )}
+                  >
+                    <span className={styles.breadcrumbChipText}>{label}</span>
+                    {!isLast ? (
+                      <span
+                        className={styles.breadcrumbArrow}
                         aria-hidden="true"
                       >
-                        <rect x="9" y="9" width="13" height="13" rx="2" />
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                      </svg>
-                    </button>
-                    <span
-                      className={styles.copiedHint}
-                      aria-live="polite"
-                      role="status"
+                        ›
+                      </span>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          </nav>
+
+          {/* Информация о товаре */}
+          <ProductInfo
+            productName="Кофта Supreme"
+            brand="Supreme"
+            brandLink="/brands/supreme"
+            images={productImages}
+            currentImageIndex={currentImageIndex}
+            onImageChange={setCurrentImageIndex}
+            theme="light"
+            showThumbnails={true}
+          />
+
+          {/* Выбор размера */}
+          <ProductSizes
+            sizes={sizes}
+            availableSizes={availableSizes}
+            onSizeSelect={(size) => setSelectedSize(size)}
+          />
+        </section>
+
+        {/* Цена и оплата */}
+        <ProductPrice
+          price="127 899 ₽"
+          deliveryInfo="Доставка из Китая до РФ 0₽"
+          splitPayment={{
+            count: 4,
+            amount: "880",
+            text: "без переплаты",
+          }}
+        />
+
+        <ProductShippingOptions
+          pickupDate="Сегодня"
+          pickupSub="из наличия"
+          pickupAddress="Оренбург, улица Пролетарская, 23, 2 этаж"
+          deliveryDate="Послезавтра"
+          deliverySub="из наличия"
+          deliveryHint="В пункт выдачи от 99₽"
+        />
+
+        <ProductBrandsCarousel brands={brandsCarousel} />
+
+        <section className={styles.cardsOuter}>
+          <div className={cx(styles.cardsRow, "scrollbar-hide")}>
+            {infoCards.map((c) => (
+              <div key={c.title} className={styles.cardItem}>
+                <InfoCard title={c.title} iconSrc={c.icon} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Отзывы */}
+        <ProductReviews
+          brandName="Supreme"
+          reviews={reviews}
+          ratingDistribution={ratingDistribution}
+          productImages={productImages.slice(0, 2)}
+        />
+
+        <section className={styles.about}>
+          <h2 className={styles.aboutTitle}>О товаре</h2>
+
+          <div className={styles.aboutGrid}>
+            <div className={styles.aboutRow}>
+              <span className={styles.aboutKey}>Артикул</span>
+              <span className={styles.aboutVal}>
+                <span className={styles.aboutValRow}>
+                  <span>0432135</span>
+                  <button
+                    type="button"
+                    className={styles.copyBtn}
+                    aria-label="Скопировать артикул"
+                    onClick={() => handleCopy("0432135")}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="18"
+                      height="18"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
                     >
-                      {isArticleCopied ? "Скопировано" : ""}
-                    </span>
+                      <rect x="9" y="9" width="13" height="13" rx="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  </button>
+                  <span
+                    className={styles.copiedHint}
+                    aria-live="polite"
+                    role="status"
+                  >
+                    {isArticleCopied ? "Скопировано" : ""}
                   </span>
                 </span>
-              </div>
-
-              <div className={styles.aboutRow}>
-                <span className={styles.aboutKey}>Категория</span>
-                <span className={styles.aboutVal}>Одежда</span>
-              </div>
-
-              <div className={styles.aboutRow}>
-                <span className={styles.aboutKey}>Тип</span>
-                <span className={styles.aboutVal}>Зип худи</span>
-              </div>
-
-              <div className={styles.aboutRow}>
-                <span className={styles.aboutKey}>Бренд</span>
-                <span className={styles.aboutVal}>Supreme</span>
-              </div>
+              </span>
             </div>
 
-            <button type="button" className={styles.supportBtn}>
-              Чат с поддержкой
-            </button>
-          </section>
+            <div className={styles.aboutRow}>
+              <span className={styles.aboutKey}>Категория</span>
+              <span className={styles.aboutVal}>Одежда</span>
+            </div>
 
-          <ProductSection
-            title="Похожие"
-            products={recommended}
-            layout="grid"
-            headerVariant="tabs"
-            tabs={["Для вас", "Похожие"]}
-            onToggleFavorite={handleToggleRecommendedFavorite}
-          />
+            <div className={styles.aboutRow}>
+              <span className={styles.aboutKey}>Тип</span>
+              <span className={styles.aboutVal}>Зип худи</span>
+            </div>
 
-          {/* Кнопка добавления в корзину (фиксированная внизу на mobile) */}
-          <ProductAddToCart
-            quantity={quantity}
-            onQuantityChange={setQuantity}
-            onAddToCart={handleAddToCart}
-            onBuyNow={handleBuyNow}
-          />
-        </Container>
-        <Footer />
-      </main>
-    </>
+            <div className={styles.aboutRow}>
+              <span className={styles.aboutKey}>Бренд</span>
+              <span className={styles.aboutVal}>Supreme</span>
+            </div>
+          </div>
+
+          <button type="button" className={styles.supportBtn}>
+            Чат с поддержкой
+          </button>
+        </section>
+
+        <ProductSection
+          title="Похожие"
+          products={recommended}
+          layout="grid"
+          headerVariant="tabs"
+          tabs={["Для вас", "Похожие"]}
+          onToggleFavorite={handleToggleRecommendedFavorite}
+        />
+
+        {/* Кнопка добавления в корзину (фиксированная внизу на mobile) */}
+        <ProductAddToCart
+          quantity={quantity}
+          onQuantityChange={setQuantity}
+          onAddToCart={handleAddToCart}
+          onBuyNow={handleBuyNow}
+        />
+      </Container>
+      <Footer />
+    </main>
   );
 }

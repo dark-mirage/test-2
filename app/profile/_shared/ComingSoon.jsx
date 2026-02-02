@@ -10,7 +10,6 @@ export default function ComingSoon({
 }) {
   return (
     <>
-      <Header title={title} />
       <main className={styles.page}>
         <section className={styles.center} aria-label="Страница в разработке">
           <h2 className={styles.title}>Страница в разработке</h2>

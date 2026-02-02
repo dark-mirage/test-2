@@ -4,7 +4,7 @@
 }
 
 .header {
-  padding: 46px 0px 19px;
+  padding: calc(var(--tg-safe-area-top, 0px) + 10px) 0px 19px;
   background: #ffffff;
   display: flex;
   justify-content: center;

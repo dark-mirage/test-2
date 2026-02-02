@@ -2,7 +2,7 @@
   min-height: var(--tg-viewport-stable-height, 100vh);
   background: #f4f3f1;
   padding-bottom: calc(72px + var(--lm-footer-height, 0px));
-  padding-top: 50px;
+  padding-top: calc(var(--tg-safe-area-top, 0px) + 10px);
 }
 
 .closePill {
@@ -19,7 +19,7 @@
 .topbarTitle {
   text-align: center;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.01em;
   color: #111111;
   padding-bottom: 9px;
@@ -48,7 +48,7 @@
 }
 
 .main {
-  padding: 10px 12px 0;
+  padding: 13px 12px 0;
 }
 
 .summaryCard {
