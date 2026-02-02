@@ -10,7 +10,7 @@ import cx from "clsx";
 export default function FriendsSection() {
   const cards = [
     { title: "Наша\n команда", icon: "/img/FriendsSection1.webp" },
-    { title: "Оплата\n и сплит", icon: "/img/FriendsSection2.webp" },
+    { title: "Оплата\n и сплит", icon: "/img/brokenPrice.svg" },
     { title: "Доставка \nи отслеживание", icon: "/img/FriendsSection3.webp" },
     { title: "Условия\nвозврата", icon: "/img/FriendsSection4.webp" },
     { title: "Гарантии и безопасность", icon: "/img/FriendsSection5.webp" },
