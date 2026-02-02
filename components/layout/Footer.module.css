@@ -1,4 +1,5 @@
 .root {
+  max-width: 448px;
   position: fixed;
   left: 0;
   right: 0;
@@ -11,6 +12,7 @@
 
   /* Telegram safe area pastki qismi bo'lsa, bosilib qolmasin */
   padding-bottom: var(--tg-safe-area-bottom, 0px);
+  margin: 0 auto;
 }
 
 .inner {

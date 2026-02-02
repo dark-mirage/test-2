@@ -1,5 +1,6 @@
 .page {
-  /* Avoid unstable 100vh in Telegram WebApp */
+  max-width: 448px;
+  margin: 0 auto;
   min-height: var(--tg-viewport-stable-height, 100vh);
   padding-bottom: 5rem;
   background: #f4f3f1;

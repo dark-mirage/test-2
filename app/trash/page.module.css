@@ -1,5 +1,5 @@
 .c1 {
-  max-width: 28rem;
+  max-width: 448px;
   margin-left: auto;
   margin-right: auto;
   background: #f4f3f1;
@@ -457,14 +457,18 @@
   margin-bottom: 0.75rem;
 }
 .c66 {
+  max-width: 448px;
+  width: 100%;
+  margin: 0 auto;
   position: fixed;
-  bottom: 64px;
+  bottom: calc(var(--tg-safe-area-bottom, 0px) + 64px);
   z-index: 40;
   box-shadow: 0px 0px 40px 0px #00000026;
   border-radius: 25px 25px 0 0;
 }
 .c67 {
-  max-width: 28rem;
+  max-width: 448px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
   padding: 10px;
@@ -734,11 +738,6 @@
 
 .tw31 {
   text-decoration: line-through;
-}
-
-.tw32 {
-  left: 0;
-  right: 0;
 }
 
 .tw33 {
