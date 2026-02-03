@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ListFilter, Search, SlidersHorizontal, Trash2 } from "lucide-react";
 
@@ -15,7 +15,7 @@ import { cn } from "@/lib/format/cn";
 
 import styles from "./page.module.css";
 
-export default function SearchPage() {
+function SearchPageContent() {
   const inputRef = useRef(null);
   const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
@@ -708,5 +708,13 @@ export default function SearchPage() {
         />
       </Container>
     </main>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <SearchPageContent />
+    </Suspense>
   );
 }
