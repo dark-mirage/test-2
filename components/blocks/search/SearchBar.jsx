@@ -29,7 +29,7 @@ export default function SearchBar({
   return (
     <div className={className ? `${styles.outer} ${className}` : styles.outer}>
       <div className={styles.inner}>
-        <Search size={21} color="#111111" aria-hidden="true" />
+        <Search size={21} color="#7E7E7E" aria-hidden="true" />
         <input
           ref={inputRef}
           type="text"

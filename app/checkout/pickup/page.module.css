@@ -63,9 +63,8 @@
 }
 .c14 {
   border-radius: 9999px;
-  background: #111111;
+  background: #ffffff;
   display: grid;
-  border-width: 1px;
   border-style: solid;
 }
 .c15 {
@@ -773,13 +772,13 @@
 .providerChipActive {
   background: #111111;
   color: #ffffff;
-  border-color: #111111;
+  border: none;
 }
 
 .providerChipInactive {
   background: #ffffff;
   color: #111111;
-  border-color: #e5e5e5;
+  border: none;
 }
 
 .geoButton {
