@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import Footer from "@/components/layout/Footer";
+import { ordersApi, productsApi } from "@/lib/api";
+import { useCurrentUser } from "@/lib/hooks/useCurrentUser";
 import styles from "./page.module.css";
-import { mockOrders } from "./mockOrders";
 
 function formatRub(amount) {
   try {
@@ -230,12 +231,91 @@ function OrderCard({ order }) {
 }
 
 export default function OrdersClient() {
+  const { userId } = useCurrentUser();
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    // Telegram iOS/Android webview ko'pincha header title'ni `document.title`dan oladi.
     document.title = "Заказы";
   }, []);
 
-  const orders = useMemo(() => mockOrders, []);
+  useEffect(() => {
+    async function loadOrders() {
+      if (!userId) return;
+      try {
+        setLoading(true);
+        const data = await ordersApi.getAll(userId);
+        
+        // Преобразовать заказы в формат компонента
+        const transformed = await Promise.all(data.map(async (order) => {
+          const items = await Promise.all((order.items || []).map(async (item) => {
+            try {
+              const product = await productsApi.getById(item.product_id);
+              const firstPhoto = product.photos?.[0];
+              return {
+                id: item.id,
+                src: firstPhoto ? productsApi.getPhoto(firstPhoto.filename) : "/products/shoes-1.png",
+                name: product.name,
+                price: item.unit_price,
+                muted: false,
+              };
+            } catch {
+              return {
+                id: item.id,
+                src: "/products/shoes-1.png",
+                name: item.title_snapshot || `Товар ${item.product_id}`,
+                price: item.unit_price,
+                muted: false,
+              };
+            }
+          }));
+
+          const statusMap = {
+            'new': 'Оформлен',
+            'paid': 'Оформлен',
+            'shipped': 'В пути',
+            'done': 'Получен',
+            'canceled': 'Отменён',
+            'in_transit': 'В пути',
+            'pickup': 'В пункте выдачи',
+          };
+
+          return {
+            id: order.id.toString(),
+            statusTitle: statusMap[order.status] || order.status,
+            progress: order.status === 'new' ? '2 из 2' : order.status === 'shipped' ? '4 из 5' : undefined,
+            orderNumber: `Заказ №${order.id}`,
+            orderDateTitle: `Заказ от ${new Date(order.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}`,
+            orderNumberShort: `№${order.id}`,
+            statusSubtitle: order.status === 'new' ? 'Добавлен в реестр' : undefined,
+            itemsCount: order.total_items,
+            totalRub: order.total_price,
+            items: items,
+            showRating: order.status === 'done',
+          };
+        }));
+        
+        setOrders(transformed);
+      } catch (err) {
+        console.error("Failed to load orders:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadOrders();
+  }, [userId]);
+
+  if (loading) {
+    return (
+      <div className={`tg-viewport ${styles.page}`}>
+        <h3 className={styles.ordersClientstitle}>Заказы</h3>
+        <main className={styles.main}>
+          <div style={{ padding: "2rem", textAlign: "center" }}>Загрузка...</div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className={`tg-viewport ${styles.page}`}>
@@ -257,11 +337,15 @@ export default function OrdersClient() {
           />
         </Link>
 
-        <div className={styles.list}>
-          {orders.map((order) => (
-            <OrderCard key={order.id} order={order} />
-          ))}
-        </div>
+        {orders.length === 0 ? (
+          <div style={{ padding: "2rem", textAlign: "center" }}>У вас пока нет заказов</div>
+        ) : (
+          <div className={styles.list}>
+            {orders.map((order) => (
+              <OrderCard key={order.id} order={order} />
+            ))}
+          </div>
+        )}
       </main>
 
       <Footer />

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import SearchBar from "@/components/blocks/search/SearchBar";
 import Footer from "@/components/layout/Footer";
@@ -7,105 +7,112 @@ import CategoryTabs from "@/components/blocks/home/CategoryTabs";
 import FriendsSection from "@/components/blocks/home/FriendsSection";
 import HomeDeliveryStatusCard from "@/components/blocks/home/HomeDeliveryStatusCard";
 import ProductSection from "@/components/blocks/product/ProductSection";
+import { productsApi, favoritesApi } from "@/lib/api";
 
 import styles from "./page.module.css";
 
-export default function Home() {
-  const [recentProducts, setRecentProducts] = useState([
-    {
-      id: 1,
-      name: "Туфли Prada Monolith Brushed Original Bla...",
-      brand: "Prada",
-      price: "112 490 ₽",
-      image: "/products/shoes-1.png",
-      isFavorite: false,
-      deliveryDate: "30 марта",
-    },
-    {
-      id: 2,
-      name: "Лонгслив Comme Des Garcons Play",
-      brand: "Comme Des Garcons",
-      price: "12 990 ₽",
-      image: "/products/t-shirt-1.png",
-      isFavorite: true,
-      deliveryDate: "Послезавтра",
-    },
-    {
-      id: 3,
-      name: "Футболка Daze",
-      brand: "Daze",
-      price: "2 890 ₽",
-      image: "/products/t-shirt-2.png",
-      isFavorite: false,
-      deliveryDate: "30 марта",
-    },
-    {
-      id: 8,
-      name: "Футболка Daze",
-      brand: "Daze",
-      price: "8 990 ₽",
-      image: "/products/t-shirt-2.png",
-      isFavorite: false,
-      deliveryDate: "Послезавтра",
-    },
-    {
-      id: 9,
-      name: "Куртка зимняя",
-      brand: "NoName",
-      price: "15 990 ₽",
-      image: "/products/t-shirt-2.png",
-      isFavorite: true,
-      deliveryDate: "30 марта",
-    },
-  ]);
-
-  const [recommendedProducts, setRecommendedProducts] = useState([
-    {
-      id: 4,
-      name: "Лонгслив Comme Des Garçons Play",
-      brand: "Comme Des Garçons",
-      price: "2 890 ₽",
-      image: "/products/t-shirt-1.png",
-      isFavorite: false,
-      deliveryDate: "Послезавтра",
-    },
-    {
-      id: 5,
-      name: "Tucker Prado Monolith Brushed Original Bo...",
-      brand: "Prada",
-      price: "112 490 ₽",
-      image: "/products/shoes-1.png",
-      isFavorite: true,
-      deliveryDate: "30 марта",
-    },
-    {
-      id: 6,
-      name: "Футболка Gall...",
-      brand: "Gall",
-      price: "2 890 ₽",
-      image: "/products/t-shirt-2.png",
-      isFavorite: false,
-      deliveryDate: "30 марта",
-    },
-    {
-      id: 7,
-      name: "Кроссовки Nike Dunk Low",
-      brand: "Nike",
-      price: "12 990 ₽",
-      image: "/products/shoes-2.png",
-      isFavorite: true,
-      deliveryDate: "Послезавтра",
-    },
-  ]);
-
-  const toggleFavorite = (id) => {
-    setRecentProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, isFavorite: !p.isFavorite } : p)),
-    );
-    setRecommendedProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, isFavorite: !p.isFavorite } : p)),
-    );
+// Преобразовать продукт из API в формат для компонента
+function transformProduct(product, favoriteIds = new Set()) {
+  const firstPhoto = product.photos?.[0];
+  const imageUrl = firstPhoto 
+    ? productsApi.getPhoto(firstPhoto.filename)
+    : "/products/shoes-1.png";
+  
+  return {
+    id: product.id,
+    name: product.name,
+    brand: product.brand?.name || "Unknown",
+    price: new Intl.NumberFormat("ru-RU").format(product.price) + " ₽",
+    image: imageUrl,
+    isFavorite: favoriteIds.has(product.id),
+    deliveryDate: product.delivery === "China" ? "30 марта" : "Послезавтра",
   };
+}
+
+export default function Home() {
+  const [recentProducts, setRecentProducts] = useState([]);
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [favoriteIds, setFavoriteIds] = useState(new Set());
+
+  // Загрузить избранное
+  useEffect(() => {
+    async function loadFavorites() {
+      try {
+        const favorites = await favoritesApi.getAll({ item_type: "product" });
+        const ids = new Set(favorites.map(f => f.product_id).filter(Boolean));
+        setFavoriteIds(ids);
+      } catch (err) {
+        console.error("Failed to load favorites:", err);
+      }
+    }
+    loadFavorites();
+  }, []);
+
+  // Загрузить последние товары
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        setLoading(true);
+        const [latest, all] = await Promise.all([
+          productsApi.getLatest(5),
+          productsApi.getAll({ limit: 8, skip: 0 }),
+        ]);
+        
+        setRecentProducts(latest.map(p => transformProduct(p, favoriteIds)));
+        setRecommendedProducts(all.map(p => transformProduct(p, favoriteIds)));
+      } catch (err) {
+        console.error("Failed to load products:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProducts();
+  }, [favoriteIds]);
+
+  const toggleFavorite = async (id) => {
+    const isFavorite = favoriteIds.has(id);
+    try {
+      if (isFavorite) {
+        // Найти favorite_id и удалить
+        const favorites = await favoritesApi.getAll({ item_type: "product" });
+        const favorite = favorites.find(f => f.product_id === id);
+        if (favorite) {
+          await favoritesApi.remove(favorite.id);
+          setFavoriteIds(prev => {
+            const next = new Set(prev);
+            next.delete(id);
+            return next;
+          });
+        }
+      } else {
+        // Добавить в избранное
+        await favoritesApi.add({ user_id: 1, product_id: id }); // TODO: получить user_id из сессии
+        setFavoriteIds(prev => new Set(prev).add(id));
+      }
+      
+      // Обновить локальное состояние
+      setRecentProducts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, isFavorite: !p.isFavorite } : p)),
+      );
+      setRecommendedProducts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, isFavorite: !p.isFavorite } : p)),
+      );
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="lm-app-bg" style={{ minHeight: "var(--tg-viewport-height)" }}>
+        <div className={styles.container}>
+          <SearchBar navigateOnFocusTo="/search" readOnly />
+          <div style={{ padding: "2rem", textAlign: "center" }}>Загрузка...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -121,19 +128,23 @@ export default function Home() {
           <HomeDeliveryStatusCard />
         </div>
 
-        <ProductSection
-          title="Только что купили"
-          products={recentProducts}
-          onToggleFavorite={toggleFavorite}
-          layout="horizontal"
-        />
+        {recentProducts.length > 0 && (
+          <ProductSection
+            title="Только что купили"
+            products={recentProducts}
+            onToggleFavorite={toggleFavorite}
+            layout="horizontal"
+          />
+        )}
 
-        <ProductSection
-          title="Для вас"
-          products={recommendedProducts}
-          onToggleFavorite={toggleFavorite}
-          layout="grid"
-        />
+        {recommendedProducts.length > 0 && (
+          <ProductSection
+            title="Для вас"
+            products={recommendedProducts}
+            onToggleFavorite={toggleFavorite}
+            layout="grid"
+          />
+        )}
 
         <Footer />
       </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import Container from "@/components/layout/Layout";
@@ -13,6 +13,8 @@ import InfoCard from "@/components/blocks/home/InfoCard";
 import ProductSection from "@/components/blocks/product/ProductSection";
 import ProductShippingOptions from "@/components/blocks/product/ProductShippingOptions";
 import ProductBrandsCarousel from "@/components/blocks/product/ProductBrandsCarousel";
+import { productsApi, favoritesApi, cartApi, brandsApi } from "@/lib/api";
+import { useCurrentUser } from "@/lib/hooks/useCurrentUser";
 import styles from "./page.module.css";
 import cx from "clsx";
 
@@ -20,23 +22,98 @@ export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
   const productId = Array.isArray(params?.id) ? params.id[0] : params?.id;
+  const { userId } = useCurrentUser();
 
-  const CART_STORAGE_KEY = "loyaltymarket_cart_v1";
-  const CART_UPDATED_EVENT = "loyaltymarket_cart_updated";
-
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isArticleCopied, setIsArticleCopied] = useState(false);
+  const [recommended, setRecommended] = useState([]);
+  const [brandsCarousel, setBrandsCarousel] = useState([]);
 
-  const productImages = [
+  // Загрузить товар
+  useEffect(() => {
+    async function loadProduct() {
+      if (!productId) return;
+      try {
+        setLoading(true);
+        const data = await productsApi.getById(Number(productId));
+        setProduct(data);
+        
+        // Загрузить избранное
+        try {
+          const favorites = await favoritesApi.getAll({ item_type: "product" });
+          const favorite = favorites.find(f => f.product_id === Number(productId));
+          setIsFavorite(!!favorite);
+        } catch (err) {
+          console.error("Failed to check favorite:", err);
+        }
+
+        // Загрузить похожие товары
+        try {
+          const similar = await productsApi.getAll({ 
+            category_id: data.category_id, 
+            limit: 4,
+            skip: 0 
+          });
+          const favoriteIds = new Set();
+          try {
+            const favorites = await favoritesApi.getAll({ item_type: "product" });
+            favorites.forEach(f => {
+              if (f.product_id) favoriteIds.add(f.product_id);
+            });
+          } catch {}
+          
+          setRecommended(similar
+            .filter(p => p.id !== Number(productId))
+            .slice(0, 2)
+            .map(p => ({
+              id: p.id,
+              name: p.name,
+              price: new Intl.NumberFormat("ru-RU").format(p.price) + " ₽",
+              image: p.photos?.[0] ? productsApi.getPhoto(p.photos[0].filename) : "/products/shoes-1.png",
+              isFavorite: favoriteIds.has(p.id),
+              deliveryDate: p.delivery === "China" ? "30 марта" : "Послезавтра",
+            }))
+          );
+        } catch (err) {
+          console.error("Failed to load recommended:", err);
+        }
+
+        // Загрузить бренды
+        try {
+          const brands = await brandsApi.getAll();
+          setBrandsCarousel(brands.slice(0, 3).map(b => ({
+            id: b.id,
+            name: b.name,
+            subtitle: "Бренд",
+            image: b.logo ? brandsApi.getLogo(b.logo) : "/icons/favourites/brands/supreme.svg",
+            href: `/brands/${b.id}`,
+          })));
+        } catch (err) {
+          console.error("Failed to load brands:", err);
+        }
+      } catch (err) {
+        console.error("Failed to load product:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProduct();
+  }, [productId]);
+
+  const productImages = product?.photos?.map(p => productsApi.getPhoto(p.filename)) || [
     "/products/shoes-1.png",
     "/products/shoes-2.png",
     "/products/t-shirt-1.png",
   ];
 
-  const breadcrumb = ["Одежда, обувь и аксессуары", "Одежда", "Зип худи"];
+  const breadcrumb = product 
+    ? ["Одежда, обувь и аксессуары", product.category?.name || "Категория", product.type?.name || "Тип"]
+    : ["Одежда, обувь и аксессуары", "Одежда", "Зип худи"];
 
   const infoCards = [
     { title: "Гарантии\nи безопасность", icon: "/img/FriendsSection5.webp" },
@@ -45,51 +122,8 @@ export default function ProductPage() {
     { title: "Чат\nс поддержкой", icon: "/img/FriendsSection8.webp" },
   ];
 
-  const [recommended, setRecommended] = useState(() => [
-    {
-      id: "rec-1",
-      name: "Лонгслив Comme Des Garcons Play",
-      price: "2 890 ₽",
-      image: "/products/shoes-1.png",
-      isFavorite: false,
-      deliveryDate: "30 марта",
-    },
-    {
-      id: "rec-2",
-      name: "Туфли Prada Monolith",
-      price: "112 490 ₽",
-      image: "/products/shoes-1.png",
-      isFavorite: false,
-      deliveryDate: "Послезавтра",
-    },
-  ]);
-
-  const sizes = ["XS", "S", "M", "L", "XL"];
-  const availableSizes = ["XS", "S", "M", "L", "XL"];
-
-  const brandsCarousel = [
-    {
-      id: "supreme",
-      name: "Supreme",
-      subtitle: "Бренд",
-      image: "/icons/favourites/brands/supreme.svg",
-      href: "/brands/supreme",
-    },
-    {
-      id: "adidas",
-      name: "Adidas",
-      subtitle: "Бренд",
-      image: "/icons/favourites/brands/adidas.svg",
-      href: "/brands/adidas",
-    },
-    {
-      id: "stone-island",
-      name: "Stone Island",
-      subtitle: "Бренд",
-      image: "/icons/favourites/brands/stone-island.svg",
-      href: "/brands/stone-island",
-    },
-  ];
+  const sizes = product?.sizes?.map(s => s.size) || ["XS", "S", "M", "L", "XL"];
+  const availableSizes = sizes;
 
   // Данные для отзывов
   const reviews = [
@@ -123,60 +157,58 @@ export default function ProductPage() {
     1: 2,
   };
 
-  const handleAddToCart = () => {
-    console.log("Добавлено в корзину:", {
-      productId,
-      size: selectedSize,
-      quantity,
-    });
+  const handleAddToCart = async () => {
+    if (!product) return;
+    try {
+      const sizeObj = product.sizes?.find(s => s.size === selectedSize);
+      await cartApi.addItem({
+        product_id: product.id,
+        quantity,
+        ...(sizeObj && { size_id: sizeObj.id }),
+      });
+      // Обновить событие для обновления счетчика в футере
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('loyaltymarket_cart_updated'));
+      }
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+      alert("Не удалось добавить товар в корзину");
+    }
   };
 
-  const handleBuyNow = () => {
-    const numericId = Number(productId);
-    const id = Number.isFinite(numericId) ? numericId : Date.now();
-
-    const rawPrice = "127 899 ₽";
-    const digits = String(rawPrice).replace(/[^0-9]/g, "");
-    const priceRub = digits ? Number(digits) : 0;
-
-    const nextItem = {
-      id,
-      name: "Кофта Supreme",
-      shippingText: "Доставка из Китая до РФ 0₽",
-      image: productImages?.[0] ?? "",
-      size: selectedSize ?? undefined,
-      article: "0432135",
-      priceRub,
-      quantity: Math.max(1, Number(quantity || 1)),
-      deliveryText: "Послезавтра, из наличия",
-      isFavorite: false,
-    };
-
+  const handleBuyNow = async () => {
+    if (!product) return;
     try {
-      const existingRaw = localStorage.getItem(CART_STORAGE_KEY);
-      const existing = existingRaw ? JSON.parse(existingRaw) : [];
-      const items = Array.isArray(existing) ? existing : [];
-
-      const idx = items.findIndex((x) => x && x.id === id);
-      if (idx >= 0) {
-        const prev = items[idx] || {};
-        const prevQty = Number(prev.quantity || 0);
-        items[idx] = {
-          ...prev,
-          ...nextItem,
-          quantity: Math.max(1, prevQty + nextItem.quantity),
-        };
-      } else {
-        items.push(nextItem);
-      }
-
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-      window.dispatchEvent(new Event(CART_UPDATED_EVENT));
-    } catch {
-      // ignore
+      const sizeObj = product.sizes?.find(s => s.size === selectedSize);
+      await cartApi.addItem({
+        product_id: product.id,
+        quantity,
+        ...(sizeObj && { size_id: sizeObj.id }),
+      });
+      router.push("/trash");
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+      alert("Не удалось добавить товар в корзину");
     }
+  };
 
-    router.push("/trash");
+  const handleToggleFavorite = async () => {
+    if (!product || !userId) return;
+    try {
+      if (isFavorite) {
+        const favorites = await favoritesApi.getAll({ item_type: "product" });
+        const favorite = favorites.find(f => f.product_id === product.id);
+        if (favorite) {
+          await favoritesApi.remove(favorite.id);
+          setIsFavorite(false);
+        }
+      } else {
+        await favoritesApi.add({ user_id: userId, product_id: product.id });
+        setIsFavorite(true);
+      }
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
   };
 
   const handleToggleRecommendedFavorite = (id) => {
@@ -238,6 +270,26 @@ export default function ProductPage() {
     window.setTimeout(() => setIsArticleCopied(false), 1200);
   };
 
+  if (loading) {
+    return (
+      <main className={cx("tg-viewport", styles.c1, styles.tw1)}>
+        <Container>
+          <div style={{ padding: "2rem", textAlign: "center" }}>Загрузка...</div>
+        </Container>
+      </main>
+    );
+  }
+
+  if (!product) {
+    return (
+      <main className={cx("tg-viewport", styles.c1, styles.tw1)}>
+        <Container>
+          <div style={{ padding: "2rem", textAlign: "center" }}>Товар не найден</div>
+        </Container>
+      </main>
+    );
+  }
+
   return (
     <main className={cx("tg-viewport", styles.c1, styles.tw1)}>
       <Container>
@@ -245,9 +297,9 @@ export default function ProductPage() {
           {/* Галерея изображений */}
           <ProductImageGallery
             images={productImages}
-            productName="Кофта Supreme"
+            productName={product.name}
             isFavorite={isFavorite}
-            onToggleFavorite={() => setIsFavorite(!isFavorite)}
+            onToggleFavorite={handleToggleFavorite}
             currentImageIndex={currentImageIndex}
             onImageChange={setCurrentImageIndex}
           />
@@ -283,9 +335,9 @@ export default function ProductPage() {
 
           {/* Информация о товаре */}
           <ProductInfo
-            productName="Кофта Supreme"
-            brand="Supreme"
-            brandLink="/brands/supreme"
+            productName={product.name}
+            brand={product.brand?.name || "Unknown"}
+            brandLink={product.brand?.id ? `/brands/${product.brand.id}` : "#"}
             images={productImages}
             currentImageIndex={currentImageIndex}
             onImageChange={setCurrentImageIndex}
@@ -303,11 +355,11 @@ export default function ProductPage() {
 
         {/* Цена и оплата */}
         <ProductPrice
-          price="127 899 ₽"
-          deliveryInfo="Доставка из Китая до РФ 0₽"
+          price={new Intl.NumberFormat("ru-RU").format(product.price) + " ₽"}
+          deliveryInfo={product.delivery === "China" ? "Доставка из Китая до РФ 0₽" : "Доставка из наличия 0₽"}
           splitPayment={{
             count: 4,
-            amount: "880",
+            amount: Math.floor(product.price / 4).toString(),
             text: "без переплаты",
           }}
         />
@@ -349,12 +401,12 @@ export default function ProductPage() {
               <span className={styles.aboutKey}>Артикул</span>
               <span className={styles.aboutVal}>
                 <span className={styles.aboutValRow}>
-                  <span>0432135</span>
+                  <span>{product.id}</span>
                   <button
                     type="button"
                     className={styles.copyBtn}
                     aria-label="Скопировать артикул"
-                    onClick={() => handleCopy("0432135")}
+                    onClick={() => handleCopy(product.id.toString())}
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -384,17 +436,17 @@ export default function ProductPage() {
 
             <div className={styles.aboutRow}>
               <span className={styles.aboutKey}>Категория</span>
-              <span className={styles.aboutVal}>Одежда</span>
+              <span className={styles.aboutVal}>{product.category?.name || "—"}</span>
             </div>
 
             <div className={styles.aboutRow}>
               <span className={styles.aboutKey}>Тип</span>
-              <span className={styles.aboutVal}>Зип худи</span>
+              <span className={styles.aboutVal}>{product.type?.name || "—"}</span>
             </div>
 
             <div className={styles.aboutRow}>
               <span className={styles.aboutKey}>Бренд</span>
-              <span className={styles.aboutVal}>Supreme</span>
+              <span className={styles.aboutVal}>{product.brand?.name || "—"}</span>
             </div>
           </div>
 
