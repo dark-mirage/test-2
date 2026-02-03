@@ -21,12 +21,7 @@ export default function ProductPrice({ price, splitPayment, deliveryInfo }) {
           {deliveryInfo && (
             <div className={styles.c5}>
               <p className={styles.c6}>{deliveryInfo}</p>
-              <span
-                className={styles.infoIcon}
-                data-tooltip={deliveryInfo}
-                tabIndex={0}
-                aria-label="Информация о доставке"
-              >
+              <span className={styles.infoIcon} aria-hidden="true">
                 i
               </span>
             </div>

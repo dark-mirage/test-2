@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ListFilter, Search, SlidersHorizontal, Trash2 } from "lucide-react";
 
 import Footer from "@/components/layout/Footer";
@@ -16,6 +17,7 @@ import styles from "./page.module.css";
 
 export default function SearchPage() {
   const inputRef = useRef(null);
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const blurCloseTimerRef = useRef(null);
@@ -147,6 +149,13 @@ export default function SearchPage() {
     const frame = requestAnimationFrame(() => inputRef.current?.focus?.());
     return () => cancelAnimationFrame(frame);
   }, []);
+
+  useEffect(() => {
+    const paramQuery = searchParams.get("query");
+    if (paramQuery != null) {
+      setQuery(paramQuery);
+    }
+  }, [searchParams]);
 
   const normalize = (value) => value.trim().replace(/\s+/g, " ").toLowerCase();
 

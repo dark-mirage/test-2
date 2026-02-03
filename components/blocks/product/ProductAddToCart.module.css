@@ -5,7 +5,7 @@
   position: fixed;
   left: 0;
   right: 0;
-  bottom: calc(var(--tg-safe-area-bottom, 0px) + 64px);
+  bottom: calc(var(--tg-safe-area-bottom, 0px) + 53px);
   z-index: 50;
   padding: 10px 10px;
   border-radius: 25px 25px 0 0;

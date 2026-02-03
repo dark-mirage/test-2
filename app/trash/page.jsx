@@ -203,9 +203,6 @@ export default function TrashBasketPage() {
     selectedQuantity > 0 ? (appliedPromo?.discountRub ?? 0) : 0;
   const totalRub = Math.max(0, selectedSubtotalRub - discountRub);
 
-  const DELIVERY_TOOLTIP_TEXT =
-    "Стоимость доставки рассчитывается при оформлении заказа и зависит от адреса и способа доставки.";
-
   const recommendedProducts = useMemo(
     () => [
       {
@@ -538,13 +535,7 @@ export default function TrashBasketPage() {
                 <div className={styles.c52}>
                   <span className={cn(styles.c53, styles.tw25)}>
                     <span>Доставка</span>
-                    <span
-                      className={cn(
-                        styles.c54,
-                        styles.tw26,
-                        styles.tooltipGroup,
-                      )}
-                    >
+                    <span className={cn(styles.c54, styles.tw26)}>
                       <button
                         type="button"
                         aria-label="Информация о доставке"
@@ -556,12 +547,6 @@ export default function TrashBasketPage() {
                           className={cn(styles.c56, styles.tw28)}
                         />
                       </button>
-                      <span
-                        role="tooltip"
-                        className={cn(styles.c57, styles.tw29, styles.tooltip)}
-                      >
-                        {DELIVERY_TOOLTIP_TEXT}
-                      </span>
                     </span>
                   </span>
                   <span>при оформлении</span>
