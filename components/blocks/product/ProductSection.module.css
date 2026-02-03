@@ -4,7 +4,7 @@
 }
 
 .sectionGrid {
-  padding: 18px 0px 24px 0;
+  padding: 18px 0px calc(var(--tg-safe-area-bottom, 0px) + 64px) 0;
   background: #fff;
   border-radius: 25px;
 }
