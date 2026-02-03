@@ -81,14 +81,17 @@
   min-height: var(--tg-viewport-stable-height, 100vh);
 }
 .c17 {
-  width: 100%;
+  position: fixed;
+  inset: 0;
   background: #f4f3f1;
-  position: relative;
+  z-index: 1;
 }
+
 .c18 {
-  height: 100%;
-  width: 100%;
+  position: absolute;
+  inset: 0;
 }
+
 .c19 {
   position: absolute;
   bottom: 140px;
@@ -273,6 +276,16 @@
   padding-bottom: 1rem;
 }
 
+.c23,
+.c58 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateZ(0);
+  will-change: transform;
+  z-index: 2000;
+}
+
 .c59 {
   margin-bottom: 0.75rem;
 }
@@ -404,6 +417,14 @@
   display: flex;
   flex-direction: column;
 }
+
+.c28,
+.c68,
+.c82 {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .c84 {
   font-size: 22px;
   font-weight: 700;
