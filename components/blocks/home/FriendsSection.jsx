@@ -74,7 +74,20 @@ export default function FriendsSection() {
               ))}
             </div>
             <button type="button" className={styles.addBtn}>
-              +
+              <svg
+                width="34"
+                height="34"
+                viewBox="0 0 34 34"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="34" height="34" rx="17" fill="white" />
+                <path
+                  d="M17.2826 10.5V17M17.2826 23.5V17M17.2826 17H10.5M17.2826 17H23.5"
+                  stroke="#2D2D2D"
+                  strokeWidth="1.63977"
+                />
+              </svg>
             </button>
           </div>
         </Link>

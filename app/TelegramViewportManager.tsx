@@ -32,7 +32,6 @@ export default function TelegramViewportManager(): null {
         const vh = tg?.viewportHeight ?? window.innerHeight ?? 0;
         const stable = tg?.viewportStableHeight ?? vh;
 
-        // Avoid unstable `100vh` in Telegram: use WebApp viewport metrics instead.
         setCssVarPx("--tg-viewport-height", vh);
         setCssVarPx("--tg-viewport-stable-height", stable);
         setCssVar("--tg-is-expanded", tg?.isExpanded ? "1" : "0");

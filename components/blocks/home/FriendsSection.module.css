@@ -111,16 +111,8 @@
   width: 34px;
   height: 34px;
   border-radius: 9999px;
-  background: #ffffff;
   border: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
-  color: #2d2d2d;
-  vertical-align: middle;
-  font-size: 30px;
-  font-weight: 300;
 }
 
 .pointsValue {
