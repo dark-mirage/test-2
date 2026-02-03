@@ -2,6 +2,10 @@
 
 import { useEffect } from "react";
 
+/* =========================
+   Utils
+========================= */
+
 function compareSemver(a, b) {
   const pa = String(a)
     .split(".")
@@ -31,6 +35,10 @@ function getTelegramWebApp() {
   return window.Telegram?.WebApp ?? null;
 }
 
+/* =========================
+   Theme
+========================= */
+
 function applyThemeColors(tg) {
   const telegramBg = tg?.themeParams?.bg_color ?? "#ffffff";
 
@@ -55,8 +63,14 @@ function applyThemeColors(tg) {
   try {
     tg.setBackgroundColor(appBg);
     tg.setHeaderColor(appBg);
-  } catch {}
+  } catch {
+    // ignore
+  }
 }
+
+/* =========================
+   Fullscreen
+========================= */
 
 function requestFullscreenBestEffort(tg) {
   const minSupported = "7.0";
@@ -78,6 +92,10 @@ function requestFullscreenBestEffort(tg) {
   }
 }
 
+/* =========================
+   Component
+========================= */
+
 export default function TelegramInit() {
   useEffect(() => {
     let isCancelled = false;
@@ -88,31 +106,38 @@ export default function TelegramInit() {
 
       try {
         tg.ready();
-        tg.expand();
 
-        if (isCompactViewport(448) && !fullscreenRequested) {
-          requestFullscreenBestEffort(tg);
-          fullscreenRequested = true;
+        /* 🔥 FAQAT MOBILE’DA EXPAND */
+        if (isCompactViewport(448)) {
+          tg.expand();
+
+          if (!fullscreenRequested) {
+            requestFullscreenBestEffort(tg);
+            fullscreenRequested = true;
+          }
         }
 
+        // swipe bilan yopilib ketishini bloklaydi (mobile’da foydali)
         tg.disableVerticalSwipes?.();
-      } catch {}
+      } catch {
+        // ignore
+      }
 
       applyThemeColors(tg);
 
-      const onTheme = () => {
-        applyThemeColors(tg);
-      };
-
+      const onTheme = () => applyThemeColors(tg);
       tg.onEvent("themeChanged", onTheme);
 
+      // Telegram ba’zida birinchi expand’ni yutib yuboradi
       const t = window.setTimeout(() => {
         try {
-          tg.expand();
+          if (isCompactViewport(448)) {
+            tg.expand();
 
-          if (isCompactViewport(448) && !fullscreenRequested) {
-            requestFullscreenBestEffort(tg);
-            fullscreenRequested = true;
+            if (!fullscreenRequested) {
+              requestFullscreenBestEffort(tg);
+              fullscreenRequested = true;
+            }
           }
 
           tg.disableVerticalSwipes?.();
