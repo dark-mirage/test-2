@@ -25,4 +25,5 @@ export default function CategoryTabs() {
       </div>
     </div>
   );
+  
 }
