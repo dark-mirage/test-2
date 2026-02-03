@@ -8,6 +8,7 @@ import FriendsSection from "@/components/blocks/home/FriendsSection";
 import HomeDeliveryStatusCard from "@/components/blocks/home/HomeDeliveryStatusCard";
 import ProductSection from "@/components/blocks/product/ProductSection";
 import { productsApi, favoritesApi } from "@/lib/api";
+import "@/lib/utils/apiTest"; // Добавляем тестовую утилиту
 
 import styles from "./page.module.css";
 

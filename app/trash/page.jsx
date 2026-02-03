@@ -1,54 +1,15 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import Footer from "@/components/layout/Footer";
 import ProductSection from "@/components/blocks/product/ProductSection";
-import { useCart } from "@/components/blocks/cart/useCart";
+import { useApiCart } from "@/lib/hooks/useApiCart";
 import BottomSheet from "@/components/ui/BottomSheet";
 import styles from "./page.module.css";
 import cn from "clsx";
-
-const SEED_ITEMS = [
-  {
-    id: 1,
-    name: "Худи Carne Bollente",
-    shippingText: "Доставка из Китая до РФ 0₽",
-    image: "/products/t-shirt-1.png",
-    size: "L",
-    article: "4465457",
-    priceRub: 23400,
-    quantity: 1,
-    deliveryText: "30 марта, из Китая",
-    isFavorite: true,
-  },
-  {
-    id: 2,
-    name: "Джинсы Carne Bollente",
-    shippingText: "Доставка из Китая до РФ 0₽",
-    image: "/products/t-shirt-2.png",
-    size: "L",
-    article: "4465457",
-    priceRub: 23400,
-    quantity: 1,
-    deliveryText: "Послезавтра, из наличия",
-    isFavorite: false,
-  },
-  {
-    id: 3,
-    name: "Джинсы Carne Bollente blue jeans...",
-    shippingText: "Доставка из Китая до РФ 0₽",
-    image: "/products/shoes-1.png",
-    size: "L",
-    article: "4465457",
-    priceRub: 23400,
-    quantity: 1,
-    deliveryText: "Послезавтра, из наличия",
-    isFavorite: true,
-  },
-];
 
 function formatRub(value) {
   try {
@@ -73,8 +34,56 @@ const CHECKOUT_PROMO_KEY = "loyaltymarket_checkout_promo_v1";
 
 export default function TrashBasketPage() {
   const router = useRouter();
-  const { items, toggleFavorite, removeItem, setQuantity, removeMany } =
-    useCart(SEED_ITEMS);
+  const { 
+    items, 
+    loading, 
+    error,
+    removeItem: removeItemApi, 
+    updateItem,
+    clear: clearCart,
+    refresh 
+  } = useApiCart();
+
+  // Адаптеры для совместимости с существующим кодом
+  const toggleFavorite = () => {}; // Избранное управляется через API на странице товара
+  
+  const removeItem = async (id) => {
+    try {
+      await removeItemApi(id);
+      // Обновить событие для обновления счетчика в футере
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('loyaltymarket_cart_updated'));
+      }
+    } catch (err) {
+      console.error('Failed to remove item:', err);
+    }
+  };
+
+  const setQuantity = async (id, quantity) => {
+    try {
+      await updateItem(id, quantity);
+      // Обновить событие для обновления счетчика в футере
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('loyaltymarket_cart_updated'));
+      }
+    } catch (err) {
+      console.error('Failed to update quantity:', err);
+    }
+  };
+
+  const removeMany = async (ids) => {
+    try {
+      for (const id of ids) {
+        await removeItemApi(id);
+      }
+      // Обновить событие для обновления счетчика в футере
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('loyaltymarket_cart_updated'));
+      }
+    } catch (err) {
+      console.error('Failed to remove items:', err);
+    }
+  };
 
   const [unselectedIds, setUnselectedIds] = useState(() => new Set());
 
@@ -93,7 +102,8 @@ export default function TrashBasketPage() {
     for (const item of items) {
       if (!selectedIds.has(item.id)) continue;
       nextQuantity += item.quantity;
-      nextSubtotalRub += item.priceRub * item.quantity;
+      // Используем lineTotal если есть, иначе считаем из priceRub
+      nextSubtotalRub += item.lineTotal || (item.priceRub * item.quantity);
     }
     return {
       selectedQuantity: nextQuantity,
@@ -254,6 +264,29 @@ export default function TrashBasketPage() {
   };
 
   const itemsWord = pluralizeItemsRu(selectedQuantity);
+
+  // Показать загрузку
+  if (loading) {
+    return (
+      <div className={styles.c1}>
+        <div style={{ padding: "2rem", textAlign: "center" }}>Загрузка корзины...</div>
+      </div>
+    );
+  }
+
+  // Показать ошибку
+  if (error) {
+    return (
+      <div className={styles.c1}>
+        <div style={{ padding: "2rem", textAlign: "center" }}>
+          <div>Ошибка загрузки корзины: {error}</div>
+          <button onClick={refresh} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
+            Попробовать снова
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.c1}>
