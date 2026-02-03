@@ -2,32 +2,19 @@
 
 import { useEffect } from "react";
 
-/* =========================
-   Utils
-========================= */
+/* ================= Utils ================= */
 
 function compareSemver(a, b) {
-  const pa = String(a)
-    .split(".")
-    .map((x) => Number.parseInt(x, 10));
-  const pb = String(b)
-    .split(".")
-    .map((x) => Number.parseInt(x, 10));
-
+  const pa = String(a).split(".").map(Number);
+  const pb = String(b).split(".").map(Number);
   const len = Math.max(pa.length, pb.length);
 
   for (let i = 0; i < len; i++) {
-    const ai = Number.isFinite(pa[i]) ? pa[i] : 0;
-    const bi = Number.isFinite(pb[i]) ? pb[i] : 0;
+    const ai = pa[i] ?? 0;
+    const bi = pb[i] ?? 0;
     if (ai !== bi) return ai - bi;
   }
-
   return 0;
-}
-
-function isCompactViewport(maxWidth = 448) {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia(`(max-width: ${maxWidth}px)`).matches;
 }
 
 function getTelegramWebApp() {
@@ -35,145 +22,81 @@ function getTelegramWebApp() {
   return window.Telegram?.WebApp ?? null;
 }
 
-/* =========================
-   Theme
-========================= */
-
-function applyThemeColors(tg) {
-  const telegramBg = tg?.themeParams?.bg_color ?? "#ffffff";
-
-  if (typeof document !== "undefined") {
-    document.documentElement.style.setProperty("--tg-theme-bg", telegramBg);
-  }
-
-  const appBg =
-    typeof document !== "undefined"
-      ? getComputedStyle(document.documentElement)
-          .getPropertyValue("--app-background")
-          .trim() || "#f6f5f3"
-      : "#f6f5f3";
-
-  const minColorSupport = "6.1";
-  const canSetColors =
-    typeof tg?.version === "string" &&
-    compareSemver(tg.version, minColorSupport) >= 0;
-
-  if (!canSetColors) return;
-
-  try {
-    tg.setBackgroundColor(appBg);
-    tg.setHeaderColor(appBg);
-  } catch {
-    // ignore
-  }
+function isMobileTelegram(tg) {
+  return tg?.platform === "ios" || tg?.platform === "android";
 }
 
-/* =========================
-   Fullscreen
-========================= */
+/* ================= Theme ================= */
 
-function requestFullscreenBestEffort(tg) {
-  const minSupported = "7.0";
+function applyThemeColors(tg) {
+  const appBg =
+    getComputedStyle(document.documentElement)
+      .getPropertyValue("--app-background")
+      .trim() || "#f6f5f3";
 
   if (
     typeof tg?.version === "string" &&
-    compareSemver(tg.version, minSupported) < 0
+    compareSemver(tg.version, "6.1") >= 0
   ) {
-    return;
-  }
-
-  const request = tg?.requestFullscreen ?? tg?.requestFullScreen;
-  if (typeof request !== "function") return;
-
-  try {
-    request.call(tg);
-  } catch {
-    // ignore
+    try {
+      tg.setBackgroundColor(appBg);
+      tg.setHeaderColor(appBg);
+    } catch {}
   }
 }
 
-/* =========================
-   Component
-========================= */
+/* ================= Fullscreen ================= */
+
+function requestFullscreenBestEffort(tg) {
+  if (
+    typeof tg?.version === "string" &&
+    compareSemver(tg.version, "7.0") >= 0
+  ) {
+    const fn = tg.requestFullscreen ?? tg.requestFullScreen;
+    fn?.call(tg);
+  }
+}
+
+/* ================= Component ================= */
 
 export default function TelegramInit() {
   useEffect(() => {
-    let isCancelled = false;
-    let fullscreenRequested = false;
+    let cancelled = false;
+    let fullscreenDone = false;
 
-    const attach = (tg) => {
-      if (isCancelled) return;
+    const init = (tg) => {
+      if (cancelled) return;
 
-      try {
-        tg.ready();
+      const isMobile = isMobileTelegram(tg);
 
-        /* 🔥 FAQAT MOBILE’DA EXPAND */
-        if (isCompactViewport(448)) {
-          tg.expand();
+      tg.ready();
 
-          if (!fullscreenRequested) {
-            requestFullscreenBestEffort(tg);
-            fullscreenRequested = true;
-          }
+      // 🔥 FAQAT MOBILE
+      if (isMobile) {
+        tg.expand();
+
+        if (!fullscreenDone) {
+          requestFullscreenBestEffort(tg);
+          fullscreenDone = true;
         }
 
-        // swipe bilan yopilib ketishini bloklaydi (mobile’da foydali)
         tg.disableVerticalSwipes?.();
-      } catch {
-        // ignore
       }
 
       applyThemeColors(tg);
-
-      const onTheme = () => applyThemeColors(tg);
-      tg.onEvent("themeChanged", onTheme);
-
-      // Telegram ba’zida birinchi expand’ni yutib yuboradi
-      const t = window.setTimeout(() => {
-        try {
-          if (isCompactViewport(448)) {
-            tg.expand();
-
-            if (!fullscreenRequested) {
-              requestFullscreenBestEffort(tg);
-              fullscreenRequested = true;
-            }
-          }
-
-          tg.disableVerticalSwipes?.();
-        } catch {
-          // ignore
-        }
-      }, 50);
-
-      return () => {
-        window.clearTimeout(t);
-        tg.offEvent("themeChanged", onTheme);
-      };
     };
 
-    let cleanup;
-    const startedAt = Date.now();
-
-    const tryInit = () => {
-      if (isCancelled) return;
-
+    const start = Date.now();
+    const tick = () => {
+      if (cancelled) return;
       const tg = getTelegramWebApp();
-      if (tg) {
-        cleanup = attach(tg);
-        return;
-      }
-
-      if (Date.now() - startedAt < 2000) {
-        requestAnimationFrame(tryInit);
-      }
+      if (tg) init(tg);
+      else if (Date.now() - start < 2000) requestAnimationFrame(tick);
     };
 
-    tryInit();
-
+    tick();
     return () => {
-      isCancelled = true;
-      cleanup?.();
+      cancelled = true;
     };
   }, []);
 
