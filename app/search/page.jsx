@@ -315,10 +315,6 @@ function SearchPageContent() {
       const deduped = prev.filter((x) => normalize(x) !== key);
       return [next, ...deduped].slice(0, 12);
     });
-
-    // Optional: keep user on this page for now.
-    // If you later have a results page, you can navigate here.
-    // router.push(`/search?query=${encodeURIComponent(next)}`);
   };
 
   const renderSuggestionLabel = (label) => {
