@@ -21,6 +21,16 @@ function compareSemver(a, b) {
   return 0;
 }
 
+function isCompactViewport(maxWidth = 448) {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia(`(max-width: ${maxWidth}px)`).matches;
+}
+
+function getTelegramWebApp() {
+  if (typeof window === "undefined") return null;
+  return window.Telegram?.WebApp ?? null;
+}
+
 function applyThemeColors(tg) {
   const telegramBg = tg?.themeParams?.bg_color ?? "#ffffff";
 
@@ -44,15 +54,8 @@ function applyThemeColors(tg) {
 
   try {
     tg.setBackgroundColor(appBg);
-  } catch {
-    // ignore
-  }
-
-  try {
     tg.setHeaderColor(appBg);
-  } catch {
-    // ignore
-  }
+  } catch {}
 }
 
 function requestFullscreenBestEffort(tg) {
@@ -75,14 +78,10 @@ function requestFullscreenBestEffort(tg) {
   }
 }
 
-function getTelegramWebApp() {
-  if (typeof window === "undefined") return null;
-  return window.Telegram?.WebApp ?? null;
-}
-
 export default function TelegramInit() {
   useEffect(() => {
     let isCancelled = false;
+    let fullscreenRequested = false;
 
     const attach = (tg) => {
       if (isCancelled) return;
@@ -90,16 +89,14 @@ export default function TelegramInit() {
       try {
         tg.ready();
         tg.expand();
-        requestFullscreenBestEffort(tg);
 
-        // ✅ swipe down bilan yopilib ketishini bloklaydi (agar Telegram support qilsa)
+        if (isCompactViewport(448) && !fullscreenRequested) {
+          requestFullscreenBestEffort(tg);
+          fullscreenRequested = true;
+        }
+
         tg.disableVerticalSwipes?.();
-
-        // ✅ fallback: chiqish bo‘lsa confirm chiqaradi (xohlasangiz yoqing)
-        // tg.enableClosingConfirmation?.();
-      } catch {
-        // ignore
-      }
+      } catch {}
 
       applyThemeColors(tg);
 
@@ -109,12 +106,15 @@ export default function TelegramInit() {
 
       tg.onEvent("themeChanged", onTheme);
 
-      window.setTimeout(() => {
+      const t = window.setTimeout(() => {
         try {
           tg.expand();
-          requestFullscreenBestEffort(tg);
 
-          // ✅ ba’zida expand’dan keyin yana bir marta chaqirish foydali
+          if (isCompactViewport(448) && !fullscreenRequested) {
+            requestFullscreenBestEffort(tg);
+            fullscreenRequested = true;
+          }
+
           tg.disableVerticalSwipes?.();
         } catch {
           // ignore
@@ -122,6 +122,7 @@ export default function TelegramInit() {
       }, 50);
 
       return () => {
+        window.clearTimeout(t);
         tg.offEvent("themeChanged", onTheme);
       };
     };
@@ -138,7 +139,6 @@ export default function TelegramInit() {
         return;
       }
 
-      // wait up to 2 seconds for Telegram object
       if (Date.now() - startedAt < 2000) {
         requestAnimationFrame(tryInit);
       }
