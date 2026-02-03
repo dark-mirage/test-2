@@ -69,9 +69,15 @@ export default function TelegramInit() {
 
       const isMobile = isMobileTelegram(tg);
 
+      /* 🔥 CSS UCHUN GLOBAL FLAG */
+      document.documentElement.style.setProperty(
+        "--tg-is-mobile",
+        isMobile ? "1" : "0",
+      );
+
       tg.ready();
 
-      // 🔥 FAQAT MOBILE
+      // 📱 FAQAT MOBILE’DA
       if (isMobile) {
         tg.expand();
 
@@ -95,8 +101,10 @@ export default function TelegramInit() {
     };
 
     tick();
+
     return () => {
       cancelled = true;
+      document.documentElement.style.removeProperty("--tg-is-mobile");
     };
   }, []);
 
