@@ -8,6 +8,7 @@ import TelegramNavButtons from "@/components/blocks/telegram/TelegramNavButtons"
 import WebViewErrorAlert from "@/components/blocks/telegram/WebViewErrorAlert";
 import TelegramViewportManager from "./TelegramViewportManager";
 import InputFocusFix from "@/components/ios/InputFocusFix";
+import ReduxProvider from "@/components/providers/ReduxProvider";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -26,12 +27,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body suppressHydrationWarning>
-        <TelegramInit />
-        <TelegramNavButtons />
-        <TelegramViewportManager />
-        <InputFocusFix />
-        {children}
-        <WebViewErrorAlert />
+        <ReduxProvider>
+          <TelegramInit />
+          <TelegramNavButtons />
+          <TelegramViewportManager />
+          <InputFocusFix />
+          {children}
+          <WebViewErrorAlert />
+        </ReduxProvider>
       </body>
     </html>
   );

@@ -54,6 +54,20 @@ export default function ProfilePage() {
           />
         </div>
 
+        {/* Админ панель */}
+        <div className={styles.c4} style={{ marginTop: "24px" }}>
+          <MenuSection
+            items={[
+              {
+                text: "Админ: Добавить товар",
+                icon: <MenuIcon src="/icons/profile/bag-icon.svg" />,
+                href: "/admin/products/add",
+                fontWeight: 600,
+              },
+            ]}
+          />
+        </div>
+
         {/* Секция: Баллы */}
         <div className={styles.c5}>
           <MenuSection

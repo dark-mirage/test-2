@@ -1,13 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
-
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { fetchLatestProducts, fetchProducts } from "@/lib/store/slices/productsSlice";
+import { fetchFavorites, toggleFavoriteProduct } from "@/lib/store/slices/favoritesSlice";
+import { productsApi } from "@/lib/api";
 import SearchBar from "@/components/blocks/search/SearchBar";
 import Footer from "@/components/layout/Footer";
 import CategoryTabs from "@/components/blocks/home/CategoryTabs";
 import FriendsSection from "@/components/blocks/home/FriendsSection";
 import HomeDeliveryStatusCard from "@/components/blocks/home/HomeDeliveryStatusCard";
 import ProductSection from "@/components/blocks/product/ProductSection";
-import { productsApi, favoritesApi } from "@/lib/api";
 import "@/lib/utils/apiTest"; // Добавляем тестовую утилиту
 
 import styles from "./page.module.css";
@@ -31,77 +33,31 @@ function transformProduct(product, favoriteIds = new Set()) {
 }
 
 export default function Home() {
-  const [recentProducts, setRecentProducts] = useState([]);
-  const [recommendedProducts, setRecommendedProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [favoriteIds, setFavoriteIds] = useState(new Set());
+  const dispatch = useAppDispatch();
+  const { latest, items, loading: productsLoading } = useAppSelector((state) => state.products);
+  const { favoriteProductIds, loading: favoritesLoading } = useAppSelector((state) => state.favorites);
 
   // Загрузить избранное
   useEffect(() => {
-    async function loadFavorites() {
-      try {
-        const favorites = await favoritesApi.getAll({ item_type: "product" });
-        const ids = new Set(favorites.map(f => f.product_id).filter(Boolean));
-        setFavoriteIds(ids);
-      } catch (err) {
-        console.error("Failed to load favorites:", err);
-      }
-    }
-    loadFavorites();
-  }, []);
+    dispatch(fetchFavorites());
+  }, [dispatch]);
 
-  // Загрузить последние товары
+  // Загрузить товары
   useEffect(() => {
-    async function loadProducts() {
-      try {
-        setLoading(true);
-        const [latest, all] = await Promise.all([
-          productsApi.getLatest(5),
-          productsApi.getAll({ limit: 8, skip: 0 }),
-        ]);
-        
-        setRecentProducts(latest.map(p => transformProduct(p, favoriteIds)));
-        setRecommendedProducts(all.map(p => transformProduct(p, favoriteIds)));
-      } catch (err) {
-        console.error("Failed to load products:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProducts();
-  }, [favoriteIds]);
+    dispatch(fetchLatestProducts(5));
+    dispatch(fetchProducts({ limit: 8, skip: 0 }));
+  }, [dispatch]);
+
+  // Преобразуем массив в Set для удобства проверки
+  const favoriteIds = new Set(favoriteProductIds);
+  const loading = productsLoading || favoritesLoading;
+
+  // Преобразовать товары для отображения
+  const recentProducts = latest.slice(0, 5).map(p => transformProduct(p, favoriteIds));
+  const recommendedProducts = items.slice(0, 8).map(p => transformProduct(p, favoriteIds));
 
   const toggleFavorite = async (id) => {
-    const isFavorite = favoriteIds.has(id);
-    try {
-      if (isFavorite) {
-        // Найти favorite_id и удалить
-        const favorites = await favoritesApi.getAll({ item_type: "product" });
-        const favorite = favorites.find(f => f.product_id === id);
-        if (favorite) {
-          await favoritesApi.remove(favorite.id);
-          setFavoriteIds(prev => {
-            const next = new Set(prev);
-            next.delete(id);
-            return next;
-          });
-        }
-      } else {
-        // Добавить в избранное
-        await favoritesApi.add({ user_id: 1, product_id: id }); // TODO: получить user_id из сессии
-        setFavoriteIds(prev => new Set(prev).add(id));
-      }
-      
-      // Обновить локальное состояние
-      setRecentProducts((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, isFavorite: !p.isFavorite } : p)),
-      );
-      setRecommendedProducts((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, isFavorite: !p.isFavorite } : p)),
-      );
-    } catch (err) {
-      console.error("Failed to toggle favorite:", err);
-    }
+    dispatch(toggleFavoriteProduct(id));
   };
 
   if (loading) {
