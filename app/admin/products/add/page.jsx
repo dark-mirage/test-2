@@ -155,6 +155,10 @@ export default function AddProductPage() {
       // Отправка через API
       const result = await productsApi.create(productData);
       
+      if (!result || !result.id) {
+        throw new Error("Товар не был создан. Проверьте данные и попробуйте снова.");
+      }
+      
       setSuccess(true);
       setFormData({
         name: "",
@@ -176,11 +180,58 @@ export default function AddProductPage() {
 
     } catch (err) {
       console.error("Failed to create product:", err);
-      setError(err.message || "Не удалось создать товар");
+      let errorMessage = err.message || "Не удалось создать товар";
+      
+      // Более понятные сообщения об ошибках
+      if (errorMessage.includes('authentication') || errorMessage.includes('login') || errorMessage.includes('401')) {
+        errorMessage = "Вы не авторизованы. Пожалуйста, войдите через Telegram для создания товаров.";
+      } else if (errorMessage.includes('403')) {
+        errorMessage = "У вас нет прав для создания товаров. Проверьте авторизацию.";
+      } else if (errorMessage.includes('400') || errorMessage.includes('validation')) {
+        errorMessage = "Ошибка валидации данных. Проверьте все поля формы.";
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
+
+  // Показываем загрузку при проверке авторизации
+  if (checkingAuth) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.container}>
+          <div style={{ padding: "2rem", textAlign: "center" }}>Проверка авторизации...</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Показываем сообщение, если не авторизован
+  if (!isAuthenticated) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.container}>
+          <h1 className={styles.title}>Добавить товар</h1>
+          <div className={styles.error}>
+            <h2>⚠️ Требуется авторизация</h2>
+            <p>Для создания товаров необходимо войти через Telegram.</p>
+            <p>Пожалуйста, авторизуйтесь и попробуйте снова.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className={styles.submitButton}
+              style={{ marginTop: "16px" }}
+            >
+              Обновить страницу
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>

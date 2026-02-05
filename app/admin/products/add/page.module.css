@@ -189,6 +189,16 @@
   font-size: 14px;
 }
 
+.error h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.error p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
 @media (prefers-color-scheme: dark) {
   .input,
   .select {

@@ -17,8 +17,12 @@ export async function POST(req) {
     const token = cookieStore.get("tg_session")?.value;
     
     if (!token) {
+      console.warn('Product creation: No auth token found in cookie');
       return NextResponse.json(
-        { error: 'No authentication token found. Please login first.' },
+        { 
+          error: 'No authentication token found. Please login first.',
+          message: 'Для создания товаров необходимо войти через Telegram. Пожалуйста, авторизуйтесь и попробуйте снова.'
+        },
         { status: 401 }
       );
     }
